@@ -5,12 +5,14 @@ import "errors"
 //import "fmt"
 
 type Player struct {
-	isInGame    bool
 	currentGame *Game
+	balance     Chips
 }
 
+type Chips uint
+
 func (player *Player) IsInGame() bool {
-	return player.isInGame
+	return player.currentGame != nil
 }
 
 func (player *Player) Join(game *Game) error {
@@ -18,13 +20,11 @@ func (player *Player) Join(game *Game) error {
 		return errors.New("Please leave the game before joining another game")
 	}
 
-	if game.NumberOfPlayer == 6 {
-		return errors.New("Please join another game")
+	if err := game.Add(); err != nil {
+		return err
 	}
 
-	player.isInGame = true
 	player.currentGame = game
-	game.NumberOfPlayer++
 	return nil
 }
 
@@ -33,8 +33,15 @@ func (player *Player) Leave() error {
 		return errors.New("Please join the game before leaving")
 	}
 
-	player.isInGame = false
-	player.currentGame.NumberOfPlayer--
+	player.currentGame.Remove()
 	player.currentGame = nil
 	return nil
+}
+
+func (player *Player) Buy(chips Chips) {
+	player.balance += chips
+}
+
+func (player *Player) Balance() Chips {
+	return player.balance
 }
