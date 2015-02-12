@@ -2,56 +2,61 @@ package casino
 
 import (
 	"github.com/bevzuk/tdd/casino"
-	"github.com/stretchr/testify/assert"
+	. "gopkg.in/check.v1"
 	"testing"
 )
 
-func Test_Player_ByDefault_NotInGame(t *testing.T) {
+func Test(t *testing.T) { TestingT(t) }
+
+type CasinoTestsSuite struct{}
+
+var _ = Suite(&CasinoTestsSuite{})
+
+func (s *CasinoTestsSuite) Test_Player_ByDefault_NotInGame(c *C) {
 	player := casino.Player{}
 
-	assert.False(t, player.IsInGame())
+	c.Assert(player.IsInGame(), Equals, false)
 }
 
-func Test_Player_JoinedGame_IsInGame(t *testing.T) {
+func (s *CasinoTestsSuite) Test_Player_JoinedGame_IsInGame(c *C) {
 	player := casino.Player{}
-	game := casino.Game{}
+	game := &casino.Game{}
 
 	player.Join(game)
 
-	assert.True(t, player.IsInGame())
+	c.Assert(player.IsInGame(), Equals, true)
 }
 
-func Test_Player_LeaveGame_IsNotInGame(t *testing.T) {
+func (s *CasinoTestsSuite) Test_Player_LeaveGame_IsNotInGame(c *C) {
 	player := casino.Player{}
-	game := casino.Game{}
-	player.Join(game)
+	player.Join(&casino.Game{})
 
 	player.Leave()
 
-	assert.False(t, player.IsInGame())
+	c.Assert(player.IsInGame(), Equals, false)
 }
 
-func Test_Player_CanNotLeaveGame_UntilJoin(t *testing.T) {
+func (s *CasinoTestsSuite) Test_Player_CanNotLeaveGame_UntilJoin(c *C) {
 	player := casino.Player{}
 
-	error := player.Leave()
+	err := player.Leave()
 
-	assert.Error(t, error)
-	assert.Equal(t, "Please join the game before leaving", error.Error())
+	c.Assert(err, Not(IsNil))
+	c.Assert(err.Error(), Equals, "Please join the game before leaving")
 }
 
-func Test_Player_CanNotJoinAnotherGame_WhileHeIsInGame(t *testing.T) {
+func (s *CasinoTestsSuite) Test_Player_CanNotJoinAnotherGame_WhileHeIsInGame(c *C) {
 	player := casino.Player{}
-	player.Join(casino.Game{})
+	player.Join(&casino.Game{})
 
-	error := player.Join(casino.Game{})
+	err := player.Join(&casino.Game{})
 
-	assert.Error(t, error)
-	assert.Equal(t, "Please leave the game before joining another game", error.Error())
+	c.Assert(err, Not(IsNil))
+	c.Assert(err.Error(), Equals, "Please leave the game before joining another game")
 }
 
-func Ignored_Test_6Players_Join_Successfully(t *testing.T) {
-	game := casino.Game{}
+func (s *CasinoTestsSuite) Test_6Players_Join_Successfully(c *C) {
+	game := &casino.Game{}
 
 	player1 := casino.Player{}
 	player1.Join(game)
@@ -66,5 +71,48 @@ func Ignored_Test_6Players_Join_Successfully(t *testing.T) {
 	player6 := casino.Player{}
 	player6.Join(game)
 
-	assert.True(t, player6.IsInGame())
+	c.Assert(player6.IsInGame(), Equals, true)
+}
+
+func (s *CasinoTestsSuite) Test_7thPlayers_Join_Fails(c *C) {
+	game := &casino.Game{}
+	player1 := casino.Player{}
+	player1.Join(game)
+	player2 := casino.Player{}
+	player2.Join(game)
+	player3 := casino.Player{}
+	player3.Join(game)
+	player4 := casino.Player{}
+	player4.Join(game)
+	player5 := casino.Player{}
+	player5.Join(game)
+	player6 := casino.Player{}
+	player6.Join(game)
+
+	player7 := casino.Player{}
+	player7.Join(game)
+
+	c.Assert(player7.IsInGame(), Equals, false)
+}
+
+func (s *CasinoTestsSuite) Test_7thPlayers_Join_FailsWithError(c *C) {
+	game := &casino.Game{}
+	player1 := casino.Player{}
+	player1.Join(game)
+	player2 := casino.Player{}
+	player2.Join(game)
+	player3 := casino.Player{}
+	player3.Join(game)
+	player4 := casino.Player{}
+	player4.Join(game)
+	player5 := casino.Player{}
+	player5.Join(game)
+	player6 := casino.Player{}
+	player6.Join(game)
+
+	player7 := casino.Player{}
+	err := player7.Join(game)
+
+	c.Assert(err, Not(IsNil))
+	c.Assert(err.Error(), Equals, "Please join another game")
 }
