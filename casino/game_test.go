@@ -26,7 +26,7 @@ func (s *GameTestsSuite) Test_Game_HasPlayer_FalseForJoinedAndLeftPlayer(c *C) {
 	game := create.Game().Please()
 	player := create.Player().Joined(game).Please()
 
-	player.Leave(game)
+	game.Remove(player)
 
 	c.Assert(game.HasPlayer(player), Equals, false)
 }
@@ -37,7 +37,7 @@ func (s *GameTestsSuite) Test_Game_HasPlayer_HandlesMultiplePlayers(c *C) {
 	playerLeftGame := create.Player().Joined(game).Please()
 	playerInGame2 := create.Player().Joined(game).Please()
 
-	playerLeftGame.Leave(game)
+	game.Remove(playerLeftGame)
 
 	c.Assert(game.HasPlayer(playerInGame1), Equals, true)
 	c.Assert(game.HasPlayer(playerInGame2), Equals, true)

@@ -4,36 +4,13 @@ import "errors"
 import "fmt"
 
 type Player struct {
-	isInGame bool
+	IsInGame bool
 	balance  Chips
 	bets     []Bet
 }
 
 type Chips uint
 type Score uint
-
-func (player *Player) IsInGame() bool {
-	return player.isInGame
-}
-
-// func (player *Player) Join(game *Game) error {
-// 	if err := game.Add(player); err != nil {
-// 		return err
-// 	}
-
-// 	player.isInGame = true
-// 	return nil
-// }
-
-func (player *Player) Leave(game *Game) error {
-	err := game.Remove(player)
-	if err != nil {
-		return err
-	}
-
-	player.isInGame = false
-	return nil
-}
 
 func (player *Player) Buy(chips Chips) {
 	player.balance += chips
@@ -48,7 +25,7 @@ func (player *Player) Bet(chips Chips, score Score) error {
 		return fmt.Errorf("You can not bet more than %v chips", player.Balance())
 	}
 
-	if !player.IsInGame() {
+	if !player.IsInGame {
 		return errors.New("You should join a game before making a bet")
 	}
 

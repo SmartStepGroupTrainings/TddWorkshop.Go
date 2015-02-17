@@ -17,7 +17,7 @@ var _ = Suite(&CasinoTestsSuite{})
 func (s *CasinoTestsSuite) Test_Player_ByDefault_NotInGame(c *C) {
 	player := Player{}
 
-	c.Assert(player.IsInGame(), Equals, false)
+	c.Assert(player.IsInGame, Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_Player_JoinedGame_IsInGame(c *C) {
@@ -26,22 +26,23 @@ func (s *CasinoTestsSuite) Test_Player_JoinedGame_IsInGame(c *C) {
 
 	game.Add(player)
 
-	c.Assert(player.IsInGame(), Equals, true)
+	c.Assert(player.IsInGame, Equals, true)
 }
 
 func (s *CasinoTestsSuite) Test_Player_LeaveGame_IsNotInGame(c *C) {
 	game := create.Game().Please()
 	player := create.Player().Joined(game).Please()
 
-	player.Leave(game)
+	game.Remove(player)
 
-	c.Assert(player.IsInGame(), Equals, false)
+	c.Assert(player.IsInGame, Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotLeaveGame_UntilJoin(c *C) {
 	player := create.Player().Please()
 
-	err := player.Leave(create.Game().Please())
+	anotherGame := create.Game().Please()
+	err := anotherGame.Remove(player)
 
 	c.Assert(err, Not(IsNil))
 	c.Assert(err.Error(), Equals, "Please join the game before leaving")
@@ -75,7 +76,7 @@ func (s *CasinoTestsSuite) Test_6Players_Join_Successfully(c *C) {
 	player6 := create.Player().Please()
 	game.Add(player6)
 
-	c.Assert(player6.IsInGame(), Equals, true)
+	c.Assert(player6.IsInGame, Equals, true)
 }
 
 func (s *CasinoTestsSuite) Test_7thPlayers_Join_Fails(c *C) {
@@ -96,7 +97,7 @@ func (s *CasinoTestsSuite) Test_7thPlayers_Join_Fails(c *C) {
 	player7 := create.Player().Please()
 	game.Add(player7)
 
-	c.Assert(player7.IsInGame(), Equals, false)
+	c.Assert(player7.IsInGame, Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_7thPlayers_Join_FailsWithError(c *C) {

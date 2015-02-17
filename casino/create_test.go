@@ -21,7 +21,7 @@ type PlayerBuilder struct {
 }
 
 func (playerBuilder *PlayerBuilder) InGame() *PlayerBuilder {
-	playerBuilder.player.isInGame = true
+	playerBuilder.player.IsInGame = true
 	return playerBuilder
 }
 

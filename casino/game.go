@@ -9,7 +9,7 @@ type Game struct {
 }
 
 func (game *Game) Add(player *Player) error {
-	if player.IsInGame() {
+	if player.IsInGame {
 		return errors.New("Please leave the game before joining another game")
 	}
 
@@ -18,19 +18,20 @@ func (game *Game) Add(player *Player) error {
 	}
 
 	game.players = append(game.players, player)
-	player.isInGame = true
+	player.IsInGame = true
 	return nil
 }
 
-// func (game *Game) Remove(player *Player) error {
-// 	for i, p := range game.players {
-// 		if p == player {
-// 			game.players = append(game.players[:i], game.players[i+1:]...)
-// 			return nil
-// 		}
-// 	}
-// 	return errors.New("Please join the game before leaving")
-// }
+func (game *Game) Remove(player *Player) error {
+	for i, p := range game.players {
+		if p == player {
+			game.players = append(game.players[:i], game.players[i+1:]...)
+			player.IsInGame = false
+			return nil
+		}
+	}
+	return errors.New("Please join the game before leaving")
+}
 
 func (game *Game) HasPlayer(player *Player) bool {
 	for _, p := range game.players {
