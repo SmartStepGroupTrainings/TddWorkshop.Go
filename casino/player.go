@@ -1,40 +1,37 @@
 package casino
 
 import "errors"
-
-//import "fmt"
+import "fmt"
 
 type Player struct {
-	currentGame *Game
-	balance     Chips
+	isInGame bool
+	balance  Chips
+	bets     []Bet
 }
 
 type Chips uint
+type Score uint
 
 func (player *Player) IsInGame() bool {
-	return player.currentGame != nil
+	return player.isInGame
 }
 
-func (player *Player) Join(game *Game) error {
-	if player.IsInGame() {
-		return errors.New("Please leave the game before joining another game")
-	}
+// func (player *Player) Join(game *Game) error {
+// 	if err := game.Add(player); err != nil {
+// 		return err
+// 	}
 
-	if err := game.Add(); err != nil {
+// 	player.isInGame = true
+// 	return nil
+// }
+
+func (player *Player) Leave(game *Game) error {
+	err := game.Remove(player)
+	if err != nil {
 		return err
 	}
 
-	player.currentGame = game
-	return nil
-}
-
-func (player *Player) Leave() error {
-	if !player.IsInGame() {
-		return errors.New("Please join the game before leaving")
-	}
-
-	player.currentGame.Remove()
-	player.currentGame = nil
+	player.isInGame = false
 	return nil
 }
 
@@ -44,4 +41,26 @@ func (player *Player) Buy(chips Chips) {
 
 func (player *Player) Balance() Chips {
 	return player.balance
+}
+
+func (player *Player) Bet(chips Chips, score Score) error {
+	if player.Balance() < chips {
+		return fmt.Errorf("You can not bet more than %v chips", player.Balance())
+	}
+
+	if !player.IsInGame() {
+		return errors.New("You should join a game before making a bet")
+	}
+
+	if score < 1 || 6 < score {
+		return errors.New("Please make a bet only to score 1 - 6")
+	}
+
+	player.bets = append(player.bets, Bet{Score: score, Chips: chips})
+	player.balance -= chips
+	return nil
+}
+
+func (player *Player) Bets() []Bet {
+	return player.bets
 }
