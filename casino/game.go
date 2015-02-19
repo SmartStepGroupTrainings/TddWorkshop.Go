@@ -2,10 +2,16 @@ package casino
 
 import (
 	"errors"
+	//"log"
 )
 
 type Game struct {
+	dice    IDice
 	players []*Player
+}
+
+type IDice interface {
+	Roll() Score
 }
 
 func (game *Game) Add(player *Player) error {
@@ -43,5 +49,14 @@ func (game *Game) HasPlayer(player *Player) bool {
 }
 
 func (game *Game) Play() {
+	winningScore := game.dice.Roll()
 
+	for _, p := range game.players {
+		for _, bet := range p.Bets() {
+			if bet.Score == winningScore {
+				p.Win(bet.Chips * 6)
+			}
+		}
+		p.Lose()
+	}
 }

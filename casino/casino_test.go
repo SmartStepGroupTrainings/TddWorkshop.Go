@@ -215,13 +215,3 @@ func (s *CasinoTestsSuite) Test_Player_GetBets_ReturnsTwoBets(c *C) {
 	c.Assert(playerBets[1].Chips, Equals, Chips(11))
 	c.Assert(playerBets[1].Score, Equals, Score(3))
 }
-
-// func (s *CasinoTestsSuite) Ignore_Test_Player_Loses_WhenMakeWrongBet(c *C) {
-// 	game := create.Game().WithLuckyScore(6).Please()
-// 	player := create.Player().Joined(game).Bet(10).OnScore(1).Please()
-// 	startBalance := player.Balance()
-
-// 	game.Play()
-
-// 	c.Assert(player.Balance(), Equals, Chips(startBalance-10))
-// }

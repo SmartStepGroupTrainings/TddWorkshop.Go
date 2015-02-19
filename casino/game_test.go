@@ -64,3 +64,39 @@ func (s *GameTestsSuite) Test_Game_Add_ShouldNotAllowPlayerToJoinAnotherGame(c *
 
 	c.Assert(err, Not(IsNil))
 }
+
+func (s *GameTestsSuite) Test_Game_Play_PlayerWithWrongBetLoses(c *C) {
+	game := create.Game().WithLuckyScore(6).Please()
+	player := create.Player().Joined(game).Please()
+	startBalance := player.Balance()
+	player.Bet(Chips(10), Score(1))
+
+	game.Play()
+
+	c.Assert(int(player.Balance()), Equals, int(Chips(startBalance-10)))
+	c.Assert(len(player.Bets()), Equals, 0)
+}
+
+func (s *GameTestsSuite) Test_Game_Play_PlayerWithLuckyBetWins6Bets(c *C) {
+	game := create.Game().WithLuckyScore(3).Please()
+	player := create.Player().Joined(game).Please()
+	startBalance := player.Balance()
+	player.Bet(Chips(10), Score(3))
+
+	game.Play()
+
+	c.Assert(int(player.Balance()), Equals, int(Chips(startBalance-10+10*6)))
+	c.Assert(len(player.Bets()), Equals, 0)
+}
+
+func (s *GameTestsSuite) Test_Game_Play_PlayerWithTwoBets_WinOnlyLuckyBet(c *C) {
+	game := create.Game().WithLuckyScore(2).Please()
+	player := create.Player().Joined(game).Please()
+	startBalance := player.Balance()
+	player.Bet(Chips(10), Score(1))
+	player.Bet(Chips(15), Score(2))
+
+	game.Play()
+
+	c.Assert(int(player.Balance()), Equals, int(Chips(startBalance-10-15+15*6)))
+}

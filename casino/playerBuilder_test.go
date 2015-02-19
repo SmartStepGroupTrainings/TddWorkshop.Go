@@ -1,19 +1,5 @@
 package casino
 
-var create Builder
-
-type Builder struct {
-}
-
-func (builder *Builder) Player() *PlayerBuilder {
-	return &PlayerBuilder{}
-}
-
-func (builder *Builder) Game() *GameBuilder {
-	return &GameBuilder{}
-}
-
-// Player Builder
 type PlayerBuilder struct {
 	player   Player
 	betChips Chips
@@ -59,17 +45,4 @@ func (playerBuilder *PlayerBuilder) Please() *Player {
 		playerBuilder.player.Bet(playerBuilder.betChips, playerBuilder.betScore)
 	}
 	return &playerBuilder.player
-}
-
-//GameBuilder
-type GameBuilder struct {
-	game Game
-}
-
-func (gameBuilder *GameBuilder) WithLuckyScore(luckyScore uint) *GameBuilder {
-	return gameBuilder
-}
-
-func (gameBuilder *GameBuilder) Please() *Game {
-	return &gameBuilder.game
 }

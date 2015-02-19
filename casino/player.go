@@ -41,3 +41,11 @@ func (player *Player) Bet(chips Chips, score Score) error {
 func (player *Player) Bets() []Bet {
 	return player.bets
 }
+
+func (player *Player) Lose() {
+	player.bets = nil
+}
+
+func (player *Player) Win(winningChips Chips) {
+	player.balance += winningChips
+}
