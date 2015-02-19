@@ -4,9 +4,8 @@ import "errors"
 import "fmt"
 
 type Player struct {
-	IsInGame bool
-	balance  Chips
-	bets     []Bet
+	game    *Game
+	balance Chips
 }
 
 type Chips uint
@@ -25,7 +24,7 @@ func (player *Player) Bet(chips Chips, score Score) error {
 		return fmt.Errorf("You can not bet more than %v chips", player.Balance())
 	}
 
-	if !player.IsInGame {
+	if !player.IsInGame() {
 		return errors.New("You should join a game before making a bet")
 	}
 
@@ -33,19 +32,15 @@ func (player *Player) Bet(chips Chips, score Score) error {
 		return errors.New("Please make a bet only to score 1 - 6")
 	}
 
-	player.bets = append(player.bets, Bet{Score: score, Chips: chips})
+	player.game.Bet(Bet{Score: score, Chips: chips}, player)
 	player.balance -= chips
 	return nil
 }
 
-func (player *Player) Bets() []Bet {
-	return player.bets
-}
-
-func (player *Player) Lose() {
-	player.bets = nil
-}
-
 func (player *Player) Win(winningChips Chips) {
 	player.balance += winningChips
+}
+
+func (player *Player) IsInGame() bool {
+	return player.game != nil
 }

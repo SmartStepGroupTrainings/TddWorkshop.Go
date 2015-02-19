@@ -17,7 +17,7 @@ var _ = Suite(&CasinoTestsSuite{})
 func (s *CasinoTestsSuite) Test_Player_ByDefault_NotInGame(c *C) {
 	player := Player{}
 
-	c.Assert(player.IsInGame, Equals, false)
+	c.Assert(player.IsInGame(), Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_Player_JoinedGame_IsInGame(c *C) {
@@ -26,7 +26,7 @@ func (s *CasinoTestsSuite) Test_Player_JoinedGame_IsInGame(c *C) {
 
 	game.Add(player)
 
-	c.Assert(player.IsInGame, Equals, true)
+	c.Assert(player.IsInGame(), Equals, true)
 }
 
 func (s *CasinoTestsSuite) Test_Player_LeaveGame_IsNotInGame(c *C) {
@@ -35,7 +35,7 @@ func (s *CasinoTestsSuite) Test_Player_LeaveGame_IsNotInGame(c *C) {
 
 	game.Remove(player)
 
-	c.Assert(player.IsInGame, Equals, false)
+	c.Assert(player.IsInGame(), Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotLeaveGame_UntilJoin(c *C) {
@@ -76,7 +76,7 @@ func (s *CasinoTestsSuite) Test_6Players_Join_Successfully(c *C) {
 	player6 := create.Player().Please()
 	game.Add(player6)
 
-	c.Assert(player6.IsInGame, Equals, true)
+	c.Assert(player6.IsInGame(), Equals, true)
 }
 
 func (s *CasinoTestsSuite) Test_7thPlayers_Join_Fails(c *C) {
@@ -97,7 +97,7 @@ func (s *CasinoTestsSuite) Test_7thPlayers_Join_Fails(c *C) {
 	player7 := create.Player().Please()
 	game.Add(player7)
 
-	c.Assert(player7.IsInGame, Equals, false)
+	c.Assert(player7.IsInGame(), Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_7thPlayers_Join_FailsWithError(c *C) {
@@ -189,29 +189,4 @@ func (s *CasinoTestsSuite) Test_Player_BetChips_OnDifferentScores(c *C) {
 	player.Bet(Chips(3), Score(6))
 
 	c.Assert(player.Balance(), Equals, Chips(startBalance-1-2-3))
-}
-
-func (s *CasinoTestsSuite) Test_Player_GetBets_ReturnsSingleBet(c *C) {
-	player := create.Player().InGame().Please()
-	player.Bet(Chips(10), Score(2))
-
-	playerBets := player.Bets()
-
-	c.Assert(len(playerBets), Equals, 1)
-	c.Assert(playerBets[0].Chips, Equals, Chips(10))
-	c.Assert(playerBets[0].Score, Equals, Score(2))
-}
-
-func (s *CasinoTestsSuite) Test_Player_GetBets_ReturnsTwoBets(c *C) {
-	player := create.Player().InGame().Please()
-	player.Bet(Chips(10), Score(2))
-	player.Bet(Chips(11), Score(3))
-
-	playerBets := player.Bets()
-
-	c.Assert(len(playerBets), Equals, 2)
-	c.Assert(playerBets[0].Chips, Equals, Chips(10))
-	c.Assert(playerBets[0].Score, Equals, Score(2))
-	c.Assert(playerBets[1].Chips, Equals, Chips(11))
-	c.Assert(playerBets[1].Score, Equals, Score(3))
 }

@@ -7,7 +7,7 @@ type PlayerBuilder struct {
 }
 
 func (playerBuilder *PlayerBuilder) InGame() *PlayerBuilder {
-	playerBuilder.player.IsInGame = true
+	playerBuilder.player.game = &Game{}
 	return playerBuilder
 }
 

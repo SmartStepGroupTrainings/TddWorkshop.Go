@@ -74,7 +74,6 @@ func (s *GameTestsSuite) Test_Game_Play_PlayerWithWrongBetLoses(c *C) {
 	game.Play()
 
 	c.Assert(int(player.Balance()), Equals, int(Chips(startBalance-10)))
-	c.Assert(len(player.Bets()), Equals, 0)
 }
 
 func (s *GameTestsSuite) Test_Game_Play_PlayerWithLuckyBetWins6Bets(c *C) {
@@ -86,7 +85,6 @@ func (s *GameTestsSuite) Test_Game_Play_PlayerWithLuckyBetWins6Bets(c *C) {
 	game.Play()
 
 	c.Assert(int(player.Balance()), Equals, int(Chips(startBalance-10+10*6)))
-	c.Assert(len(player.Bets()), Equals, 0)
 }
 
 func (s *GameTestsSuite) Test_Game_Play_PlayerWithTwoBets_WinOnlyLuckyBet(c *C) {
