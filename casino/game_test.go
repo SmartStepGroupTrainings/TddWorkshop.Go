@@ -12,7 +12,7 @@ func (s *GameTestsSuite) Test_Game_HasPlayer_TrueForJoinedPlayer(c *C) {
 	game := create.Game().Please()
 	playerInGame := create.Player().Joined(game).Please()
 
-	c.Assert(game.HasPlayer(playerInGame), Equals, false)
+	c.Assert(game.HasPlayer(playerInGame), Equals, true)
 }
 
 func (s *GameTestsSuite) Test_Game_HasPlayer_FalseForNotJoinedPlayer(c *C) {
