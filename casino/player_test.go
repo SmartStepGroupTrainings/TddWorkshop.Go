@@ -127,19 +127,18 @@ func (s *CasinoTestsSuite) Test_Player_CanBetChipsOnScore(c *C) {
 	player := &Player{}
 	player.Buy(Chips(1))
 
-	player.Bet(Chips(1), Score(2))
+	err := player.Bet(Chips(1), Score(2))
 
-	c.Assert(player.CurrentBet().Chips, Equals, Chips(1))
-	c.Assert(player.CurrentBet().Score, Equals, Score(2))
+	c.Assert(err, IsNil)
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanBetOn1To6(c *C) {
 	player := &Player{}
 	player.Buy(SOME_CHIPS)
 
-	player.Bet(SOME_CHIPS, Score(6))
+	err := player.Bet(SOME_CHIPS, Score(6))
 
-	c.Assert(player.CurrentBet().Score, Equals, Score(6))
+	c.Assert(err, IsNil)
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotBetOnNumbersLessThan1(c *C) {
@@ -160,4 +159,14 @@ func (s *CasinoTestsSuite) Test_Player_CanNotBetOnNumbersMoreThan6(c *C) {
 
 	c.Assert(err, NotNil)
 	c.Assert(err.Error(), Equals, "Bet only to numbers 1-6")
+}
+
+func (s *CasinoTestsSuite) Test_Player_CanMakeMultipleBets(c *C) {
+	player := &Player{}
+	player.Buy(Chips(25))
+
+	player.Bet(10, Score(1))
+	player.Bet(11, Score(2))
+
+	c.Assert(player.Balance(), Equals, Chips(25-10-11))
 }
