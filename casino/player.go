@@ -15,6 +15,9 @@ func (player *Player) Join(game *Game) error {
 	if game.HasPlayer(player) {
 		return errors.New("Player is already in game")
 	}
+	if player.currentGame != nil {
+		return errors.New("Player is already in game")
+	}
 
 	game.addPlayer(player)
 	player.currentGame = game

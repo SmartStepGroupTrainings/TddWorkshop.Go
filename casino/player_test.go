@@ -66,3 +66,15 @@ func (s *CasinoTestsSuite) Test_Player_CanNotLeave_Game_UntilJoined(c *C) {
 	c.Assert(err, Not(IsNil))
 	c.Assert(err.Error(), Equals, "Please join the game before leaving")
 }
+
+func (s *CasinoTestsSuite) Test_Player_CanNotJoin_AnotherGame_UntilLeftFirstGame(c *C) {
+	game := &Game{}
+	player := &Player{}
+	player.Join(game)
+
+	anotherGame := &Game{}
+	err := player.Join(anotherGame)
+
+	c.Assert(err, Not(IsNil))
+	c.Assert(err.Error(), Equals, "Player is already in game")
+}
