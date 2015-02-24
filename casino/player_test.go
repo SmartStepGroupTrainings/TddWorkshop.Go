@@ -53,16 +53,16 @@ func (s *CasinoTestsSuite) Test_Player_Leaves_Game(c *C) {
 	player := &Player{}
 	player.Join(game)
 
-	player.Leave(game)
+	player.Leave()
 
 	c.Assert(game.HasPlayer(player), Equals, false)
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotLeave_Game_UntilJoined(c *C) {
-	game := &Game{}
 	player := &Player{}
 
-	err := player.Leave(game)
+	err := player.Leave()
 
 	c.Assert(err, Not(IsNil))
+	c.Assert(err.Error(), Equals, "Please join the game before leaving")
 }
