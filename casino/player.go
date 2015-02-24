@@ -3,8 +3,10 @@ package casino
 import "errors"
 import "fmt"
 
+//import "log"
+
 type Player struct {
-	game    *Game
+	game    IGame
 	balance Chips
 }
 
@@ -28,11 +30,10 @@ func (player *Player) Bet(chips Chips, score Score) error {
 		return errors.New("You should join a game before making a bet")
 	}
 
-	if score < 1 || 6 < score {
-		return errors.New("Please make a bet only to score 1 - 6")
+	err := player.game.Bet(Bet{Score: score, Chips: chips}, player)
+	if err != nil {
+		return err
 	}
-
-	player.game.Bet(Bet{Score: score, Chips: chips}, player)
 	player.balance -= chips
 	return nil
 }

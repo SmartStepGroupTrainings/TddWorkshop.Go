@@ -98,3 +98,32 @@ func (s *GameTestsSuite) Test_Game_Play_PlayerWithTwoBets_WinOnlyLuckyBet(c *C) 
 
 	c.Assert(int(player.Balance()), Equals, int(Chips(startBalance-10-15+15*6)))
 }
+
+func (s *GameTestsSuite) Test_Game_Balance_Is0ByDefault(c *C) {
+	game := create.Game().Please()
+
+	c.Assert(int(game.Balance()), Equals, int(Chips(0)))
+}
+
+func (s *GameTestsSuite) Test_Game_Play_GameReceivesPlayersLostBets(c *C) {
+	game := create.Game().WithLuckyScore(2).Please()
+	player := create.Player().Joined(game).Please()
+	startBalance := game.Balance()
+	player.Bet(Chips(10), Score(1))
+
+	game.Play()
+
+	c.Assert(int(game.Balance()), Equals, int(startBalance+Chips(10)))
+}
+
+func (s *GameTestsSuite) Test_Game_Play_SecondTime_KeepsBalance(c *C) {
+	game := create.Game().WithLuckyScore(2).Please()
+	player := create.Player().Joined(game).Please()
+	startBalance := game.Balance()
+	player.Bet(Chips(10), Score(1))
+
+	game.Play()
+	game.Play()
+
+	c.Assert(int(game.Balance()), Equals, int(startBalance+Chips(10)))
+}

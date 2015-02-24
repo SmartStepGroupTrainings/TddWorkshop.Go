@@ -12,8 +12,9 @@ type PlayerBet struct {
 
 type Game struct {
 	dice    IDice
-	players []*Player
-	bets    []PlayerBet
+	balance Chips
+	wallet  Wallet
+	table   Table
 }
 
 type IDice interface {
@@ -21,23 +22,13 @@ type IDice interface {
 }
 
 func (game *Game) Add(player *Player) error {
-	if player.IsInGame() {
-		return errors.New("Please leave the game before joining another game")
-	}
-
-	if len(game.players) == 6 {
-		return errors.New("Please join another game")
-	}
-
-	game.players = append(game.players, player)
-	player.game = game
-	return nil
+	return game.table.Add(player, game)
 }
 
 func (game *Game) Remove(player *Player) error {
-	for i, p := range game.players {
+	for i, p := range game.table.players {
 		if p == player {
-			game.players = append(game.players[:i], game.players[i+1:]...)
+			game.table.players = append(game.table.players[:i], game.table.players[i+1:]...)
 			player.game = nil
 			return nil
 		}
@@ -45,12 +36,17 @@ func (game *Game) Remove(player *Player) error {
 	return errors.New("Please join the game before leaving")
 }
 
-func (game *Game) Bet(bet Bet, player *Player) {
-	game.bets = append(game.bets, PlayerBet{bet: bet, player: player})
+func (game *Game) Bet(bet Bet, player *Player) error {
+	if bet.Score < Score(1) || Score(6) < bet.Score {
+		return errors.New("Please make a bet only to score 1 - 6")
+	}
+
+	game.wallet.Add(bet, player)
+	return nil
 }
 
 func (game *Game) HasPlayer(player *Player) bool {
-	for _, p := range game.players {
+	for _, p := range game.table.players {
 		if p == player {
 			return true
 		}
@@ -60,10 +56,9 @@ func (game *Game) HasPlayer(player *Player) bool {
 
 func (game *Game) Play() {
 	winningScore := game.dice.Roll()
+	game.wallet.Play(winningScore)
+}
 
-	for _, pb := range game.bets {
-		if pb.bet.Score == winningScore {
-			pb.player.Win(pb.bet.Chips * 6)
-		}
-	}
+func (game *Game) Balance() Chips {
+	return game.wallet.Balance()
 }

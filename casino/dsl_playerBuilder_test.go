@@ -11,7 +11,7 @@ func (playerBuilder *PlayerBuilder) InGame() *PlayerBuilder {
 	return playerBuilder
 }
 
-func (playerBuilder *PlayerBuilder) Joined(game *Game) *PlayerBuilder {
+func (playerBuilder *PlayerBuilder) Joined(game IGame) *PlayerBuilder {
 	game.Add(&playerBuilder.player)
 	return playerBuilder
 }

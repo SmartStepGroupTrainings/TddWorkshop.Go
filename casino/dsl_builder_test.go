@@ -12,3 +12,7 @@ func (builder *Builder) Player() *PlayerBuilder {
 func (builder *Builder) Game() *GameBuilder {
 	return &GameBuilder{}
 }
+
+func (builder *Builder) TwoDiceGame() *TwoDiceGameBuilder {
+	return &TwoDiceGameBuilder{}
+}
