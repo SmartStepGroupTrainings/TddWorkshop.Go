@@ -4,8 +4,11 @@ import (
 	"errors"
 )
 
+type Chips int
+
 type Player struct {
 	currentGame *Game
+	balance     Chips
 }
 
 func (player *Player) Join(game *Game) error {
@@ -35,4 +38,12 @@ func (player *Player) Leave() error {
 	player.currentGame.removePlayer(player)
 	player.currentGame = nil
 	return nil
+}
+
+func (player *Player) Balance() Chips {
+	return player.balance
+}
+
+func (player *Player) Buy(chips Chips) {
+	player.balance += chips
 }
