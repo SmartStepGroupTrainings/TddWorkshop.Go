@@ -4,11 +4,10 @@ import (
 	"errors"
 )
 
-type Chips int
-
 type Player struct {
 	currentGame *Game
 	balance     Chips
+	currentBet  Bet
 }
 
 func (player *Player) Join(game *Game) error {
@@ -44,6 +43,24 @@ func (player *Player) Balance() Chips {
 	return player.balance
 }
 
-func (player *Player) Buy(chips Chips) {
+func (player *Player) Buy(chips Chips) error {
+	if chips < 0 {
+		return errors.New("Buying negative chips is not allowed")
+	}
 	player.balance += chips
+	return nil
+}
+
+func (self *Player) Bet(chips Chips, score Score) error {
+	if score < 1 || 6 < score {
+		return errors.New("Bet only to numbers 1-6")
+	}
+
+	self.currentBet = Bet{Chips: chips, Score: score}
+	self.balance -= chips
+	return nil
+}
+
+func (self *Player) CurrentBet() Bet {
+	return self.currentBet
 }
