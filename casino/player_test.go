@@ -88,15 +88,16 @@ func (s *CasinoTestsSuite) Test_Player_HasNoChips_ByDefailt(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_Buy1Chip_Has1Chip(c *C) {
-	player := &Player{}
+	player := create.Player().Please()
+	startBalance := player.Balance()
 
 	player.Buy(Chips(1))
 
-	c.Assert(player.Balance(), Equals, Chips(1))
+	c.Assert(player.Balance(), Equals, Chips(startBalance+1))
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotBuyNegativeChips(c *C) {
-	player := &Player{}
+	player := create.Player().Please()
 
 	err := player.Buy(Chips(-1))
 
@@ -105,17 +106,20 @@ func (s *CasinoTestsSuite) Test_Player_CanNotBuyNegativeChips(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_BuyChipsTwice_HasSumOfChips(c *C) {
-	player := &Player{}
+	player := create.Player().Please()
+	startBalance := player.Balance()
 
 	player.Buy(Chips(1))
 	player.Buy(Chips(2))
 
-	c.Assert(player.Balance(), Equals, Chips(1+2))
+	c.Assert(player.Balance(), Equals, Chips(startBalance+1+2))
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanBetChips(c *C) {
-	player := &Player{}
-	player.Buy(Chips(1))
+	player := create.Player().
+		InGame().
+		With(Chips(1)).
+		Please()
 
 	player.Bet(Chips(1), SOME_SCORE)
 
@@ -123,8 +127,10 @@ func (s *CasinoTestsSuite) Test_Player_CanBetChips(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanBetChipsOn1(c *C) {
-	player := &Player{}
-	player.Buy(SOME_CHIPS)
+	player := create.Player().
+		InGame().
+		With(SOME_CHIPS).
+		Please()
 
 	err := player.Bet(SOME_CHIPS, Score(2))
 
@@ -132,8 +138,10 @@ func (s *CasinoTestsSuite) Test_Player_CanBetChipsOn1(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanBetOn6(c *C) {
-	player := &Player{}
-	player.Buy(SOME_CHIPS)
+	player := create.Player().
+		InGame().
+		With(SOME_CHIPS).
+		Please()
 
 	err := player.Bet(SOME_CHIPS, Score(6))
 
@@ -141,8 +149,10 @@ func (s *CasinoTestsSuite) Test_Player_CanBetOn6(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotBetOnNumbersLessThan1(c *C) {
-	player := &Player{}
-	player.Buy(SOME_CHIPS)
+	player := create.Player().
+		InGame().
+		With(SOME_CHIPS).
+		Please()
 
 	err := player.Bet(SOME_CHIPS, Score(0))
 
@@ -151,8 +161,10 @@ func (s *CasinoTestsSuite) Test_Player_CanNotBetOnNumbersLessThan1(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotBetOnNumbersMoreThan6(c *C) {
-	player := &Player{}
-	player.Buy(SOME_CHIPS)
+	player := create.Player().
+		InGame().
+		With(SOME_CHIPS).
+		Please()
 
 	err := player.Bet(SOME_CHIPS, Score(7))
 
@@ -161,8 +173,10 @@ func (s *CasinoTestsSuite) Test_Player_CanNotBetOnNumbersMoreThan6(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanMakeMultipleBets(c *C) {
-	player := &Player{}
-	player.Buy(Chips(25))
+	player := create.Player().
+		InGame().
+		With(Chips(25)).
+		Please()
 
 	player.Bet(10, Score(1))
 	player.Bet(11, Score(2))

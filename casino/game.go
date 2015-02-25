@@ -1,5 +1,7 @@
 package casino
 
+import "errors"
+
 type Game struct {
 	players []*Player
 }
@@ -25,4 +27,11 @@ func (game *Game) HasPlayer(player *Player) bool {
 		}
 	}
 	return false
+}
+
+func (game *Game) Validate(score Score) error {
+	if score < 1 || 6 < score {
+		return errors.New("Bet only to numbers 1-6")
+	}
+	return nil
 }

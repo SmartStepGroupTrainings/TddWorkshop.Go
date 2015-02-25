@@ -26,3 +26,7 @@ func (game *TwoDiceGame) HasPlayer(player *Player) bool {
 	}
 	return false
 }
+
+func (game *TwoDiceGame) Validate(Score) error {
+	return nil
+}

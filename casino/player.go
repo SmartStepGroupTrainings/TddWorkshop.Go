@@ -51,8 +51,9 @@ func (player *Player) Buy(chips Chips) error {
 }
 
 func (self *Player) Bet(chips Chips, score Score) error {
-	if score < 1 || 6 < score {
-		return errors.New("Bet only to numbers 1-6")
+	err := self.currentGame.Validate(score)
+	if err != nil {
+		return err
 	}
 
 	self.balance -= chips
