@@ -123,16 +123,16 @@ func (s *CasinoTestsSuite) Test_Player_CanBetChips(c *C) {
 	c.Assert(player.Balance(), Equals, Chips(0))
 }
 
-func (s *CasinoTestsSuite) Test_Player_CanBetChipsOnScore(c *C) {
+func (s *CasinoTestsSuite) Test_Player_CanBetChipsOn1(c *C) {
 	player := &Player{}
-	player.Buy(Chips(1))
+	player.Buy(SOME_CHIPS)
 
-	err := player.Bet(Chips(1), Score(2))
+	err := player.Bet(SOME_CHIPS, Score(2))
 
 	c.Assert(err, IsNil)
 }
 
-func (s *CasinoTestsSuite) Test_Player_CanBetOn1To6(c *C) {
+func (s *CasinoTestsSuite) Test_Player_CanBetOn6(c *C) {
 	player := &Player{}
 	player.Buy(SOME_CHIPS)
 
