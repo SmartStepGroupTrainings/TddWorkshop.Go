@@ -32,7 +32,7 @@ func (s *CasinoTestsSuite) Test_Game_HasPlayer_FalseForNotJoinedPlayer(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_CanNotJoin_NilGame(c *C) {
-	player := &Player{}
+	player := create.Player().Please()
 
 	err := player.Join(nil)
 
@@ -41,8 +41,8 @@ func (s *CasinoTestsSuite) Test_Player_CanNotJoin_NilGame(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_JoinTwice_Fails(c *C) {
-	game := &Game{}
-	player := &Player{}
+	game := create.Game().Please()
+	player := create.Player().Joined(game).Please()
 
 	player.Join(game)
 	err := player.Join(game)
@@ -52,9 +52,8 @@ func (s *CasinoTestsSuite) Test_Player_JoinTwice_Fails(c *C) {
 }
 
 func (s *CasinoTestsSuite) Test_Player_Leaves_Game(c *C) {
-	game := &Game{}
-	player := &Player{}
-	player.Join(game)
+	game := create.Game().Please()
+	player := create.Player().Joined(game).Please()
 
 	player.Leave()
 

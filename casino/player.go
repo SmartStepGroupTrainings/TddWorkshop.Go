@@ -5,11 +5,11 @@ import (
 )
 
 type Player struct {
-	currentGame *Game
+	currentGame IGame
 	balance     Chips
 }
 
-func (player *Player) Join(game *Game) error {
+func (player *Player) Join(game IGame) error {
 	if game == nil {
 		return errors.New("Joining nil game is not allowed")
 	}
