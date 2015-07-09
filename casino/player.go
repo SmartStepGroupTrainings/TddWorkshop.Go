@@ -59,3 +59,4 @@ func (self *Player) Bet(chips Chips, score Score) error {
 	self.balance -= chips
 	return nil
 }
+

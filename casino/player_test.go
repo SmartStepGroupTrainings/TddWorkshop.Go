@@ -1,6 +1,7 @@
 package casino
 
 import (
+	"github.com/stretchr/testify/assert"
 	. "gopkg.in/check.v1"
 	"testing"
 )
@@ -14,14 +15,14 @@ func Test(t *testing.T) { TestingT(t) }
 var SOME_SCORE = Score(1)
 var SOME_CHIPS = Chips(1)
 
-func (s *CasinoTestsSuite) Test_Player_Join_Game(c *C) {
+func Test_Player_Join_Game(t *testing.T) {
 	game := &Game{}
 	player := &Player{}
 
 	err := player.Join(game)
 
-	c.Assert(err, IsNil)
-	c.Assert(game.HasPlayer(player), Equals, true)
+	assert.Nil(t, err)
+	assert.True(t, game.HasPlayer(player))
 }
 
 func (s *CasinoTestsSuite) Test_Game_HasPlayer_FalseForNotJoinedPlayer(c *C) {
