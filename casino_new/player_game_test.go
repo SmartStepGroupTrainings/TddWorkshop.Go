@@ -6,7 +6,7 @@ import (
 )
 
 func Test_PlayerCan_JoinGame(t *testing.T) {
-	game := &Game{}
+	game := NewRollDiceGame()
 	player := &Player{}
 
 	player.Join(game)
@@ -15,7 +15,7 @@ func Test_PlayerCan_JoinGame(t *testing.T) {
 }
 
 func Test_PlayerCan_LeaveGame(t *testing.T) {
-	game := &Game{}
+	game := NewRollDiceGame()
 	player := &Player{}
 
 	player.Join(game)
@@ -25,8 +25,8 @@ func Test_PlayerCan_LeaveGame(t *testing.T) {
 }
 
 func Test_PlayerCanNot_JoinAnotherGame(t *testing.T) {
-	game := &Game{}
-	anotherGame := &Game{}
+	game := NewRollDiceGame()
+	anotherGame := NewRollDiceGame()
 	player := &Player{}
 
 	player.Join(game)
