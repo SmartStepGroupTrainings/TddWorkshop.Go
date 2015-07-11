@@ -1,23 +1,26 @@
 package casino_new
 
 import (
-	"math/rand"
-	"time"
 )
 
+type IDice interface {
+	Roll() int
+}
+
 type RollDiceGame struct {
+	dice IDice
 	players map[*Player]struct{}
 }
 
-func NewRollDiceGame() *RollDiceGame {
+func NewRollDiceGame(dice IDice) *RollDiceGame {
 	return &RollDiceGame {
+		dice: dice,
 		players: make(map[*Player]struct{}),
 	}
 }
 
 func (self *RollDiceGame) Play() {
-	rand.Seed(time.Now().UTC().UnixNano())
-	var winningScore = rand.Intn(6) + 1
+	var winningScore = self.dice.Roll()
 
 	for player, _ := range self.players {
 		player.Win(player.GetBetOn(winningScore)*6)

@@ -31,6 +31,11 @@ func (player *Player) Leave() error {
 
 	player.currentGame.Remove(player)
 	player.currentGame = nil
+	for _, chips := range player.bets {
+		player.BuyChips(chips)
+	}
+	player.bets = make(map[int]int)
+
 	return nil
 }
 
