@@ -3,17 +3,28 @@ package casino_new
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+  "github.com/stretchr/testify/mock"
 	"testing"
 )
 
+type DiceStub struct {
+	mock.Mock
+}
+
+func (self DiceStub) Roll() int {
+	args := self.Called()
+	return args.Int(0)
+}
+
 type RollDiceGameTestSuite struct {
-	dice DiceStub
+	dice *DiceStub
 	suite.Suite
 	player *Player
 	game *RollDiceGame
 }
 
 func (s *RollDiceGameTestSuite) SetupTest() {
+	s.dice = new(DiceStub)
 	s.player = NewPlayer()
 	s.player.BuyChips(1000)
 	s.game = NewRollDiceGame(s.dice)
@@ -21,7 +32,7 @@ func (s *RollDiceGameTestSuite) SetupTest() {
 }
 
 func (s *RollDiceGameTestSuite) Test_Player_CanLose() {
-	s.dice.WillRoll(6)
+	s.dice.On("Roll").Return(6)
 	s.player.Bet(Bet{ Amount: 10, Score: 1})
 
 	s.game.Play()
@@ -31,7 +42,7 @@ func (s *RollDiceGameTestSuite) Test_Player_CanLose() {
 }
 
 func (s *RollDiceGameTestSuite) Test_Player_CanWin() {
-	s.dice.WillRoll(6)
+	s.dice.On("Roll").Return(6)
 	s.player.Bet(Bet{ Amount: 10, Score: 6})
 
 	s.game.Play()
@@ -41,7 +52,7 @@ func (s *RollDiceGameTestSuite) Test_Player_CanWin() {
 }
 
 func (s *RollDiceGameTestSuite) Test_PlayerNotInGame_CanNotLose() {
-	s.dice.WillRoll(6)
+	s.dice.On("Roll").Return(6)
 	s.player.Bet(Bet{ Amount: 10, Score: 1})
 	s.player.Leave()
 

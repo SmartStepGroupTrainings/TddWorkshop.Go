@@ -2,7 +2,7 @@ package casino_new
 
 import (
 	"github.com/stretchr/testify/assert"
-	"testing"
+  "testing"
 )
 
 func Test_PlayerCan_JoinGame(t *testing.T) {
