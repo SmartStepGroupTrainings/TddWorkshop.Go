@@ -17,8 +17,9 @@ func (self DiceStub) Roll() int {
 }
 
 type RollDiceGameTestSuite struct {
-	dice *DiceStub
 	suite.Suite
+
+	dice *DiceStub
 	player *Player
 	game *RollDiceGame
 }
