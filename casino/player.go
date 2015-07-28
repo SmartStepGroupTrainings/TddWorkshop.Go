@@ -58,7 +58,7 @@ func (player *Player) Bet(bet Bet) error {
 }
 
 func (player *Player) AvailableChips() int {
-	return player.availableChips;
+	return player.availableChips
 }
 
 func (player *Player) BuyChips(chips int) error {
