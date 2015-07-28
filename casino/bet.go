@@ -1,9 +1,6 @@
-package casino
-
-type Chips int
-type Score int
+package casino_new
 
 type Bet struct {
-	Chips Chips
-	Score Score
+	Score int
+	Amount int
 }

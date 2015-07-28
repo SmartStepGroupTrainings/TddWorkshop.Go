@@ -1,62 +1,82 @@
-package casino
+package casino_new
 
 import (
 	"errors"
 )
 
 type Player struct {
-	currentGame IGame
-	balance     Chips
+	currentGame *RollDiceGame
+	availableChips int
+	bets map[int]int
 }
 
-func (player *Player) Join(game IGame) error {
-	if game == nil {
-		return errors.New("Joining nil game is not allowed")
-	}
-	if game.HasPlayer(player) {
-		return errors.New("Player is already in game")
-	}
-	if player.currentGame != nil {
-		return errors.New("Player is already in game")
+func NewPlayer() *Player {
+	return &Player {bets: make(map[int]int)}
+}
+
+func (player *Player) Join(game *RollDiceGame) error {
+	if player.IsInGame() {
+		return errors.New("Unable to join another game")
 	}
 
-	game.addPlayer(player)
 	player.currentGame = game
+	game.Add(player)
 	return nil
 }
 
 func (player *Player) Leave() error {
-	if player.currentGame == nil {
-		return errors.New("Please join the game before leaving")
-	}
-	if !player.currentGame.HasPlayer(player) {
-		return errors.New("Please join the game before leaving")
+	if !player.IsInGame() {
+		return errors.New("Unable to leave the game before joining")
 	}
 
-	player.currentGame.removePlayer(player)
+	player.currentGame.Remove(player)
 	player.currentGame = nil
-	return nil
-}
-
-func (player *Player) Balance() Chips {
-	return player.balance
-}
-
-func (player *Player) Buy(chips Chips) error {
-	if chips < 0 {
-		return errors.New("Buying negative chips is not allowed")
+	for _, chips := range player.bets {
+		player.BuyChips(chips)
 	}
-	player.balance += chips
+	player.bets = make(map[int]int)
+
 	return nil
 }
 
-func (self *Player) Bet(chips Chips, score Score) error {
-	err := self.currentGame.Validate(score)
-	if err != nil {
-		return err
+func (player *Player) IsInGame() bool {
+	return player.currentGame != nil
+}
+
+func (player *Player) Bet(bet Bet) error {
+	if player.AvailableChips() < bet.Amount {
+		return errors.New("Unable to bet chips more than available")
+	}
+	if (bet.Score < 1 || 6 < bet.Score) {
+		return errors.New("Bets on 1..6 only are allowed")
 	}
 
-	self.balance -= chips
+	player.availableChips -= bet.Amount
+	player.bets[bet.Score] += bet.Amount
+
 	return nil
 }
 
+func (player *Player) AvailableChips() int {
+	return player.availableChips;
+}
+
+func (player *Player) BuyChips(chips int) error {
+	if chips <= 0 {
+		return errors.New("Please buy positive amount")
+	}
+	player.availableChips += chips
+	return nil
+}
+
+func (player *Player) GetBetOn(score int) int {
+	return player.bets[score]
+}
+
+func (self *Player) Lose() {
+	self.bets = make(map[int]int)
+}
+
+func (self *Player) Win(wonChips int) {
+	self.availableChips += wonChips
+}
