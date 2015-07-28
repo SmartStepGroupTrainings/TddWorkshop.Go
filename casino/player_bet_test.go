@@ -31,7 +31,7 @@ func (s *PlayerTestSuite) TestSuite_Player_Bet_AddsBet() {
 
 	s.player.Bet(bet)
 
-	assert.Equal(s.T(), 10, s.player.GetBetOn(1))
+	assert.Equal(s.T(), 11, s.player.GetBetOn(1))
 }
 
 func (s *PlayerTestSuite) Test_Player_HasNoAvailableChips_ByDefault() {
