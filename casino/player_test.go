@@ -42,3 +42,17 @@ func TestBuyChips_NegativeValue_ExpectError(t *testing.T) {
 		t.Error("Player has wrong number of chips")
 	}
 }
+
+func TestBuyChips_PositiveValue(t *testing.T) {
+	p := Player{}
+	initialChips := p.AvailableChips()
+	needToBuy := 400
+	expectedResult := initialChips + needToBuy
+
+	if err := p.BuyChips(needToBuy); err != nil {
+		t.Errorf("Error ocured while buy chips for palyer: %s", err)
+	}
+	if current := p.AvailableChips(); current != expectedResult {
+		t.Errorf("Total chips number is invalid for player after BuyChips(): expected: %d, have: %d", expectedResult, current)
+	}
+}
