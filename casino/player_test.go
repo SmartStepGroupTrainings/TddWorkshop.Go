@@ -3,95 +3,96 @@ package casino_new
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestPlayer_NotInGame_Leave_Fail(t *testing.T) {
-	player := NewPlayer()
-
-	err := player.Leave()
-
-	assert.NotNil(t, err, "Return value is not null")
-	assert.Equal(t, "Unable to leave the game before joining", err.Error())
+type PlayerTestSuite struct {
+	suite.Suite
+	player *Player
 }
 
-func TestPlayer_NotInGame_Leave_Success(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
-
-	err := player.Leave()
-
-	assert.Nil(t, err, "Player error is not null")
+func (suite *PlayerTestSuite) SetupTest() {
+	suite.player = NewPlayer()
 }
 
-func TestPlayer_NotInGame_IsInGame_Fail(t *testing.T) {
-	player := NewPlayer()
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_Leave_Fail() {
+	err := suite.player.Leave()
 
-	assert.Equal(t, false, player.IsInGame())
-}
-func TestPlayer_InGame_Join_Success(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
-
-	assert.Equal(t, true, player.IsInGame())
+	suite.NotNil(err, "Return value is not null")
+	suite.Equal("Unable to leave the game before joining", err.Error())
 }
 
-func TestPlayer_InGame_BuyChipsWithInvalidValue_Fail(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_Leave_Success() {
+	suite.player.Join(NewRollDiceGame())
 
-	err := player.BuyChips(-1)
+	err := suite.player.Leave()
 
-	assert.NotNil(t, err, "Return value is not null")
-	assert.Equal(t, "Please buy positive amount", err.Error())
+	suite.Nil(err, "Player error is not null")
 }
 
-func TestPlayer_InGame_BuyChipsWithValidValue_Success(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
-
-	err := player.BuyChips(22)
-
-	assert.Nil(t, err, "Player error is not null")
-	assert.Equal(t, 22, player.AvailableChips())
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_IsInGame_Fail() {
+	suite.Equal(false, suite.player.IsInGame())
 }
 
-func TestPlayer_NotInGame_HasAvailableChipsIsZero(t *testing.T) {
-	player := NewPlayer()
+func (suite *PlayerTestSuite) TestPlayer_InGame_Join_Success() {
+	suite.player.Join(NewRollDiceGame())
 
-	assert.Equal(t, 0, player.AvailableChips())
+	suite.Equal(true, suite.player.IsInGame())
 }
 
-func TestPlayer_InGame_BetAmountMoreThanAvailable_Fail(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
-	player.BuyChips(1)
+func (suite *PlayerTestSuite) TestPlayer_InGame_BuyChipsWithInvalidValue_Fail() {
+	suite.player.Join(NewRollDiceGame())
 
-	err := player.Bet(Bet{Amount: 2, Score: 2})
+	err := suite.player.BuyChips(-1)
 
-	assert.NotNil(t, err, "Return value is not null")
-	assert.Equal(t, "Unable to bet chips more than available", err.Error())
+	suite.NotNil(err, "Return value is not null")
+	suite.Equal("Please buy positive amount", err.Error())
+}
+
+func (suite *PlayerTestSuite) TestPlayer_InGame_BuyChipsWithValidValue_Success() {
+	suite.player.Join(NewRollDiceGame())
+
+	err := suite.player.BuyChips(1)
+
+	suite.Nil(err, "Player error is not null")
+	suite.Equal(1, suite.player.AvailableChips())
+}
+
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_HasAvailableChipsIsZero() {
+	suite.Equal(0, suite.player.AvailableChips())
+}
+
+func (suite *PlayerTestSuite) TestPlayer_InGame_BetAmountMoreThanAvailable_Fail() {
+	suite.player.Join(NewRollDiceGame())
+	suite.player.BuyChips(1)
+
+	err := suite.player.Bet(Bet{Amount: 2, Score: 1})
+
+	suite.NotNil(err, "Return value is not null")
+	suite.Equal("Unable to bet chips more than available", err.Error())
 
 }
 
-func TestPlayer_InGame_BetScoreNotValid_Fail(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
-	player.BuyChips(1)
+func (suite *PlayerTestSuite) TestPlayer_InGame_BetScoreNotValid_Fail() {
+	suite.player.Join(NewRollDiceGame())
+	suite.player.BuyChips(1)
 
-	err := player.Bet(Bet{Amount: 1, Score: 7})
+	err := suite.player.Bet(Bet{Amount: 1, Score: 7})
 
-	assert.NotNil(t, err, "Return value is not null")
-	assert.Equal(t, "Bets on 1..6 only are allowed", err.Error())
+	suite.NotNil(err, "Return value is not null")
+	suite.Equal("Bets on 1..6 only are allowed", err.Error())
 }
 
-func TestPlayer_InGame_BetScoreValid_Success(t *testing.T) {
-	player := NewPlayer()
-	player.Join(NewRollDiceGame())
-	player.BuyChips(1)
+func (suite *PlayerTestSuite) TestPlayer_InGame_BetScoreValid_Success() {
+	suite.player.Join(NewRollDiceGame())
+	suite.player.BuyChips(1)
 
-	_ = player.Bet(Bet{Amount: 1, Score: 5})
+	_ = suite.player.Bet(Bet{Amount: 1, Score: 1})
 
-	assert.Equal(t, 1-1, player.AvailableChips())
-	assert.Equal(t, 0+1, player.GetBetOn(5))
+	suite.Equal(1-1, suite.player.AvailableChips())
+	suite.Equal(0+1, suite.player.GetBetOn(1))
+}
+
+func TestPlayerTestSuite(t *testing.T) {
+	suite.Run(t, new(PlayerTestSuite))
 }
