@@ -3,7 +3,6 @@ package casino_new
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -20,7 +19,7 @@ func (s *TestPlayerSuite) TestPlayer_IsInGameCheck_EmptyPlayer_ShouldFail() {
 
 	res := p.IsInGame()
 
-	assert.Equal(s.T(), false, res, "New player should not be in game")
+	s.Equal(false, res, "New player should not be in game")
 }
 
 func (s *TestPlayerSuite) TestPlayer_IsInGameCheck_NotEmptyPlayer_ShouldSuccess() {
@@ -29,17 +28,17 @@ func (s *TestPlayerSuite) TestPlayer_IsInGameCheck_NotEmptyPlayer_ShouldSuccess(
 
 	res := p.IsInGame()
 
-	assert.Equal(s.T(), true, res, "This player should be in game")
+	s.Equal(true, res, "This player should be in game")
 }
 
 func (s *TestPlayerSuite) TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNotNull() {
-	chips := 100
+	anyChips := 100
 	p := NewPlayer()
-	p.BuyChips(chips)
+	p.BuyChips(anyChips)
 
 	availableChips := p.AvailableChips()
 
-	assert.Equal(s.T(), chips, availableChips, "Player has wrong number of chips")
+	s.Equal(anyChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() {
@@ -49,8 +48,8 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() 
 	err := p.BuyChips(-1)
 	availableChips := p.AvailableChips()
 
-	assert.Error(s.T(), err, "Didn't get expected error when buying -1 chip")
-	assert.Equal(s.T(), initialChips, availableChips, "Player has wrong number of chips")
+	s.Error(err, "Didn't get expected error when buying -1 chip")
+	s.Equal(initialChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
@@ -60,8 +59,8 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
 	err := p.BuyChips(0)
 	availableChips := p.AvailableChips()
 
-	assert.Error(s.T(), err, "Didn't get expected error when buying -1 chip")
-	assert.Equal(s.T(), initialChips, availableChips, "Player has wrong number of chips")
+	s.Error(err, "Didn't get expected error when buying -1 chip")
+	s.Equal(initialChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldIncreaseByCorrectValue() {
@@ -71,8 +70,8 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldI
 	err := p.BuyChips(chips)
 	availableChips := p.AvailableChips()
 
-	assert.Nil(s.T(), err, "Got unexpected error when buying positive chips amount")
-	assert.Equal(s.T(), chips, availableChips, "Player has wrong number of chips")
+	s.Nil(err, "Got unexpected error when buying positive chips amount")
+	s.Equal(chips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanAvailableChips() {
@@ -82,6 +81,6 @@ func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanAvailableChips() 
 
 	err := player.Bet(bet)
 
-	assert.Error(s.T(), err, "Error should be not nil")
-	assert.Equal(s.T(), "Unable to bet chips more than available", err.Error(), "Error message is not valid")
+	s.Error(err, "Error should be not nil")
+	s.Equal("Unable to bet chips more than available", err.Error(), "Error message is not valid")
 }
