@@ -5,13 +5,13 @@ import (
 )
 
 type Player struct {
-	currentGame *RollDiceGame
+	currentGame    *RollDiceGame
 	availableChips int
-	bets map[int]int
+	bets           map[int]int
 }
 
 func NewPlayer() *Player {
-	return &Player {bets: make(map[int]int)}
+	return &Player{bets: make(map[int]int)}
 }
 
 func (player *Player) Join(game *RollDiceGame) error {
@@ -47,7 +47,7 @@ func (player *Player) Bet(bet Bet) error {
 	if player.AvailableChips() < bet.Amount {
 		return errors.New("Unable to bet chips more than available")
 	}
-	if (bet.Score < 1 || 6 < bet.Score) {
+	if bet.Score < 1 || 6 < bet.Score {
 		return errors.New("Bets on 1..6 only are allowed")
 	}
 
