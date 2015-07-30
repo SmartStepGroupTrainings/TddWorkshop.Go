@@ -20,8 +20,10 @@ func (suite *PlayerSuite) SetupTest() {
 }
 
 func (suite *PlayerSuite) TestPlayer_CreateNew_Success() {
-	suite.AssertFalse(suite.player.IsInGame())
-	suite.AssertEquals(0, suite.player.AvailableChips())
+	player := NewPlayer()
+
+	suite.AssertFalse(player.IsInGame())
+	suite.AssertEquals(0, player.AvailableChips())
 }
 
 func (suite *PlayerSuite) TestPlayer_NotInGame_JoinGame_Success() {
