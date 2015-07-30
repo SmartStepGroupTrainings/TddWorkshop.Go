@@ -4,7 +4,17 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
+
+type PlayerTest struct {
+	suite.Suite
+	player *Player
+}
+
+func Test_StartPlayerSuite(t *testing.T) {
+	suite.Run(t, &PlayerTest{})
+}
 
 func TestPlayer_Create_Success(t *testing.T) {
 	player := NewPlayer()
