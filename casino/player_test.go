@@ -58,3 +58,25 @@ func TestNewPlayer_AvailableChipsIsNull(t *testing.T) {
 
 	assert.Equal(t, 0, player.AvailableChips())
 }
+
+func TestPlayerInGame_BetAmountMoreThanAvailable_Fail(t *testing.T) {
+	player := NewPlayer()
+	player.Join(NewRollDiceGame())
+	player.BuyChips(1)
+
+	err := player.Bet(Bet{Amount: 2, Score: 2})
+	assert.NotNil(t, err, "Return value is not null")
+	assert.Equal(t, "Unable to bet chips more than available", err.Error())
+
+}
+
+func TestPlayerInGame_BetScoreNotValid_Fail(t *testing.T) {
+	player := NewPlayer()
+	player.Join(NewRollDiceGame())
+	player.BuyChips(1)
+
+	err := player.Bet(Bet{Amount: 1, Score: 7})
+	assert.NotNil(t, err, "Return value is not null")
+	assert.Equal(t, "Bets on 1..6 only are allowed", err.Error())
+
+}
