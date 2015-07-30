@@ -12,12 +12,21 @@ func setupTest() (*Player, *RollDiceGame) {
 
 func TestPlayer_NewPlayer_IsNotNil(t *testing.T) {
 	player, _ := setupTest()
+
 	assert.NotNil(t, player)
+}
+
+func TestPlayer_NewPlayer_NotIsInGame(t *testing.T) {
+	player, _ := setupTest()
+
+	assert.False(t, player.IsInGame())
 }
 
 func TestPlayer_NewPlayer_Join_IsInGame(t *testing.T) {
 	player, game := setupTest()
+
 	player.Join(game)
+
 	assert.True(t, player.IsInGame())
 }
 
