@@ -16,6 +16,38 @@ func Test_StartPlayerSuite(t *testing.T) {
 	suite.Run(t, &PlayerTest{})
 }
 
+func (self *PlayerTest) SetupTest() {
+	self.player = NewPlayer()
+}
+
+func (self *PlayerTest) TestBuyChips_Success() {
+	err := self.player.BuyChips(1)
+
+	self.Nil(err)
+	self.Equal(1, self.player.AvailableChips())
+}
+
+func (self *PlayerTest) TestBuyChipsTwice_Success() {
+	self.player.BuyChips(1)
+	self.player.BuyChips(1)
+
+	self.Equal(1+1, self.player.AvailableChips())
+}
+
+func (self *PlayerTest) TestBuyChips_Fail() {
+	err := self.player.BuyChips(0)
+
+	self.NotNil(err)
+	self.Equal("Please buy positive amount", err.Error())
+}
+
+func (self *PlayerTest) TestBuyChips_Fail2() {
+	err := self.player.BuyChips(-1)
+
+	self.NotNil(err)
+	self.Equal("Please buy positive amount", err.Error())
+}
+
 func TestPlayer_Create_Success(t *testing.T) {
 	player := NewPlayer()
 
