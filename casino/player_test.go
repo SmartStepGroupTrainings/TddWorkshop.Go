@@ -19,7 +19,7 @@ func TestPlayer_Create_NotInGame(t *testing.T) {
 
 func TestPlayer_Create_HasNoChips(t *testing.T) {
 	player := NewPlayer()
-	assert.Equal(t, 0, player.availableChips)
+	assert.Equal(t, 0, player.AvailableChips())
 }
 
 func TestPlayer_Create_HasNoBets(t *testing.T) {
@@ -34,8 +34,7 @@ func TestPlayer_NotInGame_Join_Success(t *testing.T) {
 	err := player.Join(game)
 
 	assert.Nil(t, err)
-	assert.Equal(t, game, player.currentGame)
-	assert.Equal(t, true, player.IsInGame())
+	assert.True(t, player.IsInGame())
 }
 
 func TestPlayer_InGame_Join_Fail(t *testing.T) {
@@ -81,7 +80,7 @@ func TestPlayer_InGame_Leave_Success(t *testing.T) {
 	assert.Equal(t, false, player.IsInGame())
 }
 
-func TestPlayer_NotGame_Leave_Fail(t *testing.T) {
+func TestPlayer_NotInGame_Leave_Fails(t *testing.T) {
 	player := NewPlayer()
 
 	err := player.Leave()
@@ -90,9 +89,10 @@ func TestPlayer_NotGame_Leave_Fail(t *testing.T) {
 	assert.Equal(t, "Unable to leave the game before joining", err.Error())
 }
 
-func TestPlayer_InGame_AvailableChips_Success(t *testing.T) {
+func TestPlayer_AvailableChips_Success(t *testing.T) {
 	player := NewPlayer()
-	player.availableChips = 10
 
-	assert.Equal(t, 10, player.AvailableChips())
+	player.BuyChips(1)
+
+	assert.Equal(t, 1, player.AvailableChips())
 }

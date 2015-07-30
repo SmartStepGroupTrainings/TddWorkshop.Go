@@ -26,7 +26,7 @@ func (player *Player) Join(game *RollDiceGame) error {
 
 func (player *Player) Leave() error {
 	if !player.IsInGame() {
-		return errors.New("Unable to leave the game before joining")
+		return nil //errors.New("Unable to leave the game before joining")
 	}
 
 	player.currentGame.Remove(player)
