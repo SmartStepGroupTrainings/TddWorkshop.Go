@@ -2,19 +2,12 @@ package casino_new
 
 import (
 	"testing"
+
 	. "gopkg.in/check.v1"
-//	"fmt"
+	//	"fmt"
 )
 
 type CasinoTest struct {
-
-}
-
-type TestDice struct {
-}
-
-func (t TestDice) Roll() int {
-	return 5
 }
 
 var _ = Suite(&CasinoTest{})
@@ -31,13 +24,10 @@ func (suite *CasinoTest) TestCreateNewPlayer(c *C) {
 
 func (suite *CasinoTest) TestCreateGameWithPlayer(c *C) {
 	player := NewPlayer()
-	dice := TestDice{}
-	game := NewRollDiceGame(dice)
+	game := NewRollDiceGame()
 	game.Add(player)
 
 	current_player, ok := game.players[player]
 	c.Assert(ok, Equals, true)
 	c.Assert(current_player, Equals, player)
 }
-
-
