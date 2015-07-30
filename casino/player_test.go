@@ -65,6 +65,18 @@ func (suite *PlayerSuite) TestPlayer_WithZeroChips_Buy10Chips_Success() {
 	suite.Equal(10, suite.player.AvailableChips())
 }
 
+func (suite *PlayerSuite) TestPlayer_BuyZeroChips_Fail() {
+	err := suite.player.BuyChips(0)
+
+	suite.AssertNotNil(err)
+}
+
+func (suite *PlayerSuite) TestPlayer_BuyNegativeAmountOfChips_Fail() {
+	err := suite.player.BuyChips(-1)
+
+	suite.AssertNotNil(err)
+}
+
 func (suite *PlayerSuite) TestPlayer_With10Chips_Buy10Chips_Success() {
 	suite.player.BuyChips(10)
 
@@ -94,6 +106,15 @@ func (suite *PlayerSuite) TestPlayer_WithoutChips_MakingBet_Fail() {
 func (suite *PlayerSuite) TestPlayer_WithChips_MakingBetBiggerThanAvailableChips_Fail() {
 	suite.player.BuyChips(5)
 	bet := suite.bet(10, 6)
+
+	err := suite.player.Bet(bet)
+
+	suite.AssertNotNil(err)
+}
+
+func (suite *PlayerSuite) TestPlayer_WithChips_MakingBetOnWrongScore_Fail() {
+	suite.player.BuyChips(5)
+	bet := suite.bet(5, 7)
 
 	err := suite.player.Bet(bet)
 
