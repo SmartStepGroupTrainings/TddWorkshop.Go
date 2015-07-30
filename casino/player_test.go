@@ -122,3 +122,28 @@ func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetBetweenOneAndSixScore() {
 
 	s.Nil(err, "Error should be nil")
 }
+
+func (s *TestPlayerSuite) TestPlayer_Join_Player_AlreadyInGameShouldFail() {
+	err := s.player.Join(s.game)
+	s.Nil(err, "Player has to join game")
+
+	// try to join game again
+	err = s.player.Join(s.game)
+	s.Error(err, "Error should be not nil")
+}
+
+func (s *TestPlayerSuite) TestPlayer_Leave_Player_WhenNotInGameShouldFail() {
+	err := s.player.Leave()
+	s.Error(err, "Error should be not nil")
+	s.Equal("Unable to leave the game before joining", err.Error(), "Error message is not valid")
+}
+
+func (s *TestPlayerSuite) TestPlayer_Leave_Player_Success() {
+	err := s.player.Join(s.game)
+	s.Nil(err, "Player has to join game")
+
+	err = s.player.Leave()
+	s.Nil(err, "Err should be nil")
+
+	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
+}
