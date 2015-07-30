@@ -22,31 +22,31 @@ func Test_Game(t *testing.T) {
 	suite.Run(t, &GameTest{})
 }
 
-func (test *GameTest) NewPlayer_IsNotNil() {
+func (test *GameTest) TestNewPlayer_IsNotNil() {
 	test.NotNil(test.player)
 }
 
-func (test *GameTest) НовыйИгрок_НеИмеетЧипсов() {
+func (test *GameTest) TestНовыйИгрок_НеИмеетЧипсов() {
 	test.Empty(test.player.AvailableChips())
 }
 
-func (test *GameTest) NewPlayer_NotIsInGame() {
+func (test *GameTest) TestNewPlayer_NotIsInGame() {
 	test.False(test.player.IsInGame())
 }
 
-func (test *GameTest) NewPlayer_Join_IsInGame() {
+func (test *GameTest) TestNewPlayer_Join_IsInGame() {
 	test.player.Join(test.game)
 
 	test.True(test.player.IsInGame())
 }
 
-func (test *GameTest) WhenLeaveFromTheGame_WithError() {
+func (test *GameTest) TestWhenLeaveFromTheGame_WithError() {
 	err := test.player.Leave()
 
 	test.NotNil(err)
 }
 
-func (test *GameTest) WhenLeaveFromTheGame_WithoutError() {
+func (test *GameTest) TestWhenLeaveFromTheGame_WithoutError() {
 	test.player.Join(test.game)
 
 	err := test.player.Leave()
@@ -54,19 +54,19 @@ func (test *GameTest) WhenLeaveFromTheGame_WithoutError() {
 	test.Nil(err)
 }
 
-func (test *GameTest) Player_BuyPositiveChips_WithoutError() {
+func (test *GameTest) TestPlayer_BuyPositiveChips_WithoutError() {
 	test.player.BuyChips(100)
 
 	test.Equal(100, test.player.AvailableChips())
 }
 
-func (test *GameTest) Player_BuyNegativeChips_WithError() {
+func (test *GameTest) TestPlayer_BuyNegativeChips_WithError() {
 	err := test.player.BuyChips(-100)
 
 	test.NotNil(err)
 }
 
-func (test *GameTest) Player_BuyChipsInMultiThread_WithoutError() {
+func (test *GameTest) TestPlayer_BuyChipsInMultiThread_WithoutError() {
 	const amount = 100
 
 	wg := sync.WaitGroup{}
@@ -82,16 +82,16 @@ func (test *GameTest) Player_BuyChipsInMultiThread_WithoutError() {
 	test.Equal(amount, test.player.AvailableChips())
 }
 
-func (test *GameTest) Player_CannotBetWithoutMoney() {
-	bet := Bet{Score:1, Amount:20}
+func (test *GameTest) TestPlayer_CannotBetWithoutMoney() {
+	bet := Bet{Score: 1, Amount: 20}
 
 	err := test.player.Bet(bet)
 
 	test.NotNil(err)
 }
 
-func (test *GameTest) Player_CheckSetBet_Success() {
-	bet := Bet{Score:2, Amount:20}
+func (test *GameTest) TestPlayer_CheckSetBet_Success() {
+	bet := Bet{Score: 2, Amount: 20}
 	test.player.BuyChips(bet.Amount)
 
 	err := test.player.Bet(bet)
@@ -99,8 +99,8 @@ func (test *GameTest) Player_CheckSetBet_Success() {
 	test.Nil(err)
 }
 
-func (test *GameTest) Player_CheckBetScore_AfterBet() {
-	bet := Bet{Score:2, Amount:20}
+func (test *GameTest) TestPlayer_CheckBetScore_AfterBet() {
+	bet := Bet{Score: 2, Amount: 20}
 	test.player.BuyChips(bet.Amount)
 	test.player.Bet(bet)
 
@@ -109,8 +109,8 @@ func (test *GameTest) Player_CheckBetScore_AfterBet() {
 	test.Equal(bet.Amount, betOn)
 }
 
-func (test *GameTest) Player_CheckBetScore_AfterLose() {
-	bet := Bet{Score:2, Amount:20}
+func (test *GameTest) TestPlayer_CheckBetScore_AfterLose() {
+	bet := Bet{Score: 2, Amount: 20}
 	test.player.BuyChips(bet.Amount)
 	test.player.Bet(bet)
 
@@ -119,13 +119,11 @@ func (test *GameTest) Player_CheckBetScore_AfterLose() {
 	test.Empty(test.player.GetBetOn(bet.Score))
 }
 
-func (test *GameTest) Player_CheckAvailableChips_AfterWin() {
-	bet := Bet{Score:2, Amount:20}
+func (test *GameTest) TestPlayer_CheckAvailableChips_AfterWin() {
+	bet := Bet{Score: 2, Amount: 20}
 	test.player.BuyChips(bet.Amount)
-	test.player.Bet(bet)
 
 	test.player.Win(1)
 
-	test.Equal(bet.Amount + 1, test.player.AvailableChips())
+	test.Equal(bet.Amount+1, test.player.AvailableChips())
 }
-
