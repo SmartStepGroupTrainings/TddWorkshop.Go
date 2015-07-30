@@ -41,18 +41,18 @@ func (s *TestPlayerSuite) TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNot
 	assert.Equal(s.T(), chips, availableChips, "Player has wrong number of chips")
 }
 
-/*
 func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() {
 	p := Player{}
 	initialChips := p.AvailableChips()
 	err := p.BuyChips(-1)
-		t.Error("Didn't get expected errory when buing -1 chip")
+	assert.Error(s.T(), err, "Didn't get expected error when buying -1 chip")
 
-	if p.AvailableChips() != initialChips {
-		t.Error("Player has wrong number of chips")
-	}
+	availableChips := initialChips
+
+	assert.Equal(s.T(), 0, availableChips, "Player has wrong number of chips")
 }
 
+/*
 func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
 	p := Player{}
 	initialChips := p.AvailableChips()
