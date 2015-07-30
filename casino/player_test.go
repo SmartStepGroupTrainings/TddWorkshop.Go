@@ -44,12 +44,12 @@ func (s *TestPlayerSuite) TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNot
 func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() {
 	p := Player{}
 	initialChips := p.AvailableChips()
+
 	err := p.BuyChips(-1)
+	availableChips := p.AvailableChips()
+
 	assert.Error(s.T(), err, "Didn't get expected error when buying -1 chip")
-
-	availableChips := initialChips
-
-	assert.Equal(s.T(), 0, availableChips, "Player has wrong number of chips")
+	assert.Equal(s.T(), initialChips, availableChips, "Player has wrong number of chips")
 }
 
 /*
@@ -57,13 +57,14 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
 	p := Player{}
 	initialChips := p.AvailableChips()
 
-	if err := p.BuyChips(0); err == nil {
-		t.Error("Didn't get expected error when buing 0 chip")
-	}
+	err := p.BuyChips(0)
+
+	assert.Error(s.T(), err, "Didn't get expected error when buing 0 chip")
 
 	if p.AvailableChips() != initialChips {
 		t.Error("Player has wrong number of chips")
 	}
+	assert.Error(s.T(), err, "Didn't get expected error when buing 0 chip")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldIncreaseByCorrectValue() {
