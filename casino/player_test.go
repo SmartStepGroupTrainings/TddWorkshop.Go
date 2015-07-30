@@ -4,14 +4,14 @@ import (
 	"testing"
 )
 
-func TestIsInGame_EmptyPlayer_ExpectNotInGame(t *testing.T) {
+func TestPlayer_IsInGameCheck_EmptyPlayer_ShouldFail(t *testing.T) {
 	p := Player{}
 	if p.IsInGame() {
 		t.Error("New player should not be in game")
 	}
 }
 
-func TestIsInGame_PlayerInGame_ExpectInGame(t *testing.T) {
+func TestPlayer_IsInGameCheck_NotEmptyPlayer_ShouldSuccess(t *testing.T) {
 	g := NewRollDiceGame(nil)
 	p := Player{currentGame: g}
 	if !p.IsInGame() {
@@ -19,7 +19,7 @@ func TestIsInGame_PlayerInGame_ExpectInGame(t *testing.T) {
 	}
 }
 
-func TestAvailableChips(t *testing.T) {
+func TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNotNull(t *testing.T) {
 	chips := 100
 	p := Player{availableChips: chips}
 	if p.AvailableChips() != chips {
@@ -27,12 +27,21 @@ func TestAvailableChips(t *testing.T) {
 	}
 }
 
-func TestBuyChips_NegativeValue_ExpectError(t *testing.T) {
+func TestPlayer_BuyChipsNegativeCount_Player_ExpectError(t *testing.T) {
 	p := Player{}
 	initialChips := p.AvailableChips()
 	if err := p.BuyChips(-1); err == nil {
 		t.Error("Didn't get expected errory when buing -1 chip")
 	}
+
+	if p.AvailableChips() != initialChips {
+		t.Error("Player has wrong number of chips")
+	}
+}
+
+func TestPlayer_BuyChipsZeroCount_Player_ExpectError(t *testing.T) {
+	p := Player{}
+	initialChips := p.AvailableChips()
 
 	if err := p.BuyChips(0); err == nil {
 		t.Error("Didn't get expected error when buing 0 chip")
@@ -43,7 +52,7 @@ func TestBuyChips_NegativeValue_ExpectError(t *testing.T) {
 	}
 }
 
-func TestBuyChips_PositiveValue(t *testing.T) {
+func TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldIncreaseByCorrectValue(t *testing.T) {
 	p := Player{}
 	initialChips := p.AvailableChips()
 	needToBuy := 400
