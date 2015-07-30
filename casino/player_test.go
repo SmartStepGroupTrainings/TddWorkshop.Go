@@ -34,7 +34,8 @@ func (s *TestPlayerSuite) TestPlayer_IsInGameCheck_NotEmptyPlayer_ShouldSuccess(
 
 func (s *TestPlayerSuite) TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNotNull() {
 	chips := 100
-	p := Player{availableChips: chips}
+	p := NewPlayer()
+	p.BuyChips(chips)
 
 	availableChips := p.AvailableChips()
 
@@ -42,7 +43,7 @@ func (s *TestPlayerSuite) TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNot
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() {
-	p := Player{}
+	p := NewPlayer()
 	initialChips := p.AvailableChips()
 
 	err := p.BuyChips(-1)
@@ -53,7 +54,7 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() 
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
-	p := Player{}
+	p := NewPlayer()
 	initialChips := p.AvailableChips()
 
 	err := p.BuyChips(0)
@@ -65,7 +66,7 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldIncreaseByCorrectValue() {
 	chips := 100
-	p := Player{}
+	p := NewPlayer()
 
 	err := p.BuyChips(chips)
 	availableChips := p.AvailableChips()
@@ -81,6 +82,6 @@ func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanAvailableChips() 
 
 	err := player.Bet(bet)
 
-	assert.NotNil(s.T(), err, "Error should be not nil")
+	assert.Error(s.T(), err, "Error should be not nil")
 	assert.Equal(s.T(), "Unable to bet chips more than available", err.Error(), "Error message is not valid")
 }
