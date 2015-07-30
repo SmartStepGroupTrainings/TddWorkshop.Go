@@ -16,6 +16,12 @@ func TestPlayer_NewPlayer_IsNotNil(t *testing.T) {
 	assert.NotNil(t, player)
 }
 
+func TestPlayer_NilPlayer_HasntChips(t *testing.T) {
+	player, _ := setupTest()
+
+	assert.Empty(t, player.AvailableChips())
+}
+
 func TestPlayer_NewPlayer_NotIsInGame(t *testing.T) {
 	player, _ := setupTest()
 
