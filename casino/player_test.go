@@ -4,154 +4,137 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func Test_PlayerCan_JoinNewGame(t *testing.T) {
-	p := NewPlayer()
-
-	err := p.Join(NewRollDiceGame())
-
-	if err != nil {
-		t.Fatal()
-	}
+type TestPlayerSuite struct {
+	suite.Suite
+	p *Player
 }
 
-func TestPlayer_InGame_WhenJoinGame_Success(t *testing.T) {
-	p := NewPlayer()
-
-	p.Join(NewRollDiceGame())
-
-	if !p.IsInGame() {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) SetupTest() {
+	self.p = NewPlayer()
 }
 
-func TestPlayer_JoinGame_Twice_Fail(t *testing.T) {
-	p := NewPlayer()
-	p.Join(NewRollDiceGame())
-
-	err := p.Join(NewRollDiceGame())
-
-	if err == nil {
-		t.Fatal()
-	}
+func Test_Player(t *testing.T) {
+	suite.Run(t, new(TestPlayerSuite))
 }
 
-func TestPlayer_Leave_Fails_WhenNotInGame(t *testing.T) {
-	p := NewPlayer()
-	if err := p.Leave(); err == nil {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) Test_PlayerCan_JoinNewGame() {
+	err := self.p.Join(NewRollDiceGame())
+
+	assert.Nil(self.T(), err)
 }
 
-func TestPlayer_Leave_Success_WhenInGame(t *testing.T) {
-	p := NewPlayer()
-	p.Join(NewRollDiceGame())
-	if err := p.Leave(); err != nil {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_InGame_WhenJoinGame_Success() {
+	self.p.Join(NewRollDiceGame())
+
+	assert.True(self.T(), self.p.IsInGame())
 }
 
-func TestPlayer_Leave_RefundChips_WhenInGame(t *testing.T) {
-	p := NewPlayer()
-	p.Join(NewRollDiceGame())
-	p.BuyChips(3)
-	p.Bet(Bet{Score: 1, Amount: 1})
-	p.Leave()
-	if p.AvailableChips() != 3 {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_JoinGame_Twice_Fail() {
+	self.p.Join(NewRollDiceGame())
+
+	err := self.p.Join(NewRollDiceGame())
+
+	assert.NotNil(self.T(), err)
 }
 
-func TestPlayer_NotInGame_WhenNewPlayer(t *testing.T) {
-	p := NewPlayer()
-	if p.IsInGame() {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_Leave_Fails_WhenNotInGame() {
+	err := self.p.Leave()
+
+	assert.NotNil(self.T(), err)
 }
 
-func TestPlayer_HasNoChips_WhenNewPlayer(t *testing.T) {
-	p := NewPlayer()
-	if p.AvailableChips() != 0 {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_Leave_Success_WhenInGame() {
+	self.p.Join(NewRollDiceGame())
+
+	err := self.p.Leave()
+
+	assert.Nil(self.T(), err)
 }
 
-func TestPlayer_BuyChips_ShouldHaveOneChip(t *testing.T) {
-	p := NewPlayer()
+func (self *TestPlayerSuite) TestPlayer_Leave_RefundChips_WhenInGame() {
+	self.p.Join(NewRollDiceGame())
+	self.p.BuyChips(3)
+	self.p.Bet(Bet{Score: 1, Amount: 1})
 
-	p.BuyChips(1)
+	self.p.Leave()
 
-	assert.Equal(t, 1, p.AvailableChips())
+	assert.Equal(self.T(), 3, self.p.AvailableChips())
 }
 
-func TestPlayer_BuyChips_CannotBuyZeroChips(t *testing.T) {
-	p := NewPlayer()
-	err := p.BuyChips(0)
-	if err == nil {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_NotInGame_WhenNewPlayer() {
+	assert.False(self.T(), self.p.IsInGame())
 }
 
-func TestPlayer_BuyChips_CannotBuyNegativeChips(t *testing.T) {
-	p := NewPlayer()
-	err := p.BuyChips(-1)
-	if err == nil {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_HasNoChips_WhenNewPlayer() {
+	assert.Equal(self.T(), 0, self.p.AvailableChips())
 }
 
-func TestPlayer_Buy1And5Chips_ChangesAvailableChipsTo6(t *testing.T) {
-	p := NewPlayer()
+func (self *TestPlayerSuite) TestPlayer_BuyChips_ShouldHaveOneChip() {
+	self.p.BuyChips(1)
 
-	p.BuyChips(1)
-	p.BuyChips(5)
-
-	assert.Equal(t, 1+5, p.AvailableChips())
+	assert.Equal(self.T(), 1, self.p.AvailableChips())
 }
 
-func TestPlayer_Bet_Fails_WhenHasNoChips(t *testing.T) {
-	p := NewPlayer()
-	if err := p.Bet(Bet{1, 1}); err == nil {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_BuyChips_CannotBuyZeroChips() {
+	err := self.p.BuyChips(0)
+
+	assert.NotNil(self.T(), err)
 }
 
-func TestPlayer_Bet_Fails_WhenNotEnoughChips(t *testing.T) {
-	p := NewPlayer()
-	p.BuyChips(10)
-	p.Bet(Bet{Score: 3, Amount: 5})
-	p.Bet(Bet{Score: 3, Amount: 3})
+func (self *TestPlayerSuite) TestPlayer_BuyChips_CannotBuyNegativeChips() {
+	err := self.p.BuyChips(-1)
 
-	if err := p.Bet(Bet{Score: 3, Amount: 7}); err == nil {
-		t.Fatal()
-	}
-}
-func TestPlayer_Bet_Fails_WhenBetHasZeroScoreAndAmount(t *testing.T) {
-	p := NewPlayer()
-	p.BuyChips(10)
-	if err := p.Bet(Bet{0, 0}); err == nil {
-		t.Fatal()
-	}
+	assert.NotNil(self.T(), err)
 }
 
-func TestPlayer_Bet_DecreasesAvailableChips(t *testing.T) {
-	p := NewPlayer()
-	p.BuyChips(4)
-	p.Bet(Bet{Score: 3, Amount: 2})
-	p.Bet(Bet{Score: 1, Amount: 1})
-	if p.AvailableChips() != 1 {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_Buy1And5Chips_ChangesAvailableChipsTo6() {
+	self.p.BuyChips(1)
+	self.p.BuyChips(5)
+
+	assert.Equal(self.T(), 1+5, self.p.AvailableChips())
 }
 
-func TestPlayer_GetBetOn_SumsBets(t *testing.T) {
-	p := NewPlayer()
-	p.BuyChips(10)
-	p.Bet(Bet{Score: 3, Amount: 4})
-	p.Bet(Bet{Score: 1, Amount: 1})
-	p.Bet(Bet{Score: 3, Amount: 2})
-	if p.GetBetOn(3) != 6 {
-		t.Fatal()
-	}
+func (self *TestPlayerSuite) TestPlayer_Bet_Fails_WhenHasNoChips() {
+	err := self.p.Bet(Bet{1, 1})
+
+	assert.NotNil(self.T(), err)
+}
+
+func (self *TestPlayerSuite) TestPlayer_Bet_Fails_WhenNotEnoughChips() {
+	self.p.BuyChips(1)
+
+	err := self.p.Bet(Bet{Score: 1, Amount: 3})
+
+	assert.NotNil(self.T(), err)
+}
+
+func (self *TestPlayerSuite) TestPlayer_Bet_Fails_WhenBetHasZeroScoreAndAmount() {
+	invalidBet := Bet{0, 0}
+	self.p.BuyChips(10)
+
+	err := self.p.Bet(invalidBet)
+
+	assert.NotNil(self.T(), err)
+}
+
+func (self *TestPlayerSuite) TestPlayer_Bet_DecreasesAvailableChips() {
+	self.p.BuyChips(4)
+
+	self.p.Bet(Bet{Score: 2, Amount: 2})
+	self.p.Bet(Bet{Score: 1, Amount: 1})
+
+	assert.Equal(self.T(), 1, self.p.AvailableChips())
+}
+
+func (self *TestPlayerSuite) TestPlayer_GetBetOn_SumsBets() {
+	self.p.BuyChips(10)
+
+	self.p.Bet(Bet{Score: 2, Amount: 1})
+	self.p.Bet(Bet{Score: 1, Amount: 2})
+	self.p.Bet(Bet{Score: 2, Amount: 3})
+
+	assert.Equal(self.T(), 4, self.p.GetBetOn(2))
 }
