@@ -8,22 +8,26 @@ import (
 
 func TestPlayer_Create_Success(t *testing.T) {
 	player := NewPlayer()
+
 	assert.NotNil(t, player)
 }
 
 func TestPlayer_Create_NotInGame(t *testing.T) {
 	player := NewPlayer()
+
 	assert.Nil(t, player.currentGame)
 	assert.Equal(t, false, player.IsInGame())
 }
 
 func TestPlayer_Create_HasNoChips(t *testing.T) {
 	player := NewPlayer()
+
 	assert.Equal(t, 0, player.AvailableChips())
 }
 
 func TestPlayer_Create_HasNoBets(t *testing.T) {
 	player := NewPlayer()
+
 	assert.Equal(t, map[int]int{}, player.bets)
 }
 
@@ -44,7 +48,9 @@ func TestPlayer_InGame_Join_Fail(t *testing.T) {
 
 	err := player.Join(game)
 
-	assert.NotNil(t, err)
+	if assert.NotNil(t, err) {
+		return
+	}
 	assert.Equal(t, "Unable to join another game", err.Error())
 }
 
