@@ -1,17 +1,10 @@
 package casino_new
 
 import (
-	"github.com/stretchr/testify/suite"
 	"testing"
+
+	"github.com/stretchr/testify/suite"
 )
-
-type TestDice struct {
-	nextValue int
-}
-
-func (d *TestDice) Roll() int {
-	return d.nextValue
-}
 
 // Suite with player
 type TestSuitePlayer struct {
@@ -31,7 +24,7 @@ type TestSuiteGameAndPlayer struct {
 }
 
 func (s *TestSuiteGameAndPlayer) SetupTest() {
-	s.game = NewRollDiceGame(&TestDice{})
+	s.game = NewRollDiceGame()
 	s.player = NewPlayer()
 }
 
@@ -88,4 +81,3 @@ func (s *TestSuiteGameAndPlayer) TestPlayer_CheckAvailableChips_AfterBet() {
 
 	s.Equal(8, s.player.AvailableChips())
 }
-
