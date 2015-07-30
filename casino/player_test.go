@@ -21,7 +21,7 @@ var (
 
 func init() {
 	player = NewPlayer()
-	rdGame = NewRollDiceGame(&MockDice{StaticRoll: 4})
+	rdGame = NewRollDiceGame()
 }
 
 func TestNewPlayer(t *testing.T) {
