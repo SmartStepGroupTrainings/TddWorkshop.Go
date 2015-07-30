@@ -4,15 +4,9 @@ import (
 	"testing"
 )
 
-type TestDice struct{}
-
-func (dice *TestDice) Roll() int {
-	return 0
-}
-
 func TestPlayerJoin(t *testing.T) {
 	p := NewPlayer()
-	game := NewRollDiceGame(&TestDice{})
+	game := NewRollDiceGame()
 
 	err := p.Join(game)
 	if err != nil {
