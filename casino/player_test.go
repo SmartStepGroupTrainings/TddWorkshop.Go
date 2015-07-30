@@ -2,31 +2,24 @@ package casino_new
 
 import (
 	"testing"
+    "github.com/stretchr/testify/assert"
 )
 
-type Dice struct {
-}
-
-func (d Dice) Roll() int {
-	return 1
-}
-
-func TestPlayerLevelInGame(t *testing.T) {
-	var err error
-
+func TestNewPlayerNotInGame_Leave_Error(t *testing.T) {
 	player := NewPlayer()
 
-	err = player.Leave()
-	if err == nil {
-		t.Fatal("Empty error")
-	}
+	err := player.Leave()
+    assert.NotNil(t, err, "Return value is not null")
+    assert.Equal(t, "Unable to leave the game before joining", err.Error())
+}
 
-	player.Join(NewRollDiceGame(Dice{}))
+func TestNewPlayerInGame_Leave_Success(t *testing.T) {
 
-	err = player.Leave()
-	if err != nil {
-		t.Fatal("Leave error not empty")
-	}
+	player := NewPlayer()
+	player.Join(NewRollDiceGame())
+
+	err := player.Leave()
+    assert.Nil(t, err, "Player error is not null")
 }
 
 func TestPlayerIsInGame(t *testing.T) {
@@ -39,7 +32,7 @@ func TestPlayerIsInGame(t *testing.T) {
 		t.Fatal("Player is in game")
 	}
 
-	player.Join(NewRollDiceGame(Dice{}))
+	player.Join(NewRollDiceGame())
 
 	isInGame = player.IsInGame()
 	if !isInGame {
@@ -51,7 +44,7 @@ func TestPlayerBuyChips(t *testing.T) {
 	var err error
 
 	player := NewPlayer()
-	player.Join(NewRollDiceGame(Dice{}))
+	player.Join(NewRollDiceGame())
 
 	err = player.BuyChips(-1)
 	if err == nil {
