@@ -2,9 +2,9 @@ package casino_new
 
 import (
 	"testing"
+	"sync"
 
 	"github.com/stretchr/testify/assert"
-	"sync"
 )
 
 func setupTest() (*Player, *RollDiceGame) {
@@ -17,7 +17,7 @@ func TestPlayer_NewPlayer_IsNotNil(t *testing.T) {
 	assert.NotNil(t, player)
 }
 
-func TestPlayer_NilPlayer_HasntChips(t *testing.T) {
+func TestPlayer_НовыйИгрок_НеИмеетЧипсов(t *testing.T) {
 	player, _ := setupTest()
 
 	assert.Empty(t, player.AvailableChips())
