@@ -15,6 +15,27 @@ func (suite *PlayerTestSuite) SetupTest() {
 	suite.player = NewPlayer()
 }
 
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_FirstJoinGame_Success() {
+    suite.player.Join(NewRollDiceGame())
+
+    suite.True(suite.player.IsInGame())
+}
+
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_FirstJoinGame_NotReturnErrorForSuccessResult() {
+    err := suite.player.Join(NewRollDiceGame())
+
+    suite.Nil(err, "Return value is null")
+}
+
+func (suite *PlayerTestSuite) TestPlayer_NotInGame_JoinAnotherGame_Fail() {
+    suite.player.Join(NewRollDiceGame())
+
+    err := suite.player.Join(NewRollDiceGame())
+
+    suite.NotNil(err, "Return value is not null")
+    suite.Equal("Unable to join another game", err.Error())
+}
+
 func (suite *PlayerTestSuite) TestPlayer_NotInGame_Leave_Fail() {
 	err := suite.player.Leave()
 
@@ -91,6 +112,32 @@ func (suite *PlayerTestSuite) TestPlayer_InGame_BetScoreValid_Success() {
 
 	suite.Equal(1-1, suite.player.AvailableChips())
 	suite.Equal(0+1, suite.player.GetBetOn(1))
+}
+
+func (suite *PlayerTestSuite) TestPlayer_InGame_AddWinChips_Success() {
+    suite.player.Join(NewRollDiceGame())
+
+    suite.player.Win(1)
+
+    suite.Equal(1, suite.player.AvailableChips())
+}
+
+func (suite *PlayerTestSuite) TestPlayer_InGame_GetBetOn_Success() {
+    suite.player.Join(NewRollDiceGame())
+    suite.player.Bet(Bet{Amount: 0, Score: 1})
+
+    value := suite.player.GetBetOn(1)
+
+    suite.Equal(0, value)
+}
+
+func (suite *PlayerTestSuite) TestPlayer_InGame_Lose_Success() {
+    suite.player.Join(NewRollDiceGame())
+    suite.player.Bet(Bet{Amount: 1, Score: 1})
+
+    suite.player.Lose()
+
+    suite.Equal(0, suite.player.GetBetOn(1))
 }
 
 func TestPlayerTestSuite(t *testing.T) {
