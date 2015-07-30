@@ -1,6 +1,7 @@
 package casino_new
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -12,48 +13,59 @@ func (d *TestDice) Roll() int {
 	return d.nextValue
 }
 
-func TestNewPlayer(t *testing.T) {
+func TestPlayer_New_BetsIsNotNull(t *testing.T) {
 	player := NewPlayer()
 
-	if player.bets == nil {
-		t.Fatalf("Map player bets is nil")
-	}
+	assert.NotNil(t, player.bets)
 }
 
-func TestJoin(t *testing.T) {
+func TestPlayer_Join_FirstJoin_Success(t *testing.T) {
 	dice := &TestDice{1}
 	game := NewRollDiceGame(dice)
 	player := NewPlayer()
 
-	if err := player.Join(game); err != nil {
-		t.Error(err)
-	}
-
-	// First join
-	if _, exists := game.players[player]; !exists {
-		t.Errorf("Player wasn't added")
-	}
-
-	// The same player join twice
-	if err := player.Join(game); err == nil {
-		t.Errorf("Player can join twice")
-	} else if err.Error() != "Unable to join another game" {
-		t.Errorf("Invalid error message")
-	}
+	assert.NoError(t, player.Join(game))
 }
 
-func TestLeave(t *testing.T) {
+func TestPlayer_Join_PlayerInGame_Exist(t *testing.T) {
 	dice := &TestDice{1}
 	game := NewRollDiceGame(dice)
 	player := NewPlayer()
+	player.Join(game)
 
-	if err := player.Join(game); err != nil {
-		t.Error(err)
-	}
+	_, exists := game.players[player]
+	assert.True(t, exists)
+}
 
-	if err := player.Leave(); err != nil {
-		t.Error(err)
-	}
+func TestPlayer_Join_TwiceJoin_Failed(t *testing.T) {
+	dice := &TestDice{1}
+	game := NewRollDiceGame(dice)
+	player := NewPlayer()
+	player.Join(game)
 
-	// ....
+	assert.Error(t, player.Join(game))
+}
+
+func TestPlayer_Leave_JoinedGame_Success(t *testing.T) {
+	dice := &TestDice{1}
+	game := NewRollDiceGame(dice)
+	player := NewPlayer()
+	player.Join(game)
+
+	assert.NoError(t, player.Leave())
+}
+
+func TestPlayer_Leave_NotJoinedGame_Failed(t *testing.T) {
+	player := NewPlayer()
+
+	assert.Error(t, player.Leave())
+}
+
+func TestPlayer_IsInGame_JoinedGame_Success(t *testing.T) {
+	dice := &TestDice{1}
+	game := NewRollDiceGame(dice)
+	player := NewPlayer()
+	player.Join(game)
+
+	assert.True(t, player.IsInGame())
 }
