@@ -36,58 +36,89 @@ func (s *TestPlayerSuite) TestPlayer_IsInGameCheck_NotEmptyPlayer_ShouldSuccess(
 	s.Equal(true, res, "This player should be in game")
 }
 
-/*
 func (s *TestPlayerSuite) TestPlayer_GetAvailableChips_PlayerWithChips_ShouldNotNull() {
 	anyChips := 100
-	p := NewPlayer()
-	p.BuyChips(anyChips)
+	s.player.BuyChips(anyChips)
 
-	availableChips := p.AvailableChips()
+	availableChips := s.player.AvailableChips()
 
 	s.Equal(anyChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() {
-	p := NewPlayer()
-	initialChips := p.AvailableChips()
+	initialChips := s.player.AvailableChips()
 
-	err := p.BuyChips(-1)
-	availableChips := p.AvailableChips()
+	err := s.player.BuyChips(-1)
+	availableChips := s.player.AvailableChips()
 
 	s.Error(err, "Didn't get expected error when buying -1 chip")
 	s.Equal(initialChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
-	p := NewPlayer()
-	initialChips := p.AvailableChips()
+	initialChips := s.player.AvailableChips()
 
-	err := p.BuyChips(0)
-	availableChips := p.AvailableChips()
+	err := s.player.BuyChips(0)
+	availableChips := s.player.AvailableChips()
 
 	s.Error(err, "Didn't get expected error when buying -1 chip")
 	s.Equal(initialChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldIncreaseByCorrectValue() {
-	chips := 100
-	p := NewPlayer()
+	anyChips := 100
 
-	err := p.BuyChips(chips)
-	availableChips := p.AvailableChips()
+	err := s.player.BuyChips(anyChips)
+	availableChips := s.player.AvailableChips()
 
 	s.Nil(err, "Got unexpected error when buying positive chips amount")
-	s.Equal(chips, availableChips, "Player has wrong number of chips")
+	s.Equal(anyChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanAvailableChips() {
-	player := NewPlayer()
-	player.BuyChips(20)
+	s.player.BuyChips(20)
 	bet := Bet{Amount: 30}
 
-	err := player.Bet(bet)
+	err := s.player.Bet(bet)
 
 	s.Error(err, "Error should be not nil")
 	s.Equal("Unable to bet chips more than available", err.Error(), "Error message is not valid")
 }
-*/
+
+func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetLessThanOneScore() {
+	s.player.BuyChips(1)
+	bet := Bet{
+		Amount: 1,
+		Score:  0,
+	}
+
+	err := s.player.Bet(bet)
+
+	s.Error(err, "Error should be not nil")
+	s.Equal("Bets on 1..6 only are allowed", err.Error(), "Error message is not valid")
+}
+
+func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanSixScore() {
+	s.player.BuyChips(1)
+	bet := Bet{
+		Amount: 1,
+		Score:  7,
+	}
+
+	err := s.player.Bet(bet)
+
+	s.Error(err, "Error should be not nil")
+	s.Equal("Bets on 1..6 only are allowed", err.Error(), "Error message is not valid")
+}
+
+func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetBetweenOneAndSixScore() {
+	s.player.BuyChips(1)
+	bet := Bet{
+		Amount: 1,
+		Score:  3,
+	}
+
+	err := s.player.Bet(bet)
+
+	s.Nil(err, "Error should be nil")
+}
