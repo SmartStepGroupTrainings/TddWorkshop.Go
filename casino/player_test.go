@@ -59,6 +59,18 @@ func (suite *PlayerSuite) TestPlayer_InGame_LeaveGame_Success() {
 	suite.AssertFalse(suite.player.IsInGame())
 }
 
+func (suite *PlayerSuite) TestPlayer_InGameAndMadeBet_LeaveGame_ShouldReturnChips() {
+	suite.player.BuyChips(10)
+	bet := suite.bet(10, 6)
+	suite.player.Bet(bet)
+	game := NewRollDiceGame()
+	suite.player.Join(game)
+
+	suite.player.Leave()
+
+	suite.AssertEquals(10, suite.player.AvailableChips())
+}
+
 func (suite *PlayerSuite) TestPlayer_WithZeroChips_Buy10Chips_Success() {
 	suite.player.BuyChips(10)
 
