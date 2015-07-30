@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -40,15 +41,40 @@ func (self *PlayerTest) TestPlayer_CanNotBetChipsOn7() {
 	assert.Equal(self.T(), "Bets on 1..6 only are allowed", err.Error())
 }
 
+func (self *PlayerTest) Test_PlayerCanLose() {
+	self.player.BuyChips(10)
+	self.player.Join(self.game)
+	self.dice.On("Roll").Return(6)
+	self.player.Bet(Bet{Amount: 2, Score: 1})
+
+	self.game.Play()
+
+	assert.Equal(self.T(), 10-2, self.player.AvailableChips())
+	assert.Empty(self.T(), self.player.GetBetOn(1))
+}
+
 type PlayerTest struct {
 	suite.Suite
 	player *Player
+	dice   *DiceStub
+	game   *RollDiceGame
 }
 
 func (self *PlayerTest) SetupTest() {
 	self.player = NewPlayer()
+	self.dice = new(DiceStub)
+	self.game = NewRollDiceGame(self.dice)
 }
 
 func Test_RollDiceGame(t *testing.T) {
 	suite.Run(t, new(PlayerTest))
+}
+
+type DiceStub struct {
+	mock.Mock
+}
+
+func (self DiceStub) Roll() int {
+	args := self.Called()
+	return args.Int(0)
 }
