@@ -52,32 +52,24 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsNegativeCount_Player_ExpectError() 
 	assert.Equal(s.T(), initialChips, availableChips, "Player has wrong number of chips")
 }
 
-/*
 func (s *TestPlayerSuite) TestPlayer_BuyChipsZeroCount_Player_ExpectError() {
 	p := Player{}
 	initialChips := p.AvailableChips()
 
 	err := p.BuyChips(0)
+	availableChips := p.AvailableChips()
 
-	assert.Error(s.T(), err, "Didn't get expected error when buing 0 chip")
-
-	if p.AvailableChips() != initialChips {
-		t.Error("Player has wrong number of chips")
-	}
-	assert.Error(s.T(), err, "Didn't get expected error when buing 0 chip")
+	assert.Error(s.T(), err, "Didn't get expected error when buying -1 chip")
+	assert.Equal(s.T(), initialChips, availableChips, "Player has wrong number of chips")
 }
 
 func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldIncreaseByCorrectValue() {
+	chips := 100
 	p := Player{}
-	initialChips := p.AvailableChips()
-	needToBuy := 400
-	expectedResult := initialChips + needToBuy
 
-	if err := p.BuyChips(needToBuy); err != nil {
-		t.Errorf("Error ocured while buy chips for palyer: %s", err)
-	}
-	if current := p.AvailableChips(); current != expectedResult {
-		t.Errorf("Total chips number is invalid for player after BuyChips(): expected: %d, have: %d", expectedResult, current)
-	}
+	err := p.BuyChips(chips)
+	availableChips := p.AvailableChips()
+
+	assert.Nil(s.T(), err, "Got unexpected error when buying positive chips amount")
+	assert.Equal(s.T(), chips, availableChips, "Player has wrong number of chips")
 }
-*/
