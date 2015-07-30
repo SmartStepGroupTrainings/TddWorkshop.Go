@@ -61,7 +61,7 @@ func (self *TestPlayerSuite) TestPlayer_Leave_RefundChips_WhenInGame() {
 
 	self.p.Leave()
 
-	assert.Equal(self.T(), 2-1, self.p.AvailableChips())
+	assert.Equal(self.T(), 2, self.p.AvailableChips())
 }
 
 func (self *TestPlayerSuite) TestPlayer_NotInGame_WhenNewPlayer() {
