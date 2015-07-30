@@ -73,3 +73,14 @@ func (s *TestPlayerSuite) TestPlayer_BuyChipsPositiveValue_DefaultPlayer_ShouldI
 	assert.Nil(s.T(), err, "Got unexpected error when buying positive chips amount")
 	assert.Equal(s.T(), chips, availableChips, "Player has wrong number of chips")
 }
+
+func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanAvailableChips() {
+	player := NewPlayer()
+	player.BuyChips(20)
+	bet := Bet{Amount: 30}
+
+	err := player.Bet(bet)
+
+	assert.NotNil(s.T(), err, "Error should be not nil")
+	assert.Equal(s.T(), "Unable to bet chips more than available", err.Error(), "Error message is not valid")
+}
