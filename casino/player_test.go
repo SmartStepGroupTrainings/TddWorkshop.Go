@@ -6,45 +6,34 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type MockDice struct {
-	StaticRoll int
+func setupTest() (*Player, *RollDiceGame) {
+	return NewPlayer(), NewRollDiceGame()
 }
 
-func (mockDice *MockDice) Roll() int {
-	return mockDice.StaticRoll
+func TestPlayer_NewPlayer_IsNotNil(t *testing.T) {
+	player, _ := setupTest()
+	assert.NotNil(t, player)
 }
 
-var (
-	player *Player
-	rdGame *RollDiceGame
-)
-
-func init() {
-	player = NewPlayer()
-	rdGame = NewRollDiceGame()
+func TestPlayer_NewPlayer_Join_IsInGame(t *testing.T) {
+	player, game := setupTest()
+	player.Join(game)
+	assert.True(t, player.IsInGame())
 }
 
-func TestNewPlayer(t *testing.T) {
-	assert.True(t, player != nil)
-	assert.True(t, rdGame != nil)
-}
+func TestPlayer_WhenLeaveFromNonYourGame_WithError(t *testing.T) {
+	player, _ := setupTest()
 
-func TestJoin(t *testing.T) {
-	player.Join(rdGame)
-	playerStruct, ok := rdGame.players[player]
-	assert.True(t, ok)
-	assert.Equal(t, struct{}{}, playerStruct)
-}
-func TestLeave(t *testing.T) {
-	player := NewPlayer()
 	err := player.Leave()
+
 	assert.NotNil(t, err)
+}
 
-	player.Join(rdGame)
-	err = player.Leave()
+func TestPlayer_WhenLeaveFromYourGame_WithoutError(t *testing.T) {
+	player, game := setupTest()
+	player.Join(game)
+
+	err := player.Leave()
+
 	assert.Nil(t, err)
-
-	playerStruct, ok := rdGame.players[player]
-	assert.False(t, ok)
-	assert.Equal(t, struct{}{}, playerStruct)
 }
