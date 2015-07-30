@@ -1,90 +1,83 @@
 package casino_new
 
 import (
-	"testing"
 	"sync"
+	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func setupTest() (*Player, *RollDiceGame) {
-	return NewPlayer(), NewRollDiceGame()
+type PlayerTest struct {
+	suite.Suite
+	player *Player
+	game   *RollDiceGame
 }
 
-func TestPlayer_NewPlayer_IsNotNil(t *testing.T) {
-	player, _ := setupTest()
-
-	assert.NotNil(t, player)
+func (test *PlayerTest) SetupTest() {
+	test.player = NewPlayer()
+	test.game = NewRollDiceGame()
 }
 
-func TestPlayer_НовыйИгрок_НеИмеетЧипсов(t *testing.T) {
-	player, _ := setupTest()
-
-	assert.Empty(t, player.AvailableChips())
+func Test_Game(t *testing.T) {
+	suite.Run(t, &PlayerTest{})
 }
 
-func TestPlayer_NewPlayer_NotIsInGame(t *testing.T) {
-	player, _ := setupTest()
-
-	assert.False(t, player.IsInGame())
+func (test *PlayerTest) NewPlayer_IsNotNil() {
+	test.NotNil(test.player)
 }
 
-func TestPlayer_NewPlayer_Join_IsInGame(t *testing.T) {
-	player, game := setupTest()
-
-	player.Join(game)
-
-	assert.True(t, player.IsInGame())
+func (test *PlayerTest) НовыйИгрок_НеИмеетЧипсов() {
+	test.Empty(test.player.AvailableChips())
 }
 
-func TestPlayer_WhenLeaveFromNonYourGame_WithError(t *testing.T) {
-	player, _ := setupTest()
-
-	err := player.Leave()
-
-	assert.NotNil(t, err)
+func (test *PlayerTest) NewPlayer_NotIsInGame() {
+	test.False(test.player.IsInGame())
 }
 
-func TestPlayer_WhenLeaveFromYourGame_WithoutError(t *testing.T) {
-	player, game := setupTest()
-	player.Join(game)
+func (test *PlayerTest) NewPlayer_Join_IsInGame() {
+	test.player.Join(test.game)
 
-	err := player.Leave()
-
-	assert.Nil(t, err)
+	test.True(test.player.IsInGame())
 }
 
-func TestPlayer_Player_BuyPositiveChips_WithoutError(t *testing.T) {
-	player, _ := setupTest()
-	const amountChips = 100
+func (test *PlayerTest) WhenLeaveFromNonYourGame_WithError() {
+	err := test.player.Leave()
 
-	player.BuyChips(amountChips)
-
-	assert.Equal(t, amountChips, player.AvailableChips())
+	test.NotNil(err)
 }
 
-func TestPlayer_Player_BuyNegativeChips_WithError(t *testing.T) {
-	player, _ := setupTest()
-	const amountChips = -100
+func (test *PlayerTest) WhenLeaveFromYourGame_WithoutError() {
+	test.player.Join(test.game)
 
-	err := player.BuyChips(amountChips)
+	err := test.player.Leave()
 
-	assert.NotNil(t, err)
+	test.Nil(err)
 }
 
-func TestPlayer_Player_BuyChipsInMultiThread_WithoutError(t *testing.T) {
-	player, _ := setupTest()
-	const amountChips = 100
+func (test *PlayerTest) Player_BuyPositiveChips_WithoutError() {
+	test.player.BuyChips(100)
+
+	test.Equal(100, test.player.AvailableChips())
+}
+
+func (test *PlayerTest) Player_BuyNegativeChips_WithError() {
+	err := test.player.BuyChips(-100)
+
+	test.NotNil(err)
+}
+
+func (test *PlayerTest) Player_BuyChipsInMultiThread_WithoutError() {
+	const amount = 100
 
 	wg := sync.WaitGroup{}
-	wg.Add(100)
-	for i := 0; i < amountChips; i++ {
+	wg.Add(amount)
+	for i := 0; i < amount; i++ {
 		go func() {
-			player.BuyChips(1)
+			test.player.BuyChips(1)
 			wg.Done()
 		}()
 	}
 	wg.Wait()
 
-	assert.Equal(t, amountChips, player.AvailableChips())
+	test.Equal(amount, test.player.AvailableChips())
 }
