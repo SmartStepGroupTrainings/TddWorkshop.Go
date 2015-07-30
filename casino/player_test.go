@@ -50,36 +50,24 @@ func (self *PlayerTest) TestBuyChips_Fail2() {
 
 func (self *PlayerTest) TestBet_Success() {
 	self.Player.BuyChips(10)
-	const (
-		score = 1
-		amount = 1
-	)
 
-	err := self.Player.Bet(Bet{score, amount})
+	err := self.Player.Bet(Bet{Score:1, Amount:1})
 
 	self.Nil(err)
 }
 
 func (self *PlayerTest) TestBet_AvailableChipsSuccess() {
 	self.Player.BuyChips(10)
-	const (
-		score = 1
-		amount = 1
-	)
 
-	self.Player.Bet(Bet{score, amount})
+	self.Player.Bet(Bet{Score:1, Amount:1})
 
 	self.Equal(9, self.Player.AvailableChips())
 }
 
 func (self *PlayerTest) TestBetNotAllowedScore_Fail() {
 	self.Player.BuyChips(10)
-	const (
-		score = 7
-		amount = 1
-	)
 
-	err := self.Player.Bet(Bet{score, amount})
+	err := self.Player.Bet(Bet{Score:7, Amount:1})
 
 	self.NotNil(err)
 	self.Equal("Bets on 1..6 only are allowed", err.Error())
@@ -87,12 +75,8 @@ func (self *PlayerTest) TestBetNotAllowedScore_Fail() {
 
 func (self *PlayerTest) TestBetNotAllowedScore_Fail2() {
 	self.Player.BuyChips(10)
-	const (
-		score = 0
-		amount = 1
-	)
 
-	err := self.Player.Bet(Bet{score, amount})
+	err := self.Player.Bet(Bet{Score:0, Amount:1})
 
 	self.NotNil(err)
 	self.Equal("Bets on 1..6 only are allowed", err.Error())
@@ -100,12 +84,8 @@ func (self *PlayerTest) TestBetNotAllowedScore_Fail2() {
 
 func (self *PlayerTest) TestBetWrongAmount_Fail2() {
 	self.Player.BuyChips(10)
-	const (
-		score = 1
-		amount = 11
-	)
 
-	err := self.Player.Bet(Bet{score, amount})
+	err := self.Player.Bet(Bet{Score:1, Amount:11})
 
 	self.NotNil(err)
 	self.Equal("Unable to bet chips more than available", err.Error())
@@ -113,12 +93,8 @@ func (self *PlayerTest) TestBetWrongAmount_Fail2() {
 
 func (self *PlayerTest) TestBetWrongAmount_Fail3() {
 	self.Player.BuyChips(10)
-	const (
-		score = 1
-		amount = -1
-	)
 
-	err := self.Player.Bet(Bet{score, amount})
+	err := self.Player.Bet(Bet{Score:1, Amount:-1})
 
 	self.NotNil(err)
 }
