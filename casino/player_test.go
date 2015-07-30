@@ -60,6 +60,18 @@ func (self *PlayerTest) TestBet_Success() {
 	self.Nil(err)
 }
 
+func (self *PlayerTest) TestBet_AvailableChipsSuccess() {
+	self.Player.BuyChips(10)
+	const (
+		score = 1
+		amount = 1
+	)
+
+	self.Player.Bet(Bet{score, amount})
+
+	self.Equal(9, self.Player.AvailableChips())
+}
+
 func (self *PlayerTest) TestBetNotAllowedScore_Fail() {
 	self.Player.BuyChips(10)
 	const (
@@ -114,7 +126,6 @@ func (self *PlayerTest) TestBetWrongAmount_Fail3() {
 //	self.NotNil(err)
 //	self.Equal("Unable to bet chips more than available", err.Error())
 }
-
 
 func TestPlayer_Create_Success(t *testing.T) {
 	player := NewPlayer()
