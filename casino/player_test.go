@@ -6,22 +6,22 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type TestPlayerSuite struct {
+type PlayerSuite struct {
 	suite.Suite
 }
 
-func TestRun(t *testing.T) {
-	suite.Run(t, new(TestPlayerSuite))
+func TestPlayerSuite(t *testing.T) {
+	suite.Run(t, new(PlayerSuite))
 }
 
-func (suite *TestPlayerSuite) Test_CreateNewPlayer_Success() {
+func (suite *PlayerSuite) Test_CreateNewPlayer_Success() {
 	player := NewPlayer()
 
 	assert.False(suite.T(), player.IsInGame())
 	assert.Equal(suite.T(), 0, player.AvailableChips())
 }
 
-func (suite *TestPlayerSuite) Test_JoinGame_Success() {
+func (suite *PlayerSuite) Test_JoinGame_Success() {
 	player := NewPlayer()
 	game := NewRollDiceGame()
 
@@ -30,7 +30,7 @@ func (suite *TestPlayerSuite) Test_JoinGame_Success() {
 	assert.True(suite.T(), player.IsInGame())
 }
 
-func (suite *TestPlayerSuite) Test_JoinSimultaneouslySecondGame_Fail() {
+func (suite *PlayerSuite) Test_JoinSimultaneouslySecondGame_Fail() {
 	player := NewPlayer()
 	game_one := NewRollDiceGame()
 	game_two := NewRollDiceGame()
@@ -41,7 +41,7 @@ func (suite *TestPlayerSuite) Test_JoinSimultaneouslySecondGame_Fail() {
 	assert.NotNil(suite.T(), err)
 }
 
-func (suite *TestPlayerSuite) Test_LeaveGame_Success() {
+func (suite *PlayerSuite) Test_LeaveGame_Success() {
 	player := NewPlayer()
 	game := NewRollDiceGame()
 	player.Join(game)
@@ -51,7 +51,7 @@ func (suite *TestPlayerSuite) Test_LeaveGame_Success() {
 	assert.False(suite.T(), player.IsInGame())
 }
 
-func (suite *TestPlayerSuite) Test_LeaveGameBeforeJoin_Fail() {
+func (suite *PlayerSuite) Test_LeaveGameBeforeJoin_Fail() {
 	player := NewPlayer()
 
 	err := player.Leave()
