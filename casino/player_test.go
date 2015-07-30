@@ -48,6 +48,74 @@ func (self *PlayerTest) TestBuyChips_Fail2() {
 	self.Equal("Please buy positive amount", err.Error())
 }
 
+func (self *PlayerTest) TestBet_Success() {
+	self.player.BuyChips(10)
+	const (
+		score = 1
+		amount = 1
+	)
+
+	err := self.player.Bet(Bet{score, amount})
+
+	self.Nil(err)
+}
+
+func (self *PlayerTest) TestBetNotAllowedScore_Fail() {
+	self.player.BuyChips(10)
+	const (
+		score = 7
+		amount = 1
+	)
+
+	err := self.player.Bet(Bet{score, amount})
+
+	self.NotNil(err)
+	self.Equal("Bets on 1..6 only are allowed", err.Error())
+}
+
+func (self *PlayerTest) TestBetNotAllowedScore_Fail2() {
+	self.player.BuyChips(10)
+	const (
+		score = 0
+		amount = 1
+	)
+
+	err := self.player.Bet(Bet{score, amount})
+
+	self.NotNil(err)
+	self.Equal("Bets on 1..6 only are allowed", err.Error())
+}
+
+func (self *PlayerTest) TestBetWrongAmount_Fail2() {
+	self.player.BuyChips(10)
+	const (
+		score = 1
+		amount = 11
+	)
+
+	err := self.player.Bet(Bet{score, amount})
+
+	self.NotNil(err)
+	self.Equal("Unable to bet chips more than available", err.Error())
+}
+
+func (self *PlayerTest) TestBetWrongAmount_Fail3() {
+	self.player.BuyChips(10)
+	const (
+		score = 1
+		amount = -1
+	)
+
+	err := self.player.Bet(Bet{score, amount})
+
+	if err == nil {
+		self.T().Fatal()
+	}
+//	self.NotNil(err)
+//	self.Equal("Unable to bet chips more than available", err.Error())
+}
+
+
 func TestPlayer_Create_Success(t *testing.T) {
 	player := NewPlayer()
 
