@@ -9,53 +9,51 @@ import (
 
 type PlayerSuite struct {
 	suite.Suite
+	player *Player
 }
 
 func TestPlayerSuite(t *testing.T) {
 	suite.Run(t, new(PlayerSuite))
 }
 
-func (suite *PlayerSuite) TestPlayer_CreateNew_Success() {
-	player := NewPlayer()
+func (suite *PlayerSuite) SetupTest() {
+	suite.player = NewPlayer()
+}
 
-	assert.False(suite.T(), player.IsInGame())
-	assert.Equal(suite.T(), 0, player.AvailableChips())
+func (suite *PlayerSuite) TestPlayer_CreateNew_Success() {
+	assert.False(suite.T(), suite.player.IsInGame())
+	assert.Equal(suite.T(), 0, suite.player.AvailableChips())
 }
 
 func (suite *PlayerSuite) TestPlayer_JoinGame_Success() {
-	player := NewPlayer()
 	game := NewRollDiceGame()
 
-	player.Join(game)
+	suite.player.Join(game)
 
-	assert.True(suite.T(), player.IsInGame())
+	assert.True(suite.T(), suite.player.IsInGame())
 }
 
 func (suite *PlayerSuite) TestPlayer_JoinSimultaneouslySecondGame_Fail() {
-	player := NewPlayer()
 	game_one := NewRollDiceGame()
 	game_two := NewRollDiceGame()
-	player.Join(game_one)
+	suite.player.Join(game_one)
 
-	err := player.Join(game_two)
+	err := suite.player.Join(game_two)
 
 	assert.NotNil(suite.T(), err)
 }
 
 func (suite *PlayerSuite) TestPlayer_LeaveGame_Success() {
-	player := NewPlayer()
 	game := NewRollDiceGame()
-	player.Join(game)
+	suite.player.Join(game)
 
-	player.Leave()
+	suite.player.Leave()
 
-	assert.False(suite.T(), player.IsInGame())
+	assert.False(suite.T(), suite.player.IsInGame())
 }
 
 func (suite *PlayerSuite) TestPlayer_LeaveGameBeforeJoin_Fail() {
-	player := NewPlayer()
-
-	err := player.Leave()
+	err := suite.player.Leave()
 
 	assert.NotNil(suite.T(), err)
 }
