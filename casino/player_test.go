@@ -24,7 +24,7 @@ func (suite *PlayerSuite) TestPlayer_CreateNew_Success() {
 	suite.AssertEquals(0, suite.player.AvailableChips())
 }
 
-func (suite *PlayerSuite) TestPlayer_JoinGame_Success() {
+func (suite *PlayerSuite) TestPlayer_NotInGame_JoinGame_Success() {
 	game := NewRollDiceGame()
 
 	suite.player.Join(game)
@@ -32,7 +32,13 @@ func (suite *PlayerSuite) TestPlayer_JoinGame_Success() {
 	suite.AssertTrue(suite.player.IsInGame())
 }
 
-func (suite *PlayerSuite) TestPlayer_JoinSimultaneouslySecondGame_Fail() {
+func (suite *PlayerSuite) TestPlayer_NotInGame_LeaveGame_Fail() {
+	err := suite.player.Leave()
+
+	suite.AssertNotNil(err)
+}
+
+func (suite *PlayerSuite) TestPlayer_InGame_LeaveGame_Fail() {
 	game_one := NewRollDiceGame()
 	game_two := NewRollDiceGame()
 	suite.player.Join(game_one)
@@ -42,19 +48,13 @@ func (suite *PlayerSuite) TestPlayer_JoinSimultaneouslySecondGame_Fail() {
 	suite.AssertNotNil(err)
 }
 
-func (suite *PlayerSuite) TestPlayer_LeaveGame_Success() {
+func (suite *PlayerSuite) TestPlayer_InGame_LeaveGame_Success() {
 	game := NewRollDiceGame()
 	suite.player.Join(game)
 
 	suite.player.Leave()
 
 	suite.AssertFalse(suite.player.IsInGame())
-}
-
-func (suite *PlayerSuite) TestPlayer_LeaveGameBeforeJoin_Fail() {
-	err := suite.player.Leave()
-
-	suite.AssertNotNil(err)
 }
 
 func (suite *PlayerSuite) TestPlayer_WithZeroChips_Buy10Chips_Success() {
