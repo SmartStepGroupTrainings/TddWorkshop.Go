@@ -1,7 +1,7 @@
 package casino_new
 
 import (
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	"testing"
 )
 
@@ -13,59 +13,79 @@ func (d *TestDice) Roll() int {
 	return d.nextValue
 }
 
-func TestPlayer_New_BetsIsNotNull(t *testing.T) {
-	player := NewPlayer()
-
-	assert.NotNil(t, player.bets)
+// Suite with player
+type TestSuitePlayer struct {
+	suite.Suite
+	player *Player
 }
 
-func TestPlayer_Join_FirstJoin_Success(t *testing.T) {
-	dice := &TestDice{1}
-	game := NewRollDiceGame(dice)
-	player := NewPlayer()
-
-	assert.NoError(t, player.Join(game))
+func (s *TestSuitePlayer) SetupTest() {
+	s.player = NewPlayer()
 }
 
-func TestPlayer_Join_PlayerInGame_Exist(t *testing.T) {
-	dice := &TestDice{1}
-	game := NewRollDiceGame(dice)
-	player := NewPlayer()
-	player.Join(game)
-
-	_, exists := game.players[player]
-	assert.True(t, exists)
+// Suite with game and player
+type TestSuiteGameAndPlayer struct {
+	suite.Suite
+	player *Player
+	game   *RollDiceGame
 }
 
-func TestPlayer_Join_TwiceJoin_Failed(t *testing.T) {
-	dice := &TestDice{1}
-	game := NewRollDiceGame(dice)
-	player := NewPlayer()
-	player.Join(game)
-
-	assert.Error(t, player.Join(game))
+func (s *TestSuiteGameAndPlayer) SetupTest() {
+	s.game = NewRollDiceGame(&TestDice{})
+	s.player = NewPlayer()
 }
 
-func TestPlayer_Leave_JoinedGame_Success(t *testing.T) {
-	dice := &TestDice{1}
-	game := NewRollDiceGame(dice)
-	player := NewPlayer()
-	player.Join(game)
-
-	assert.NoError(t, player.Leave())
+// Run suits
+func TestRunSuits(t *testing.T) {
+	suite.Run(t, new(TestSuitePlayer))
+	suite.Run(t, new(TestSuiteGameAndPlayer))
 }
 
-func TestPlayer_Leave_NotJoinedGame_Failed(t *testing.T) {
-	player := NewPlayer()
-
-	assert.Error(t, player.Leave())
+// Tests
+func (s *TestSuiteGameAndPlayer) TestPlayer_FirstJoin_Success() {
+	s.NoError(s.player.Join(s.game))
 }
 
-func TestPlayer_IsInGame_JoinedGame_Success(t *testing.T) {
-	dice := &TestDice{1}
-	game := NewRollDiceGame(dice)
-	player := NewPlayer()
-	player.Join(game)
+func (s *TestSuiteGameAndPlayer) TestPlayer_PlayerInGameAfterJoin() {
+	s.player.Join(s.game)
 
-	assert.True(t, player.IsInGame())
+	s.True(s.player.IsInGame())
 }
+
+func (s *TestSuiteGameAndPlayer) TestPlayer_TwiceJoin_Fail() {
+	s.player.Join(s.game)
+
+	s.Error(s.player.Join(s.game))
+}
+
+func (s *TestSuiteGameAndPlayer) TestPlayer_Leave_JoinedGame_Success() {
+	s.player.Join(s.game)
+
+	s.NoError(s.player.Leave())
+}
+
+func (s *TestSuitePlayer) TestPlayer_Leave_NotJoinedGame_Failed() {
+	s.Error(s.player.Leave())
+}
+
+func (s *TestSuitePlayer) TestPlayer_BuyCheapsOnce_CheckError() {
+	s.NoError(s.player.BuyChips(1))
+}
+
+func (s *TestSuitePlayer) TestPlayer_BuyCheapsOnce_CheckState() {
+	s.player.BuyChips(1)
+	s.Equal(1, s.player.AvailableChips())
+}
+
+func (s *TestSuiteGameAndPlayer) TestPlayer_AddBet_WhenNotEnoughtChips() {
+	s.player.BuyChips(1)
+	s.Error(s.player.Bet(Bet{6, 2}))
+}
+
+func (s *TestSuiteGameAndPlayer) TestPlayer_CheckAvailableChips_AfterBet() {
+	s.player.BuyChips(10)
+	s.player.Bet(Bet{6, 2})
+
+	s.Equal(8, s.player.AvailableChips())
+}
+
