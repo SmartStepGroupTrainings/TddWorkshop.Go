@@ -2,10 +2,11 @@ package casino_new
 
 import (
 	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreatingNewPlayer (t *testing.T) {
+func TestCreatingNewPlayer(t *testing.T) {
 	player := NewPlayer()
 
 	assert.NotNil(t, player)
@@ -15,17 +16,9 @@ func TestCreatingNewPlayer (t *testing.T) {
 	assert.Equal(t, map[int]int{}, player.bets)
 }
 
-type testDice struct {
-
-}
-
-func (dice testDice) Roll() int {
-	return 0
-}
-
 func TestJoinGame(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame(testDice{})
+	game := NewRollDiceGame()
 
 	err := player.Join(game)
 
@@ -36,10 +29,9 @@ func TestJoinGame(t *testing.T) {
 	assert.Equal(t, true, exists)
 }
 
-
 func TestJoinGameFail(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame(testDice{})
+	game := NewRollDiceGame()
 
 	err := player.Join(game)
 	assert.Nil(t, err)
@@ -51,7 +43,7 @@ func TestJoinGameFail(t *testing.T) {
 
 func TestLeaveGame(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame(testDice{})
+	game := NewRollDiceGame()
 
 	err := player.Join(game)
 	assert.Nil(t, err)
@@ -66,7 +58,7 @@ func TestLeaveGame(t *testing.T) {
 
 func TestLeaveGameFail(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame(testDice{})
+	game := NewRollDiceGame()
 
 	err := player.Join(game)
 	assert.Nil(t, err)
