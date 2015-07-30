@@ -56,12 +56,12 @@ func (self *TestPlayerSuite) TestPlayer_Leave_Success_WhenInGame() {
 
 func (self *TestPlayerSuite) TestPlayer_Leave_RefundChips_WhenInGame() {
 	self.p.Join(NewRollDiceGame())
-	self.p.BuyChips(3)
+	self.p.BuyChips(2)
 	self.p.Bet(Bet{Score: 1, Amount: 1})
 
 	self.p.Leave()
 
-	assert.Equal(self.T(), 3, self.p.AvailableChips())
+	assert.Equal(self.T(), 2-1, self.p.AvailableChips())
 }
 
 func (self *TestPlayerSuite) TestPlayer_NotInGame_WhenNewPlayer() {
@@ -92,9 +92,9 @@ func (self *TestPlayerSuite) TestPlayer_BuyChips_CannotBuyNegativeChips() {
 
 func (self *TestPlayerSuite) TestPlayer_Buy1And5Chips_ChangesAvailableChipsTo6() {
 	self.p.BuyChips(1)
-	self.p.BuyChips(5)
+	self.p.BuyChips(2)
 
-	assert.Equal(self.T(), 1+5, self.p.AvailableChips())
+	assert.Equal(self.T(), 1+2, self.p.AvailableChips())
 }
 
 func (self *TestPlayerSuite) TestPlayer_Bet_Fails_WhenHasNoChips() {
@@ -121,12 +121,11 @@ func (self *TestPlayerSuite) TestPlayer_Bet_Fails_WhenBetHasZeroScoreAndAmount()
 }
 
 func (self *TestPlayerSuite) TestPlayer_Bet_DecreasesAvailableChips() {
-	self.p.BuyChips(4)
+	self.p.BuyChips(2)
 
-	self.p.Bet(Bet{Score: 2, Amount: 2})
 	self.p.Bet(Bet{Score: 1, Amount: 1})
 
-	assert.Equal(self.T(), 1, self.p.AvailableChips())
+	assert.Equal(self.T(), 2-1, self.p.AvailableChips())
 }
 
 func (self *TestPlayerSuite) TestPlayer_GetBetOn_SumsBets() {
