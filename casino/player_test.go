@@ -73,14 +73,29 @@ func (suite *PlayerSuite) TestPlayer_With10Chips_Buy10Chips_Success() {
 	suite.Equal(10+10, suite.player.AvailableChips())
 }
 
-func (suite *PlayerSuite) TestPlayer_With10Chips_Making10ChipsBetOn6_Success() {
+func (suite *PlayerSuite) TestPlayer_WithChips_MakingBet_Success() {
 	suite.player.BuyChips(10)
-	bet := Bet{}
-	bet.Amount = 10
-	bet.Score = 6
+	bet := suite.bet(10, 6)
 
 	suite.player.Bet(bet)
 
 	suite.Equal(0, suite.player.AvailableChips())
 	suite.Equal(10, suite.player.GetBetOn(6))
+}
+
+func (suite *PlayerSuite) TestPlayer_WithoutChips_MakingBet_Fail() {
+	bet := suite.bet(10, 6)
+
+	err := suite.player.Bet(bet)
+
+	suite.AssertNotNil(err)
+}
+
+func (suite *PlayerSuite) TestPlayer_WithChips_MakingBetBiggerThanAvailableChips_Fail() {
+	suite.player.BuyChips(5)
+	bet := suite.bet(10, 6)
+
+	err := suite.player.Bet(bet)
+
+	suite.AssertNotNil(err)
 }

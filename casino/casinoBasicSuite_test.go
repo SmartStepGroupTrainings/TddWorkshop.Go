@@ -24,3 +24,10 @@ func (suite *CasinoBasicSuite) AssertTrue(value bool, msgAndArgs ...interface{})
 func (suite *CasinoBasicSuite) AssertNotNil(object interface{}, msgAndArgs ...interface{}) bool {
 	return assert.NotNil(suite.T(), object, msgAndArgs...)
 }
+
+func (suite *CasinoBasicSuite) bet(amount int, score int) Bet {
+	bet := Bet{}
+	bet.Amount = amount
+	bet.Score = score
+	return bet
+}
