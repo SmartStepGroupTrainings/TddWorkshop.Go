@@ -52,3 +52,22 @@ func TestPlayer_WhenLeaveFromYourGame_WithoutError(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestPlayer_Player_BuyPositiveChips_WithoutError(t *testing.T) {
+	player, _ := setupTest()
+	const amountChips = 100
+
+	player.BuyChips(amountChips)
+
+	assert.Equal(t, amountChips, player.AvailableChips())
+}
+
+func TestPlayer_Player_BuyNegativeChips_WithError(t *testing.T) {
+	player, _ := setupTest()
+	const amountChips = -100
+
+	err := player.BuyChips(amountChips)
+
+	assert.NotNil(t, err)
+}
+
