@@ -2,27 +2,37 @@ package casino_new
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestPlayer_Join_WhenNewPlayer_Success(t *testing.T) {
+func Test_PlayerCan_JoinNewGame(t *testing.T) {
 	p := NewPlayer()
-	if err := p.Join(NewRollDiceGame()); err != nil {
+
+	err := p.Join(NewRollDiceGame())
+
+	if err != nil {
 		t.Fatal()
 	}
 }
 
 func TestPlayer_InGame_WhenJoinGame_Success(t *testing.T) {
 	p := NewPlayer()
+
 	p.Join(NewRollDiceGame())
+
 	if !p.IsInGame() {
 		t.Fatal()
 	}
 }
 
-func TestPlayer_Join_WhenInGame_Fail(t *testing.T) {
+func TestPlayer_JoinGame_Twice_Fail(t *testing.T) {
 	p := NewPlayer()
 	p.Join(NewRollDiceGame())
-	if err := p.Join(NewRollDiceGame()); err == nil {
+
+	err := p.Join(NewRollDiceGame())
+
+	if err == nil {
 		t.Fatal()
 	}
 }
@@ -69,10 +79,10 @@ func TestPlayer_HasNoChips_WhenNewPlayer(t *testing.T) {
 
 func TestPlayer_BuyChips_ShouldHaveOneChip(t *testing.T) {
 	p := NewPlayer()
-	err := p.BuyChips(1)
-	if err != nil || p.AvailableChips() != 1 {
-		t.Fatal()
-	}
+
+	p.BuyChips(1)
+
+	assert.Equal(t, 1, p.AvailableChips())
 }
 
 func TestPlayer_BuyChips_CannotBuyZeroChips(t *testing.T) {
@@ -91,13 +101,13 @@ func TestPlayer_BuyChips_CannotBuyNegativeChips(t *testing.T) {
 	}
 }
 
-func TestPlayer_BuyChips_ChangesAvailableChips(t *testing.T) {
+func TestPlayer_Buy1And5Chips_ChangesAvailableChipsTo6(t *testing.T) {
 	p := NewPlayer()
+
 	p.BuyChips(1)
-	err := p.BuyChips(5)
-	if err != nil || p.AvailableChips() != 6 {
-		t.Fatal()
-	}
+	p.BuyChips(5)
+
+	assert.Equal(t, 1+5, p.AvailableChips())
 }
 
 func TestPlayer_Bet_Fails_WhenHasNoChips(t *testing.T) {
