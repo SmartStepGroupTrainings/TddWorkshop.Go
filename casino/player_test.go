@@ -120,11 +120,7 @@ func (self *PlayerTest) TestBetWrongAmount_Fail3() {
 
 	err := self.Player.Bet(Bet{score, amount})
 
-	if err == nil {
-		self.T().Fatal()
-	}
-//	self.NotNil(err)
-//	self.Equal("Unable to bet chips more than available", err.Error())
+	self.NotNil(err)
 }
 
 func TestPlayer_Create_Success(t *testing.T) {
