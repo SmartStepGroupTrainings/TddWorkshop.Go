@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"sync"
 )
 
 func setupTest() (*Player, *RollDiceGame) {
@@ -71,3 +72,19 @@ func TestPlayer_Player_BuyNegativeChips_WithError(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestPlayer_Player_BuyChipsInMultiThread_WithoutError(t *testing.T) {
+	player, _ := setupTest()
+	const amountChips = 100
+
+	wg := sync.WaitGroup{}
+	wg.Add(100)
+	for i := 0; i < amountChips; i++ {
+		go func() {
+			player.BuyChips(1)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+
+	assert.Equal(t, amountChips, player.AvailableChips())
+}
