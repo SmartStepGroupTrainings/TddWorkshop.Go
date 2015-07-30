@@ -2,32 +2,30 @@ package casino_new
 
 import (
 	"testing"
-
-	. "gopkg.in/check.v1"
-	//	"fmt"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-type CasinoTest struct {
+type TestPlayerSuite struct {
+	suite.Suite
 }
 
-var _ = Suite(&CasinoTest{})
-
-func TestStart(t *testing.T) {
-	TestingT(t)
+func TestRun(t *testing.T) {
+	suite.Run(t, new(TestPlayerSuite))
 }
 
-func (suite *CasinoTest) TestCreateNewPlayer(c *C) {
+func (suite *TestPlayerSuite) Test_NewPlayer_Create_Success() {
 	player := NewPlayer()
-	c.Assert(player.currentGame, IsNil)
-	c.Assert(player.availableChips, Equals, 0)
+
+	assert.False(suite.T(), player.IsInGame())
+	assert.Equal(suite.T(), 0, player.AvailableChips())
 }
 
-func (suite *CasinoTest) TestCreateGameWithPlayer(c *C) {
+func (suite *TestPlayerSuite) Test_Player_JoinGame_Success() {
 	player := NewPlayer()
 	game := NewRollDiceGame()
-	game.Add(player)
 
-	current_player, ok := game.players[player]
-	c.Assert(ok, Equals, true)
-	c.Assert(current_player, Equals, player)
+	player.Join(game)
+
+	assert.True(suite.T(), player.IsInGame())
 }
