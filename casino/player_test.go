@@ -56,3 +56,29 @@ func (suite *PlayerSuite) TestPlayer_LeaveGameBeforeJoin_Fail() {
 
 	suite.AssertNotNil(err)
 }
+
+func (suite *PlayerSuite) TestPlayer_WithZeroChips_Buy10Chips_Success() {
+	suite.player.BuyChips(10)
+
+	suite.Equal(10, suite.player.AvailableChips())
+}
+
+func (suite *PlayerSuite) TestPlayer_With10Chips_Buy10Chips_Success() {
+	suite.player.BuyChips(10)
+
+	suite.player.BuyChips(10)
+
+	suite.Equal(10+10, suite.player.AvailableChips())
+}
+
+func (suite *PlayerSuite) TestPlayer_With10Chips_Making10ChipsBetOn6_Success() {
+	suite.player.BuyChips(10)
+	bet := Bet{}
+	bet.Amount = 10
+	bet.Score = 6
+
+	suite.player.Bet(bet)
+
+	suite.Equal(0, suite.player.AvailableChips())
+	suite.Equal(10, suite.player.GetBetOn(6))
+}
