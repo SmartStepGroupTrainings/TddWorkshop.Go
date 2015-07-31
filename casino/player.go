@@ -19,7 +19,6 @@ func (player *Player) Join(game *RollDiceGame) error {
 		return errors.New("Unable to join another game")
 	}
 
-	player.currentGame = game
 	game.Add(player)
 	return nil
 }
@@ -79,4 +78,21 @@ func (self *Player) Lose() {
 
 func (self *Player) Win(wonChips int) {
 	self.availableChips += wonChips
+}
+
+// !!! Added After Tests Fail
+
+func (self *Player) SetCurrentGame(game *RollDiceGame) error {
+	if game == nil {
+		return errors.New("Current game cannot be nil")
+	}
+	self.currentGame = game
+	return nil
+}
+
+func (self *Player) GetCurrentGame() (*RollDiceGame, error) {
+	if !self.IsInGame() {
+		return nil, errors.New("Player not in the game")
+	}
+	return self.currentGame, nil
 }

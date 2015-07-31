@@ -130,3 +130,46 @@ func (test *GameTest) TestPlayer_CheckAvailableChips_AfterWin() {
 
 	test.Equal(20+1, test.player.AvailableChips())
 }
+
+func (test *GameTest) TestGame_AddPlayer_Success() {
+	err := test.game.Add(test.player)
+
+	test.Nil(err)
+}
+
+//!!! Founded Error in original Code and fix after testing!!!
+
+func (test *GameTest) TestGame_PlayerIsInGameAfterGameAdd() {
+	test.game.Add(test.player)
+
+	test.True(test.player.IsInGame())
+}
+
+func (test *GameTest) TestGame_AddPlayer_FailOnNilPlayer() {
+	err := test.game.Add(nil)
+
+	test.NotNil(err)
+}
+
+func (test *GameTest) TestGame_OnAddTheSamePlayerTwice_Fail() {
+	test.game.Add(test.player)
+	err := test.game.Add(test.player)
+
+	test.NotNil(err)
+}
+
+func (test *GameTest) TestGame_CannotPlayWithoutPlayers() {
+	err := test.game.Play()
+
+	test.NotNil(err)
+}
+
+func (test *GameTest) TestGame_CountOfPlayerOnNewGame_IsZero() {
+	test.Equal(0, test.game.PlayersCount())
+}
+
+func (test *GameTest) TestGame_CountOfPlayerAfterAddOnePlayer_IsOne() {
+	test.game.Add(test.player)
+
+	test.Equal(1, test.game.PlayersCount())
+}
