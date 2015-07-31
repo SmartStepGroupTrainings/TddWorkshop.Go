@@ -31,16 +31,15 @@ func (self *GameTest) TestPlay_MakeBet_WinOk() {
 
 	self.Game.Play()
 
-
 }
 
 func (self *GameTest) TestPlay_MakeBet_WinOk_DSL() {
-	игра := Сконструировать{}.ИгруСФиксированнымСчетом(1).Поехали()
+	игра := Сконструировать{}.ИгруСФиксированнымСчётом(1).Поехали()
 	игрок := Сконструировать{}.Игрока().СФишечками(10).ПрисоединитьКИгре(игра).ПоставитьБабки(1).ПоставитьНа(1).Поехали()
 
-    игра.Play()
+	игра.Play()
 
-    self.Equal((10-1)+1*6, игрок.AvailableChips())
+	self.Equal((10-1)+1*6, игрок.AvailableChips())
 }
 
 func (self *GameTest) TestPlay_MakeBet_LooseOk() {
