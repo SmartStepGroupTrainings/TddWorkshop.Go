@@ -21,6 +21,7 @@ type GameTest struct {
 	player *Player
 	game   *RollDiceGame
 	dice   DiceStub
+	bet    Bet
 }
 
 func (test *GameTest) SetupTest() {
@@ -199,4 +200,19 @@ func (test *GameTest) TestPlayer_RollbackChipsBeforeLeave() {
 
 	test.player.Leave()
 	test.Equal(1, test.player.AvailableChips())
+}
+
+func (test *GameTest) Test_LuckyPlayer_Win() {
+	test.
+		NewGame().
+			WithDiceWinningScore(3).
+
+		AddPlayer().
+			WithCache(10).
+			WhoJoinsToCurrentGame().
+			Bet(10).On(3).
+			Play().
+			LeaveGame()
+
+	test.Equal(60, test.CurrentPlayer().AvailableChips())
 }
