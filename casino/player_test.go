@@ -155,6 +155,8 @@ func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_Success() {
 	player := create.Player().InGame(game).BetOn(1).BetAmount(10).Please()
 
 	player.Leave()
+
+	s.Equal(false, player.IsInGame(), "ALARM	!")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_BetReturnedToPlayer() {
