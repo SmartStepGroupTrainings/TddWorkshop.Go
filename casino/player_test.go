@@ -167,15 +167,12 @@ func (test *GameTest) TestGame_AddPlayer_Success() {
 }
 
 func (test *GameTest) TestGame_CheckPlayWinnersChips() {
-	test.game.setDice(test.dice)
-	test.game.Add(test.player)
-	test.player.BuyChips(10)
-	test.player.Bet(Bet{Score: 1, Amount: 10})
-	test.dice.On("Roll").Return(1)
+	game := create.Game.With(1).WinningScore().Build()
+	player := create.Player.With(10).Chips().BetOn(1, 10).JointTo(game).Build()
 
-	test.game.Play()
+	game.Play()
 
-	test.Equal(6*10, test.player.AvailableChips())
+	test.Equal(6*10, player.AvailableChips())
 }
 
 func (test *GameTest) TestGame_RemovePlayer_Succes() {
