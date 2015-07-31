@@ -43,7 +43,7 @@ func (suite *DiceTestSuite) TestDice_EmptyPlayers_AddPlayer_Success() {
 	suite.NotNil(suite.game.GetPlayers())
 }
 
-func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_NullAvailableChipsSuccess() {
+func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_Win() {
 	suite.dice.On("GetValue").Return(3)
 	suite.game.Add(suite.player)
 	suite.player.BuyChips(2)
@@ -53,4 +53,16 @@ func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_NullAvailableChipsSuccess
 	suite.game.Play()
 
 	suite.Equal(2*6, suite.player.AvailableChips())
+}
+
+func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_Lose() {
+	suite.dice.On("GetValue").Return(1)
+	suite.game.Add(suite.player)
+	suite.player.BuyChips(2)
+	suite.player.Bet(Bet{Amount: 2, Score: 3})
+	suite.player.Join(suite.game)
+
+	suite.game.Play()
+
+	suite.Equal(0, suite.player.AvailableChips())
 }
