@@ -89,3 +89,22 @@ func (s *TestSuiteGameAndPlayer) TestPlayer_CheckAvailableChips_AfterBet() {
 	s.Equal(8, s.player.AvailableChips())
 }
 
+func (s *TestSuiteGameAndPlayer) TestPlayer_Play_Win_IncreasedChips() {
+	s.player.Join(s.game)
+	s.player.BuyChips(1)
+	s.player.Bet(Bet{6, 1})
+	s.game.dice.(*TestDice).nextValue = 6;
+	s.game.Play()
+
+	s.Equal(6, s.player.AvailableChips())
+}
+
+func (s *TestSuiteGameAndPlayer) TestPlayer_Play_Lose_LostChips() {
+	s.player.Join(s.game)
+	s.player.BuyChips(1)
+	s.player.Bet(Bet{6, 1})
+	s.game.dice.(*TestDice).nextValue = 5;
+	s.game.Play()
+
+	s.Equal(0, s.player.AvailableChips())
+}
