@@ -9,19 +9,22 @@ type IDice interface {
 	Roll() int
 }
 
+type RandomDice struct{}
+
 type RollDiceGame struct {
 	players map[*Player]struct{}
+	dice    IDice
 }
 
 func NewRollDiceGame() *RollDiceGame {
 	return &RollDiceGame{
 		players: make(map[*Player]struct{}),
+		dice:    RandomDice{},
 	}
 }
 
 func (self *RollDiceGame) Play() {
-	rand.Seed(time.Now().UTC().UnixNano())
-	winningScore := rand.Int()%6 + 1
+	winningScore := self.dice.Roll()
 
 	for player, _ := range self.players {
 		player.Win(player.GetBetOn(winningScore) * 6)
@@ -35,4 +38,9 @@ func (self *RollDiceGame) Add(player *Player) {
 
 func (self *RollDiceGame) Remove(player *Player) {
 	delete(self.players, player)
+}
+
+func (dice RandomDice) Roll() int {
+	rand.Seed(time.Now().UTC().UnixNano())
+	return rand.Int()%6 + 1
 }
