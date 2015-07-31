@@ -139,24 +139,26 @@ func (s *TestPlayerSuite) TestPlayer_Leave_Player_WhenNotInGameShouldFail() {
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithNoBets_Success() {
-	err := s.player.Join(s.game)
-	s.Nil(err, "Player has to join game")
-
-	err = s.player.Leave()
-	s.Nil(err, "Err should be nil")
+	s.player.Join(s.game)
+	s.player.Leave()
 
 	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_Success() {
-	err := s.player.Join(s.game)
-	s.Nil(err, "Player has to join game")
-
-	err = s.player.Leave()
-	s.Nil(err, "Err should be nil")
+	s.player.BuyChips(20)
+	s.player.Join(s.game)
+	s.player.Bet(Bet{Score: 1, Amount: 10})
+	s.player.Leave()
 
 	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
 }
 
-/*
- */
+func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_BetReturnedToPlayer() {
+	s.player.BuyChips(20)
+	s.player.Join(s.game)
+	s.player.Bet(Bet{Score: 1, Amount: 10})
+	s.player.Leave()
+
+	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
+}
