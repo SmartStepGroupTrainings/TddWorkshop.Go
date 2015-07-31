@@ -12,7 +12,7 @@ type TestPlayerSuite struct {
 	game   *RollDiceGame
 }
 
-func TestMoverTestSuite(t *testing.T) {
+func TestPlayerTest(t *testing.T) {
 	suite.Run(t, new(TestPlayerSuite))
 }
 
@@ -138,7 +138,17 @@ func (s *TestPlayerSuite) TestPlayer_Leave_Player_WhenNotInGameShouldFail() {
 	s.Equal("Unable to leave the game before joining", err.Error(), "Error message is not valid")
 }
 
-func (s *TestPlayerSuite) TestPlayer_Leave_Player_Success() {
+func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithNoBets_Success() {
+	err := s.player.Join(s.game)
+	s.Nil(err, "Player has to join game")
+
+	err = s.player.Leave()
+	s.Nil(err, "Err should be nil")
+
+	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
+}
+
+func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_Success() {
 	err := s.player.Join(s.game)
 	s.Nil(err, "Player has to join game")
 
