@@ -7,6 +7,10 @@ type RollDiceGame struct {
 
 func NewRollDiceGame() *RollDiceGame {
 	dice := NewDice()
+	return NewRollDiceGameWithDice(dice)
+}
+
+func NewRollDiceGameWithDice(dice IDice) *RollDiceGame {
 	return &RollDiceGame{
 		players: make(map[*Player]struct{}),
 		dice: dice,

@@ -41,9 +41,8 @@ func (suite *RollDiceGameSuite) getGame(data playerInGame) (*RollDiceGame, *Play
 	player.BuyChips(data.chips)
 	bet := suite.bet(data.bet, data.score)
 	player.Bet(bet)
-	game := NewRollDiceGame()
+	game := NewRollDiceGameWithDice(newDiceStub(data.winingScore))
 	player.Join(game)
-	game.dice = newDiceStub(data.winingScore)
 	return game, player
 }
 
