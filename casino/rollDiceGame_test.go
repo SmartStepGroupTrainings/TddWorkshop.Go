@@ -19,22 +19,9 @@ type DiceStub struct {
 	mock.Mock
 }
 
-const anyAmount = 1
-
 func (dice *DiceStub) Roll() int {
 	args := dice.Called()
 	return args.Int(0)
-}
-
-func (self *TestGameSuite) SetupTest() {
-	self.game = NewRollDiceGame()
-
-	self.dice = &DiceStub{}
-	self.game.dice = self.dice
-
-	self.player = NewPlayer()
-	self.player.BuyChips(anyAmount)
-	self.player.Join(self.game)
 }
 
 func Test_Game(t *testing.T) {
