@@ -3,18 +3,18 @@ package casino_new
 import "github.com/stretchr/testify/mock"
 
 type DiceMock struct {
-    mock.Mock
+	mock.Mock
 }
 
-func (s *DiceMock) Roll() int{
-    args := s.Called()
-    return args.Int(0)
+func (s *DiceMock) Roll() int {
+	args := s.Called()
+	return args.Int(0)
 }
 
 type GameTest struct {
 	PlayerTest
 	Game *RollDiceGame
-    dice *DiceMock
+	dice *DiceMock
 }
 
 func (self *GameTest) SetupTest() {
@@ -26,7 +26,7 @@ func (self *GameTest) SetupTest() {
 func (self *GameTest) TestPlay_MakeBet_WinOk() {
 	self.Player.Join(self.Game)
 	self.Player.BuyChips(10)
-    self.dice.On("Roll").Return(1)
+	self.dice.On("Roll").Return(1)
 	self.Player.Bet(Bet{Amount: 1, Score: 1})
 
 	self.Game.Play()
@@ -35,14 +35,14 @@ func (self *GameTest) TestPlay_MakeBet_WinOk() {
 }
 
 func (self *GameTest) TestPlay_MakeBet_LooseOk() {
-    self.Player.Join(self.Game)
-    self.Player.BuyChips(10)
-    self.dice.On("Roll").Return(2)
-    self.Player.Bet(Bet{Amount: 1, Score: 1})
+	self.Player.Join(self.Game)
+	self.Player.BuyChips(10)
+	self.dice.On("Roll").Return(2)
+	self.Player.Bet(Bet{Amount: 1, Score: 1})
 
-    self.Game.Play()
+	self.Game.Play()
 
-    self.Equal(10-1, self.Player.AvailableChips())
+	self.Equal(10-1, self.Player.AvailableChips())
 }
 
 func (self *GameTest) TestGameMethodWorksOk() {
