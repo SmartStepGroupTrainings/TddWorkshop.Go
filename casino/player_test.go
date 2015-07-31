@@ -208,3 +208,16 @@ func (test *GameTest) TestGame_CheckPlayWinnersChips() {
 
 	test.Equal(6*10, test.player.AvailableChips())
 }
+
+func (test *GameTest) TestGame_RemovePlayerFromNewGame_Fail() {
+	err := test.game.Remove(test.player)
+
+	test.NotNil(err)
+}
+
+func (test *GameTest) TestGame_RemovePlayer_Succes() {
+	test.game.Add(test.player)
+	err := test.game.Remove(test.player)
+
+	test.Nil(err)
+}
