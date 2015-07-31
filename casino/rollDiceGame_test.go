@@ -32,15 +32,15 @@ func (suite *DiceTestSuite) TestDice_EmptyPlayers_AddPlayer_Success() {
 
 func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_NullAvailableChipsSuccess() {
     suite.game.Add(suite.player)
-    suite.player.BuyChips(6)
-    suite.player.Bet(Bet{Amount: 1, Score: 1})
-    suite.player.Bet(Bet{Amount: 1, Score: 2})
-    suite.player.Bet(Bet{Amount: 1, Score: 3})
-    suite.player.Bet(Bet{Amount: 1, Score: 4})
-    suite.player.Bet(Bet{Amount: 1, Score: 5})
-    suite.player.Bet(Bet{Amount: 1, Score: 6})
+    suite.player.BuyChips(2+2+2+2+2+2)
+    suite.player.Bet(Bet{Amount: 2, Score: 1})
+    suite.player.Bet(Bet{Amount: 2, Score: 2})
+    suite.player.Bet(Bet{Amount: 2, Score: 3})
+    suite.player.Bet(Bet{Amount: 2, Score: 4})
+    suite.player.Bet(Bet{Amount: 2, Score: 5})
+    suite.player.Bet(Bet{Amount: 2, Score: 6})
 
     suite.game.Play()
 
-    suite.Equal(6, suite.player.AvailableChips())
+    suite.Equal(2*6, suite.player.AvailableChips())
 }
