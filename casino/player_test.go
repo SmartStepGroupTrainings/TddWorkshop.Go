@@ -6,26 +6,16 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type RandomizerMock struct {
-	value int
-}
-
-func (self *RandomizerMock) GetValue() int {
-	return self.value
-}
-
-func NewRandomizerMock(value int) *RandomizerMock {
-	return &RandomizerMock{value: value}
-}
-
 type PlayerTestSuite struct {
 	suite.Suite
+	dice   *DiceStub
 	player *Player
 	game   *RollDiceGame
 }
 
 func (suite *PlayerTestSuite) SetupTest() {
-	suite.game = NewRollDiceGame(NewRandomizerMock(1))
+	suite.dice = new(DiceStub)
+	suite.game = NewRollDiceGame(suite.dice)
 	suite.player = NewPlayer()
 }
 
