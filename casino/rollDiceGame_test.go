@@ -4,16 +4,28 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+    "github.com/stretchr/testify/mock"
 )
+
+type DiceStub struct {
+    mock.Mock
+}
+
+func (self DiceStub) GetValue() int {
+    args := self.Called()
+    return args.Int(0)
+}
 
 type DiceTestSuite struct {
 	suite.Suite
+    dice *DiceStub
 	game   *RollDiceGame
 	player *Player
 }
 
 func (suite *DiceTestSuite) SetupTest() {
-	suite.game = NewRollDiceGame(NewRandomizerMock(1))
+    suite.dice = new(DiceStub)
+	suite.game = NewRollDiceGame(suite.dice)
 	suite.player = NewPlayer()
 }
 
@@ -32,13 +44,13 @@ func (suite *DiceTestSuite) TestDice_EmptyPlayers_AddPlayer_Success() {
 }
 
 func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_NullAvailableChipsSuccess() {
-	game := NewRollDiceGame(NewRandomizerMock(3))
-	game.Add(suite.player)
+    suite.dice.On("GetValue").Return(3)
+	suite.game.Add(suite.player)
 	suite.player.BuyChips(2)
 	suite.player.Bet(Bet{Amount: 2, Score: 3})
-	suite.player.Join(game)
+	suite.player.Join(suite.game)
 
-	game.Play()
+    suite.game.Play()
 
 	suite.Equal(2*6, suite.player.AvailableChips())
 }
