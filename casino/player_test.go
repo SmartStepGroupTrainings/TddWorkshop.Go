@@ -70,8 +70,21 @@ func (s *TestSuitePlayer) TestPlayer_Leave_NotJoinedGame_Failed() {
 	s.Error(s.player.Leave())
 }
 
+func (s *TestSuiteGameAndPlayer) TestPlayer_LeaveJoinedGameWithBets_ChipsReturn() {
+	s.player.Join(s.game)
+	s.player.BuyChips(1)
+	s.player.Bet(Bet{1, 1})
+	s.player.Leave()
+
+	s.Equal(1, s.player.AvailableChips())
+}
+
 func (s *TestSuitePlayer) TestPlayer_BuyCheapsOnce_CheckError() {
 	s.NoError(s.player.BuyChips(1))
+}
+
+func (s *TestSuitePlayer) TestPlayer_BuyCheapsNegative_Fail() {
+	s.Error(s.player.BuyChips(-1))
 }
 
 func (s *TestSuitePlayer) TestPlayer_BuyCheapsOnce_CheckState() {
@@ -82,6 +95,11 @@ func (s *TestSuitePlayer) TestPlayer_BuyCheapsOnce_CheckState() {
 func (s *TestSuiteGameAndPlayer) TestPlayer_AddBet_WhenNotEnoughtChips() {
 	s.player.BuyChips(1)
 	s.Error(s.player.Bet(Bet{6, 2}))
+}
+
+func (s *TestSuiteGameAndPlayer) TestPlayer_AddBetTo7_Fail() {
+	s.player.BuyChips(1)
+	s.Error(s.player.Bet(Bet{7, 1}))
 }
 
 func (s *TestSuiteGameAndPlayer) TestPlayer_CheckAvailableChips_AfterBet() {
