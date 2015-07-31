@@ -20,28 +20,29 @@ func (self *PlayerTest) SetupTest() {
 	self.Player = NewPlayer()
 }
 
-func (self *PlayerTest) TestBuyChips_Success() {
+func (self *PlayerTest) TestBuyChips_NewPlayer_Success() {
 	err := self.Player.BuyChips(1)
 
 	self.Nil(err)
 	self.Equal(1, self.Player.AvailableChips())
 }
 
-func (self *PlayerTest) TestBuyChipsTwice_Success() {
+func (self *PlayerTest) TestBuyChips_PlayerHasChips_Success() {
 	self.Player.BuyChips(1)
+
 	self.Player.BuyChips(1)
 
 	self.Equal(1+1, self.Player.AvailableChips())
 }
 
-func (self *PlayerTest) TestBuyChips_Fail() {
+func (self *PlayerTest) Test_BuyChips_ZeroChips_NotAllowed() {
 	err := self.Player.BuyChips(0)
 
 	self.NotNil(err)
 	self.Equal("Please buy positive amount", err.Error())
 }
 
-func (self *PlayerTest) TestBuyChips_Fail2() {
+func (self *PlayerTest) TestBuyNegativeChips_NewPlayer_Fail2() {
 	err := self.Player.BuyChips(-1)
 
 	self.NotNil(err)
