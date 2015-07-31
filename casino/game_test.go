@@ -34,6 +34,14 @@ func (self *GameTest) TestPlay_MakeBet_WinOk() {
 	self.Equal((10-1)+1*6, self.Player.AvailableChips())
 }
 
+func (self *GameTest) TestPlay_MakeBet_WinOk_DSL() {
+	Сконструировать{}.Игру() //.СФиксированнымСчётом(1).Поехали()
+	//	player := Сконструировать.Игрока.СФишечками(10).ВИгре(game).Поехали()
+
+	return
+
+}
+
 func (self *GameTest) TestPlay_MakeBet_LooseOk() {
 	self.Player.Join(self.Game)
 	self.Player.BuyChips(10)
