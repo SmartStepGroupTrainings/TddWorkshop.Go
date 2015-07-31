@@ -155,10 +155,11 @@ func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_Success() {
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_BetReturnedToPlayer() {
-	s.player.BuyChips(20)
-	s.player.Join(s.game)
-	s.player.Bet(Bet{Score: 1, Amount: 10})
-	s.player.Leave()
+	game := create.Game().Please()
+	player := create.Player().InGame(game).BetOn(2).BetAmount(10).Please()
+	observer := create.Player().Please()
 
-	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
+	player.Leave()
+
+	s.Equal(observer.AvailableChips(), player.AvailableChips(), "ALARM	!")
 }
