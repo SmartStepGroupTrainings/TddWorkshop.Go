@@ -1,7 +1,6 @@
 package casino_new
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -11,19 +10,12 @@ type diceStub struct {
 	score int
 }
 
-func (d diceStub) Roll() int {
-	if d.score == 0 {
-		return 1
-	}
+func (d *diceStub) Roll() int {
 	return d.score
 }
 
-func (d diceStub) Set(score int) error {
-	if score < 1 || score > 6 {
-		return errors.New("Can't set score")
-	}
+func (d *diceStub) SetWiningScore(score int) {
 	d.score = score
-	return nil
 }
 
 type TestRollDiceGameSuite struct {
@@ -37,30 +29,33 @@ func (s *TestRollDiceGameSuite) SetupTest() {
 	s.player = NewPlayer()
 	s.dice = &diceStub{}
 	s.game = NewRollDiceGame(s.dice)
-
-	if err := s.dice.Set(1); err != nil {
-		panic("Couldn't set dice stub score")
-	}
 }
 
 func TestRollDiceGame(t *testing.T) {
 	suite.Run(t, new(TestRollDiceGameSuite))
 }
 
-func (s *TestRollDiceGameSuite) TestRollDiceGame_Play_PlayerSetsWiinnigBet_ExpectIncreasingChips() {
-	err := s.player.Join(s.game)
-	s.Nil(err, "Player has to join game")
-
-	err = s.player.BuyChips(10)
-	s.Nil(err, "Player has to buy chips")
-
+func (s *TestRollDiceGameSuite) TestRollDiceGame_Play_Player_Win() {
+	s.dice.SetWiningScore(1)
+	s.player.Join(s.game)
+	s.player.BuyChips(10)
 	bet := Bet{Score: 1, Amount: 10}
-	err = s.player.Bet(bet)
-	s.Nil(err, "Player has to make a bet")
+	s.player.Bet(bet)
 
 	s.game.Play()
 
-	availableChips := s.player.AvailableChips()
-	s.Equal(10*6, availableChips, "Player must have 60 chips")
+	s.Equal(10*6, s.player.AvailableChips(), "Player must have 60 chips")
 
+}
+
+func (s *TestRollDiceGameSuite) TestRollDiceGame_Play_Player_Loose() {
+	s.dice.SetWiningScore(1)
+	s.player.Join(s.game)
+	s.player.BuyChips(20)
+	bet := Bet{Score: 2, Amount: 15}
+	s.player.Bet(bet)
+
+	s.game.Play()
+
+	s.Equal(5, s.player.AvailableChips(), "Player must have 5 chips")
 }
