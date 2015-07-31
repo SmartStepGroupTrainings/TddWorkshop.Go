@@ -7,26 +7,26 @@ import (
 )
 
 type IDice interface {
-	Roll() int
-	Faces() int
+	roll() int
+	faces() int
 }
 
 type FairDice struct {
-	faces int
+	facesCnt int
 }
 
 func NewFairDice(faces int) FairDice {
 	return FairDice{
-		faces: faces,
+		facesCnt: faces,
 	}
 }
-func (dice *FairDice) Roll() int {
+func (dice *FairDice) roll() int {
 	rand.Seed(time.Now().UTC().UnixNano())
-	return rand.Int()%dice.faces + 1
+	return rand.Int()%dice.facesCnt + 1
 }
 
-func (dice *FairDice) Faces() int {
-	return dice.faces
+func (dice *FairDice) faces() int {
+	return dice.facesCnt
 }
 
 type RollDiceGame struct {
@@ -54,10 +54,10 @@ func (self *RollDiceGame) Play() error {
 		return errors.New("Cannot start game without any player")
 	}
 
-	winningScore := self.dice.Roll()
+	winningScore := self.dice.roll()
 
 	for player, _ := range self.players {
-		player.Win(player.GetBetOn(winningScore) * self.dice.Faces())
+		player.Win(player.GetBetOn(winningScore) * self.dice.faces())
 		player.Lose()
 	}
 	return nil
@@ -71,7 +71,7 @@ func (self *RollDiceGame) Add(player *Player) error {
 	if _, ok := self.players[player]; ok {
 		return errors.New("Player already in this game")
 	}
-	player.SetCurrentGame(self)
+	player.setCurrentGame(self)
 	// ====
 
 	self.players[player] = struct{}{}
@@ -83,7 +83,7 @@ func (self *RollDiceGame) PlayersCount() int {
 }
 
 func (self *RollDiceGame) Remove(player *Player) error {
-	curGame, err := player.GetCurrentGame()
+	curGame, err := player.getCurrentGame()
 	if err != nil {
 		return err
 	}

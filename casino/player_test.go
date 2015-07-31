@@ -8,16 +8,16 @@ import (
 )
 
 type mockDice struct {
-	score int
-	faces int
+	score    int
+	facesCnt int
 }
 
-func (dice mockDice) Roll() int {
+func (dice mockDice) roll() int {
 	return dice.score
 }
 
-func (dice mockDice) Faces() int {
-	return dice.faces
+func (dice mockDice) faces() int {
+	return dice.facesCnt
 }
 
 type GameTest struct {
@@ -31,8 +31,8 @@ func (test *GameTest) SetupTest() {
 	test.player = NewPlayer()
 	test.game = NewRollDiceGame()
 	test.dice = &mockDice{
-		score: 1,
-		faces: 6,
+		score:    1,
+		facesCnt: 6,
 	}
 }
 
@@ -193,7 +193,7 @@ func (test *GameTest) TestGame_CountOfPlayerAfterAddOnePlayer_IsOne() {
 }
 
 func (test *GameTest) TestPlayer_GetCurrentGameFromNewPlayer_Fail() {
-	_, err := test.player.GetCurrentGame()
+	_, err := test.player.getCurrentGame()
 
 	test.NotNil(err)
 }

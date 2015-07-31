@@ -82,7 +82,7 @@ func (self *Player) Win(wonChips int) {
 
 // !!! Added After Tests Fail
 
-func (self *Player) SetCurrentGame(game *RollDiceGame) error {
+func (self *Player) setCurrentGame(game *RollDiceGame) error {
 	if game == nil {
 		return errors.New("Current game cannot be nil")
 	}
@@ -90,7 +90,7 @@ func (self *Player) SetCurrentGame(game *RollDiceGame) error {
 	return nil
 }
 
-func (self *Player) GetCurrentGame() (*RollDiceGame, error) {
+func (self *Player) getCurrentGame() (*RollDiceGame, error) {
 	if !self.IsInGame() {
 		return nil, errors.New("Player not in the game")
 	}
