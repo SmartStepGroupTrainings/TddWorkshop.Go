@@ -4,21 +4,16 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/mock"
 )
 
-type diceStub struct {
-	score int
+type diceMock struct{
+	mock.Mock
 }
 
-
-func newDiceStub(score int) *diceStub {
-	return &diceStub{
-		score: score,
-	}
-}
-
-func (self *diceStub) Roll() int {
-	return self.score
+func (m diceMock) Roll() int {
+	args := m.Called()
+	return args.Int(0)
 }
 
 type RollDiceGameSuite struct {
@@ -41,7 +36,9 @@ func (suite *RollDiceGameSuite) getGame(data gameCase) (*RollDiceGame, *Player) 
 	player.BuyChips(data.chips)
 	bet := suite.bet(data.bet, data.score)
 	player.Bet(bet)
-	game := NewRollDiceGameWithDice(newDiceStub(data.winingScore))
+	dice := diceMock{}
+	dice.On("Roll").Return(data.winingScore)
+	game := NewRollDiceGameWithDice(dice)
 	player.Join(game)
 	return game, player
 }
