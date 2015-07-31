@@ -111,47 +111,50 @@ func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetMoreThanSixScore() {
 	s.Equal("Bets on 1..6 only are allowed", err.Error(), "Error message is not valid")
 }
 
-func (s *TestPlayerSuite) TestPlayer_Bet_Player_CantBetBetweenOneAndSixScore() {
-	s.player.BuyChips(1)
+func (s *TestPlayerSuite) TestPlayer_Bet_Player_CanBetBetweenOneAndSixScore() {
+	game := create.Game().Please()
+	player := create.Player().Rich().InGame(game).Please()
+
 	bet := Bet{
 		Amount: 1,
 		Score:  3,
 	}
 
-	err := s.player.Bet(bet)
+	err := player.Bet(bet)
 
 	s.Nil(err, "Error should be nil")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Join_Player_AlreadyInGameShouldFail() {
-	err := s.player.Join(s.game)
-	s.Nil(err, "Player has to join game")
+	game := create.Game().Please()
+	player := create.Player().InGame(game).Please()
 
-	// try to join game again
-	err = s.player.Join(s.game)
+	err := player.Join(s.game)
 	s.Error(err, "Error should be not nil")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_Player_WhenNotInGameShouldFail() {
-	err := s.player.Leave()
+	player := create.Player().Please()
+	err := player.Leave()
+
 	s.Error(err, "Error should be not nil")
 	s.Equal("Unable to leave the game before joining", err.Error(), "Error message is not valid")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithNoBets_Success() {
-	s.player.Join(s.game)
-	s.player.Leave()
+	game := create.Game().Please()
+	player := create.Player().InGame(game).Please()
 
-	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
+	player.Leave()
+
+	s.False(player.IsInGame(), "Player state is invalid: is_in_game should be false")
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_Success() {
-	s.player.BuyChips(20)
-	s.player.Join(s.game)
-	s.player.Bet(Bet{Score: 1, Amount: 10})
-	s.player.Leave()
+	game := create.Game().Please()
+	player := create.Player().InGame(game).BetOn(1).BetAmount(10).Please()
 
-	s.False(s.player.IsInGame(), "Player state is invalid: is_in_game should be false")
+	player.Leave()
 }
 
 func (s *TestPlayerSuite) TestPlayer_Leave_PlayerWithBetsOnTable_BetReturnedToPlayer() {
