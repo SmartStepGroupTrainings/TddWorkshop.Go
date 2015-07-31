@@ -191,3 +191,12 @@ func (test *GameTest) TestDice_Roll_Success() {
 
 	test.True(roll >= 1 && roll <= 6)
 }
+
+func (test *GameTest) TestPlayer_RollbackChipsBeforeLeave() {
+	test.player.Join(test.game)
+	test.player.BuyChips(1)
+	test.player.Bet(Bet{Amount: 1, Score: 1})
+
+	test.player.Leave()
+	test.Equal(1, test.player.AvailableChips())
+}
