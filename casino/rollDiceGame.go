@@ -21,6 +21,7 @@ type IDicer interface {
 type RollDiceGame struct {
 	players map[*Player]struct{}
 	roller  IDicer
+	testXXX bool // test var :)
 }
 
 func NewRollDiceGame(roller IDicer) *RollDiceGame {

@@ -27,3 +27,15 @@ func (self *GameTest) TestPlay_MakeBet_WinOk() {
 
 	self.Equal((10-1)+1*6, self.Player.AvailableChips())
 }
+
+func (self *GameTest) TestGameMethodWorksOk() {
+	self.Game.XXX()
+}
+
+// Можно определить метод к объекту из основного кода
+// Это кстати, аргумент класть тесты рядом с основным
+// кодом, а не во внешние пакеты.
+func (self *RollDiceGame) XXX() {
+	self.testXXX = true
+	return
+}
