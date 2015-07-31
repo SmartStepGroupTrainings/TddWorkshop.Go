@@ -29,26 +29,25 @@ func TestRollDiceGameSuite(t *testing.T) {
 	suite.Run(t, new(RollDiceGameSuite))
 }
 
-type playerInGame struct {
+type gameCase struct {
 	score int
 	winingScore int
 	chips int
 	bet int
 }
 
-func (suite *RollDiceGameSuite) getGame(data playerInGame) (*RollDiceGame, *Player) {
+func (suite *RollDiceGameSuite) getGame(data gameCase) (*RollDiceGame, *Player) {
 	player := NewPlayer()
 	player.BuyChips(data.chips)
 	bet := suite.bet(data.bet, data.score)
 	player.Bet(bet)
-	game := NewRollDiceGame()
+	game := NewRollDiceGameWithDice(newDiceStub(data.winingScore))
 	player.Join(game)
-	game.dice = newDiceStub(data.winingScore)
 	return game, player
 }
 
 func (suite *RollDiceGameSuite) TestGame_PlayerInGameWitBet_Win_IncreaseChipsAmount() {
-	game, player := suite.getGame(playerInGame{
+	game, player := suite.getGame(gameCase{
 		score: 5,
 		winingScore: 5,
 		chips: 100,
@@ -61,7 +60,7 @@ func (suite *RollDiceGameSuite) TestGame_PlayerInGameWitBet_Win_IncreaseChipsAmo
 }
 
 func (suite *RollDiceGameSuite) TestGame_PlayerInGameWitBet_Loose_NoMoney() {
-	game, player := suite.getGame(playerInGame{
+	game, player := suite.getGame(gameCase{
 		score: 5,
 		winingScore: 3,
 		chips: 100,
