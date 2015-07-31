@@ -1,46 +1,44 @@
 package casino_new
 
 import (
-    "github.com/stretchr/testify/suite"
-    "testing"
+	"testing"
+
+	"github.com/stretchr/testify/suite"
 )
 
 type DiceTestSuite struct {
-    suite.Suite
-    game *RollDiceGame
-    player *Player
+	suite.Suite
+	game   *RollDiceGame
+	player *Player
 }
 
 func (suite *DiceTestSuite) SetupTest() {
-    suite.game = NewRollDiceGame()
-    suite.player = NewPlayer()
+	suite.game = NewRollDiceGame(NewRandomizerMock(1))
+	suite.player = NewPlayer()
 }
 
 func TestDiceTestSuite(t *testing.T) {
-    suite.Run(t, new(DiceTestSuite))
+	suite.Run(t, new(DiceTestSuite))
 }
 
 func (suite *DiceTestSuite) TestDice_EmptyPlayers_NoPlayer_Success() {
-    suite.Empty(suite.game.GetPlayers())
+	suite.Empty(suite.game.GetPlayers())
 }
 
 func (suite *DiceTestSuite) TestDice_EmptyPlayers_AddPlayer_Success() {
-    suite.game.Add(suite.player)
+	suite.game.Add(suite.player)
 
-    suite.NotNil(suite.game.GetPlayers())
+	suite.NotNil(suite.game.GetPlayers())
 }
 
 func (suite *DiceTestSuite) TestDice_PlayerInGame_Play_NullAvailableChipsSuccess() {
-    suite.game.Add(suite.player)
-    suite.player.BuyChips(2+2+2+2+2+2)
-    suite.player.Bet(Bet{Amount: 2, Score: 1})
-    suite.player.Bet(Bet{Amount: 2, Score: 2})
-    suite.player.Bet(Bet{Amount: 2, Score: 3})
-    suite.player.Bet(Bet{Amount: 2, Score: 4})
-    suite.player.Bet(Bet{Amount: 2, Score: 5})
-    suite.player.Bet(Bet{Amount: 2, Score: 6})
+	game := NewRollDiceGame(NewRandomizerMock(3))
+	game.Add(suite.player)
+	suite.player.BuyChips(2)
+	suite.player.Bet(Bet{Amount: 2, Score: 3})
+	suite.player.Join(game)
 
-    suite.game.Play()
+	game.Play()
 
-    suite.Equal(2*6, suite.player.AvailableChips())
+	suite.Equal(2*6, suite.player.AvailableChips())
 }
