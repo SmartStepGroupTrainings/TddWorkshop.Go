@@ -51,28 +51,28 @@ func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToNeighbor_OnWrongBetInCasino() {
-	self.dice.On("Roll").Return(1)
-	self.player.Bet(Bet{Score: 2, Amount: self.player.AvailableChips()})
+	game := create.Game().WinningScore(1).Please()
+	player := create.Player().WithChips(1).InGame(game).Bets(1).OnScore(2).Please()
 
-	self.game.Play()
+	game.Play()
 
-	assert.Empty(self.T(), self.player.AvailableChips())
+	assert.Empty(self.T(), player.AvailableChips())
 }
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerWinsBet() {
-	self.dice.On("Roll").Return(1)
-	self.player.Bet(Bet{Score: 1, Amount: anyAmount})
+	game := create.Game().WinningScore(2).Please()
+	player := create.Player().WithChips(1).InGame(game).Bets(1).OnScore(2).Please()
 
-	self.game.Play()
+	game.Play()
 
-	assert.Empty(self.T(), self.player.GetBetOn(1))
+	assert.Empty(self.T(), player.GetBetOn(1))
 }
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerLosesBet() {
-	self.dice.On("Roll").Return(1)
-	self.player.Bet(Bet{Score: 2, Amount: anyAmount})
+	game := create.Game().WinningScore(2).Please()
+	player := create.Player().WithChips(1).InGame(game).Bets(1).OnScore(3).Please()
 
-	self.game.Play()
+	game.Play()
 
-	assert.Empty(self.T(), self.player.GetBetOn(2))
+	assert.Empty(self.T(), player.GetBetOn(2))
 }
