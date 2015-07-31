@@ -62,6 +62,12 @@ func (b *PlayerBuilder) Bets(amount int) *PlayerBuilder {
 	return b
 }
 
+func (b *PlayerBuilder) MakesBet() *PlayerBuilder {
+	// bet amount does not matter
+	b.betAmount = 1
+	return b
+}
+
 func (b *PlayerBuilder) Please() *Player {
 	if b.betScore != 0 && b.betAmount != 0 {
 		b.player.Bet(Bet{

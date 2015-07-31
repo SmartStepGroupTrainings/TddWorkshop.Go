@@ -39,7 +39,7 @@ func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
 
 func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToNeighbor_OnWrongBetInCasino() {
 	game := create.Game().WinningScore(1).Please()
-	player := create.Player().WithChips(1).InGame(game).Bets(1).OnScore(2).Please()
+	player := create.Player().WithChips(1).InGame(game).MakesBet().OnScore(2).Please()
 
 	game.Play()
 
@@ -48,7 +48,7 @@ func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToN
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerWinsBet() {
 	game := create.Game().WinningScore(2).Please()
-	player := create.Player().WithChips(1).InGame(game).Bets(1).OnScore(2).Please()
+	player := create.Player().WithChips(1).InGame(game).MakesBet().OnScore(2).Please()
 
 	game.Play()
 
