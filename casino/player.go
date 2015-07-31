@@ -79,20 +79,3 @@ func (self *Player) Lose() {
 func (self *Player) Win(wonChips int) {
 	self.availableChips += wonChips
 }
-
-// !!! Added After Tests Fail
-
-func (self *Player) setCurrentGame(game *RollDiceGame) error {
-	if game == nil {
-		return errors.New("Current game cannot be nil")
-	}
-	self.currentGame = game
-	return nil
-}
-
-func (self *Player) getCurrentGame() (*RollDiceGame, error) {
-	if !self.IsInGame() {
-		return nil, errors.New("Player not in the game")
-	}
-	return self.currentGame, nil
-}

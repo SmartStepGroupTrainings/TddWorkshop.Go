@@ -1,7 +1,6 @@
 package casino_new
 
 import (
-	"errors"
 	"math/rand"
 	"time"
 )
@@ -34,47 +33,21 @@ func (self *RollDiceGame) setDice(dice IDice) {
 	self.dice = dice
 }
 
-func (self *RollDiceGame) Play() error {
-	if self.PlayersCount() == 0 {
-		return errors.New("Cannot start game without any player")
-	}
-
+func (self *RollDiceGame) Play() {
 	winningScore := self.dice.Roll()
 
 	for player, _ := range self.players {
 		player.Win(player.GetBetOn(winningScore) * 6)
 		player.Lose()
 	}
-	return nil
 }
 
-func (self *RollDiceGame) Add(player *Player) error {
-	// !!! Added after testing
-	if player == nil {
-		return errors.New("Player for adding to game cannot be nil")
-	}
-	if _, ok := self.players[player]; ok {
-		return errors.New("Player already in this game")
-	}
-	player.setCurrentGame(self)
-	// ====
-
+func (self *RollDiceGame) Add(player *Player) {
 	self.players[player] = struct{}{}
-	return nil
+	player.currentGame = self
 }
 
-func (self *RollDiceGame) PlayersCount() int {
-	return len(self.players)
-}
-
-func (self *RollDiceGame) Remove(player *Player) error {
-	curGame, err := player.getCurrentGame()
-	if err != nil {
-		return err
-	}
-	if curGame != self {
-		return errors.New("this player in another game")
-	}
+func (self *RollDiceGame) Remove(player *Player) {
+	player.currentGame = nil
 	delete(self.players, player)
-	return nil
 }

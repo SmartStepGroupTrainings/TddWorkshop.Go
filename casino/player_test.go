@@ -36,7 +36,7 @@ func Test_Game(t *testing.T) {
 	suite.Run(t, &GameTest{})
 }
 
-func (test *GameTest) TestNewPlayer_IsNotNil() {
+func (test *GameTest) Test_IsNotNil() {
 	test.NotNil(test.player)
 }
 
@@ -160,52 +160,9 @@ func (test *GameTest) TestPlayer_CheckAvailableChips_AfterWin() {
 }
 
 func (test *GameTest) TestGame_AddPlayer_Success() {
-	err := test.game.Add(test.player)
-
-	test.Nil(err)
-}
-
-//!!! Founded Error in original Code and fix after testing!!!
-
-func (test *GameTest) TestGame_PlayerIsInGameAfterGameAdd() {
 	test.game.Add(test.player)
 
 	test.True(test.player.IsInGame())
-}
-
-func (test *GameTest) TestGame_AddPlayer_FailOnNilPlayer() {
-	err := test.game.Add(nil)
-
-	test.NotNil(err)
-}
-
-func (test *GameTest) TestGame_OnAddTheSamePlayerTwice_Fail() {
-	test.game.Add(test.player)
-	err := test.game.Add(test.player)
-
-	test.NotNil(err)
-}
-
-func (test *GameTest) TestGame_CannotPlayWithoutPlayers() {
-	err := test.game.Play()
-
-	test.NotNil(err)
-}
-
-func (test *GameTest) TestGame_CountOfPlayerOnNewGame_IsZero() {
-	test.Equal(0, test.game.PlayersCount())
-}
-
-func (test *GameTest) TestGame_CountOfPlayerAfterAddOnePlayer_IsOne() {
-	test.game.Add(test.player)
-
-	test.Equal(1, test.game.PlayersCount())
-}
-
-func (test *GameTest) TestPlayer_GetCurrentGameFromNewPlayer_Fail() {
-	_, err := test.player.getCurrentGame()
-
-	test.NotNil(err)
 }
 
 func (test *GameTest) TestGame_CheckPlayWinnersChips() {
@@ -220,15 +177,17 @@ func (test *GameTest) TestGame_CheckPlayWinnersChips() {
 	test.Equal(6*10, test.player.AvailableChips())
 }
 
-func (test *GameTest) TestGame_RemovePlayerFromNewGame_Fail() {
-	err := test.game.Remove(test.player)
-
-	test.NotNil(err)
-}
-
 func (test *GameTest) TestGame_RemovePlayer_Succes() {
 	test.game.Add(test.player)
-	err := test.game.Remove(test.player)
+	test.game.Remove(test.player)
 
-	test.Nil(err)
+	test.False(test.player.IsInGame())
+}
+
+func (test *GameTest) TestDice_Roll_Success() {
+	dice := Dice{}
+
+	roll := dice.Roll()
+
+	test.True(roll >= 1 && roll <= 6)
 }
