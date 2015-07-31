@@ -3,15 +3,16 @@ package casino_new
 import (
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
 type testDice struct {
-	nextValue int
+	mock.Mock
 }
 
 func (d *testDice) Roll() int {
-	return d.nextValue
+	return d.Called().Int(0)
 }
 
 // Suite with player
@@ -29,11 +30,13 @@ type TestSuiteGameAndPlayer struct {
 	suite.Suite
 	player *Player
 	game   *RollDiceGame
+	dice   *testDice
 }
 
 func (s *TestSuiteGameAndPlayer) SetupTest() {
 	s.game = NewRollDiceGame()
-	s.game.dice = &testDice{1}
+	s.dice = &testDice{}
+	s.game.dice = s.dice
 	s.player = NewPlayer()
 }
 
@@ -113,7 +116,7 @@ func (s *TestSuiteGameAndPlayer) TestPlayer_Play_Win_IncreasedChips() {
 	s.player.Join(s.game)
 	s.player.BuyChips(1)
 	s.player.Bet(Bet{6, 1})
-	s.game.dice.(*testDice).nextValue = 6;
+	s.dice.On("Roll").Return(6)
 	s.game.Play()
 
 	s.Equal(6, s.player.AvailableChips())
@@ -123,7 +126,7 @@ func (s *TestSuiteGameAndPlayer) TestPlayer_Play_Lose_LostChips() {
 	s.player.Join(s.game)
 	s.player.BuyChips(1)
 	s.player.Bet(Bet{6, 1})
-	s.game.dice.(*testDice).nextValue = 5;
+	s.dice.On("Roll").Return(5)
 	s.game.Play()
 
 	s.Equal(0, s.player.AvailableChips())

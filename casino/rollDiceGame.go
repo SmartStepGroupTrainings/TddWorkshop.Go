@@ -12,7 +12,7 @@ type IDice interface {
 type randomDice struct {
 }
 
-func (d *randomDice) Roll() int {
+func (d randomDice) Roll() int {
 	rand.Seed(time.Now().UTC().UnixNano())
 	return rand.Int()%6 + 1
 }
