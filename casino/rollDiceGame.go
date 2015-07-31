@@ -36,3 +36,7 @@ func (self *RollDiceGame) Add(player *Player) {
 func (self *RollDiceGame) Remove(player *Player) {
 	delete(self.players, player)
 }
+
+func (self *RollDiceGame) GetPlayers() map[*Player]struct{} {
+    return self.players
+}
