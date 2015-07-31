@@ -7,26 +7,15 @@ import (
 )
 
 type IDice interface {
-	roll() int
-	faces() int
+	Roll() int
 }
 
-type FairDice struct {
-	facesCnt int
+type Dice struct {
 }
 
-func NewFairDice(faces int) FairDice {
-	return FairDice{
-		facesCnt: faces,
-	}
-}
-func (dice *FairDice) roll() int {
+func (dice *Dice) Roll() int {
 	rand.Seed(time.Now().UTC().UnixNano())
-	return rand.Int()%dice.facesCnt + 1
-}
-
-func (dice *FairDice) faces() int {
-	return dice.facesCnt
+	return rand.Int()%6 + 1
 }
 
 type RollDiceGame struct {
@@ -37,16 +26,12 @@ type RollDiceGame struct {
 func NewRollDiceGame() *RollDiceGame {
 	return &RollDiceGame{
 		players: make(map[*Player]struct{}),
-		dice:    &FairDice{},
+		dice:    &Dice{},
 	}
 }
 
-func (self *RollDiceGame) setDice(dice IDice) error {
-	if self.PlayersCount() != 0 {
-		return errors.New("dont change rules after game start")
-	}
+func (self *RollDiceGame) setDice(dice IDice) {
 	self.dice = dice
-	return nil
 }
 
 func (self *RollDiceGame) Play() error {
@@ -54,10 +39,10 @@ func (self *RollDiceGame) Play() error {
 		return errors.New("Cannot start game without any player")
 	}
 
-	winningScore := self.dice.roll()
+	winningScore := self.dice.Roll()
 
 	for player, _ := range self.players {
-		player.Win(player.GetBetOn(winningScore) * self.dice.faces())
+		player.Win(player.GetBetOn(winningScore) * 6)
 		player.Lose()
 	}
 	return nil

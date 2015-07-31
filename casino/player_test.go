@@ -4,36 +4,29 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
-type mockDice struct {
-	score    int
-	facesCnt int
+type DiceStub struct {
+	mock.Mock
 }
 
-func (dice mockDice) roll() int {
-	return dice.score
-}
-
-func (dice mockDice) faces() int {
-	return dice.facesCnt
+func (dice DiceStub) Roll() int {
+	return 1
 }
 
 type GameTest struct {
 	suite.Suite
 	player *Player
 	game   *RollDiceGame
-	dice   *mockDice
+	dice   DiceStub
 }
 
 func (test *GameTest) SetupTest() {
 	test.player = NewPlayer()
 	test.game = NewRollDiceGame()
-	test.dice = &mockDice{
-		score:    1,
-		facesCnt: 6,
-	}
+	test.dice = DiceStub{}
 }
 
 const someScore = 1
@@ -59,6 +52,14 @@ func (test *GameTest) TestNewPlayer_Join_IsInGame() {
 	test.player.Join(test.game)
 
 	test.True(test.player.IsInGame())
+}
+
+func (test *GameTest) TestNewPlayer_Join_Fail() {
+	test.player.Join(test.game)
+
+	err := test.player.Join(test.game)
+
+	test.NotNil(err)
 }
 
 func (test *GameTest) TestWhenLeaveTheGame_Fail() {
@@ -118,6 +119,15 @@ func (test *GameTest) TestPlayer_CheckSetBet_Success() {
 	err := test.player.Bet(bet)
 
 	test.Nil(err)
+}
+
+func (test *GameTest) TestPlayer_CheckSetBet_Fail() {
+	bet := Bet{Score: 666, Amount: 20}
+	test.player.BuyChips(20)
+
+	err := test.player.Bet(bet)
+
+	test.NotNil(err)
 }
 
 func (test *GameTest) TestPlayer_CheckBetScore_AfterBet() {
@@ -203,6 +213,7 @@ func (test *GameTest) TestGame_CheckPlayWinnersChips() {
 	test.game.Add(test.player)
 	test.player.BuyChips(10)
 	test.player.Bet(Bet{Score: 1, Amount: 10})
+	test.dice.On("Roll").Return(1)
 
 	test.game.Play()
 
