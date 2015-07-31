@@ -19,11 +19,7 @@ type DiceStub struct {
 	mock.Mock
 }
 
-const (
-	anyAmount    = 1
-	anyScore     = 1
-	anotherScore = 2
-)
+const anyAmount = 1
 
 func (dice *DiceStub) Roll() int {
 	args := dice.Called()
@@ -38,7 +34,7 @@ func (self *TestGameSuite) SetupTest() {
 
 	self.player = NewPlayer()
 	self.player.BuyChips(anyAmount)
-	self.game.Add(self.player)
+	self.player.Join(self.game)
 }
 
 func Test_Game(t *testing.T) {
@@ -46,8 +42,8 @@ func Test_Game(t *testing.T) {
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
-	self.dice.On("Roll").Return(anyScore)
-	bet := Bet{Score: anyScore, Amount: anyAmount}
+	self.dice.On("Roll").Return(1)
+	bet := Bet{Score: 1, Amount: anyAmount}
 	self.player.Bet(bet)
 
 	self.game.Play()
@@ -56,9 +52,8 @@ func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToNeighbor_OnWrongBetInCasino() {
-	self.dice.On("Roll").Return(anyScore)
-	bet := Bet{Score: anotherScore, Amount: self.player.AvailableChips()}
-	self.player.Bet(bet)
+	self.dice.On("Roll").Return(1)
+	self.player.Bet(Bet{Score: 2, Amount: self.player.AvailableChips()})
 
 	self.game.Play()
 
@@ -66,21 +61,19 @@ func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToN
 }
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerWinsBet() {
-	self.dice.On("Roll").Return(anyScore)
-	bet := Bet{Score: anyScore, Amount: anyAmount}
-	self.player.Bet(bet)
+	self.dice.On("Roll").Return(1)
+	self.player.Bet(Bet{Score: 1, Amount: anyAmount})
 
 	self.game.Play()
 
-	assert.Empty(self.T(), self.player.GetBetOn(anotherScore))
+	assert.Empty(self.T(), self.player.GetBetOn(1))
 }
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerLosesBet() {
-	self.dice.On("Roll").Return(anyScore)
-	bet := Bet{Score: anotherScore, Amount: anyAmount}
-	self.player.Bet(bet)
+	self.dice.On("Roll").Return(1)
+	self.player.Bet(Bet{Score: 2, Amount: anyAmount})
 
 	self.game.Play()
 
-	assert.Empty(self.T(), self.player.GetBetOn(anotherScore))
+	assert.Empty(self.T(), self.player.GetBetOn(2))
 }
