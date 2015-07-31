@@ -42,13 +42,12 @@ func Test_Game(t *testing.T) {
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
-	self.dice.On("Roll").Return(1)
-	bet := Bet{Score: 1, Amount: anyAmount}
-	self.player.Bet(bet)
+	game := create.Game().WinningScore(2).Please()
+	player := create.Player().WithChips(1).InGame(game).Bets(1).OnScore(2).Please()
 
-	self.game.Play()
+	game.Play()
 
-	assert.Equal(self.T(), bet.Amount*6, self.player.AvailableChips())
+	assert.Equal(self.T(), 1*6, player.AvailableChips())
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToNeighbor_OnWrongBetInCasino() {
