@@ -3,16 +3,15 @@ package casino_new
 import (
 	"testing"
 
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
 type testDice struct {
-	mock.Mock
+	nextRoll int
 }
 
 func (d *testDice) Roll() int {
-	return d.Called().Int(0)
+	return d.nextRoll
 }
 
 // Suite with player
@@ -113,21 +112,31 @@ func (s *TestSuiteGameAndPlayer) TestPlayer_CheckAvailableChips_AfterBet() {
 }
 
 func (s *TestSuiteGameAndPlayer) TestPlayer_Play_Win_IncreasedChips() {
-	s.player.Join(s.game)
-	s.player.BuyChips(1)
-	s.player.Bet(Bet{6, 1})
-	s.dice.On("Roll").Return(6)
-	s.game.Play()
+	game := dsl.CreateGame().
+		NextRoll(6).
+		Build()
+	player := dsl.CreatePlayer().
+		WithChips(1).
+		JoinGame(game).
+		MakeBet(6, 1).
+		Build()
 
-	s.Equal(6, s.player.AvailableChips())
+	game.Play()
+
+	s.Equal(6, player.AvailableChips())
 }
 
 func (s *TestSuiteGameAndPlayer) TestPlayer_Play_Lose_LostChips() {
-	s.player.Join(s.game)
-	s.player.BuyChips(1)
-	s.player.Bet(Bet{6, 1})
-	s.dice.On("Roll").Return(5)
-	s.game.Play()
+	game := dsl.CreateGame().
+		NextRoll(5).
+		Build()
+	player := dsl.CreatePlayer().
+		WithChips(1).
+		JoinGame(game).
+		MakeBet(6, 1).
+		Build()
 
-	s.Equal(0, s.player.AvailableChips())
+	game.Play()
+
+	s.Equal(0, player.AvailableChips())
 }
