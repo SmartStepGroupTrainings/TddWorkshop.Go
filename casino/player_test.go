@@ -56,7 +56,7 @@ func (self *PlayerTest) TestBet_Success() {
 	self.Nil(err)
 }
 
-func (self *PlayerTest) TestPlayer_TODO() {
+func (self *PlayerTest) TestLeave_MakeBet_ReturnChipsOk() {
 	self.Player.BuyChips(10)
 	self.Player.Bet(Bet{Score: 1, Amount: 1})
 	self.Player.Join(NewRollDiceGame(new(Dice)))
@@ -66,7 +66,7 @@ func (self *PlayerTest) TestPlayer_TODO() {
 	self.Equal(10, self.Player.AvailableChips())
 }
 
-func (self *PlayerTest) TestBet_AvailableChipsSuccess() {
+func (self *PlayerTest) TestBet_BuyChips_AvailableChipsOk() {
 	self.Player.BuyChips(10)
 
 	self.Player.Bet(Bet{Score: 1, Amount: 1})

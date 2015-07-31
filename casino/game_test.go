@@ -17,7 +17,7 @@ func (self *GameTest) SetupTest() {
 	self.Game = NewRollDiceGame(new(TestRoll))
 }
 
-func (self *GameTest) TestPlay_BuyChips_GetPrize() {
+func (self *GameTest) TestPlay_MakeBet_WinOk() {
 	self.Player.Join(self.Game)
 	self.Player.BuyChips(10)
 	const Score = 1
