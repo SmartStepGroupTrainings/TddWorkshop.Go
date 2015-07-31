@@ -48,7 +48,6 @@ func (suite *RollDiceGameSuite) getGame(data playerInGame) (*RollDiceGame, *Play
 }
 
 func (suite *RollDiceGameSuite) TestGame_PlayerInGameWitBet_Win_IncreaseChipsAmount() {
-
 	game, player := suite.getGame(playerInGame{
 		score: 5,
 		winingScore: 5,
@@ -59,4 +58,17 @@ func (suite *RollDiceGameSuite) TestGame_PlayerInGameWitBet_Win_IncreaseChipsAmo
 	game.Play()
 
 	suite.AssertEquals(50 + 50*6, player.AvailableChips())
+}
+
+func (suite *RollDiceGameSuite) TestGame_PlayerInGameWitBet_Loose_NoMoney() {
+	game, player := suite.getGame(playerInGame{
+		score: 5,
+		winingScore: 3,
+		chips: 100,
+		bet: 50,
+	})
+
+	game.Play()
+
+	suite.AssertEquals(50, player.AvailableChips())
 }
