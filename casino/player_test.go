@@ -7,15 +7,33 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+type mockDice struct {
+	score int
+	faces int
+}
+
+func (dice mockDice) Roll() int {
+	return dice.score
+}
+
+func (dice mockDice) Faces() int {
+	return dice.faces
+}
+
 type GameTest struct {
 	suite.Suite
 	player *Player
 	game   *RollDiceGame
+	dice   *mockDice
 }
 
 func (test *GameTest) SetupTest() {
 	test.player = NewPlayer()
 	test.game = NewRollDiceGame()
+	test.dice = &mockDice{
+		score: 1,
+		faces: 6,
+	}
 }
 
 const someScore = 1
@@ -172,4 +190,21 @@ func (test *GameTest) TestGame_CountOfPlayerAfterAddOnePlayer_IsOne() {
 	test.game.Add(test.player)
 
 	test.Equal(1, test.game.PlayersCount())
+}
+
+func (test *GameTest) TestPlayer_GetCurrentGameFromNewPlayer_Fail() {
+	_, err := test.player.GetCurrentGame()
+
+	test.NotNil(err)
+}
+
+func (test *GameTest) TestGame_CheckPlayWinnersChips() {
+	test.game.setDice(test.dice)
+	test.game.Add(test.player)
+	test.player.BuyChips(10)
+	test.player.Bet(Bet{Score: 1, Amount: 10})
+
+	test.game.Play()
+
+	test.Equal(6*10, test.player.AvailableChips())
 }
