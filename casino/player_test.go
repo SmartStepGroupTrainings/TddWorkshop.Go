@@ -13,7 +13,7 @@ type PlayerTest struct {
 }
 
 func Test_StartPlayerSuite(t *testing.T) {
-	suite.Run(t, &PlayerTest{})
+	suite.Run(t, &GameTest{})
 }
 
 func (self *PlayerTest) SetupTest() {
@@ -54,6 +54,16 @@ func (self *PlayerTest) TestBet_Success() {
 	err := self.Player.Bet(Bet{Score:1, Amount:1})
 
 	self.Nil(err)
+}
+
+func (self *PlayerTest) TestPlayer_TODO() {
+	self.Player.BuyChips(10)
+	self.Player.Bet(Bet{Score:1, Amount:1})
+	self.Player.Join(NewRollDiceGame())
+
+	self.Player.Leave()
+
+	self.Equal(10, self.Player.AvailableChips())
 }
 
 func (self *PlayerTest) TestBet_AvailableChipsSuccess() {

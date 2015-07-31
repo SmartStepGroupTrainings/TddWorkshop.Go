@@ -11,6 +11,8 @@ type IDice interface {
 
 type RollDiceGame struct {
 	players map[*Player]struct{}
+	winningScore int
+	forceScore int
 }
 
 func NewRollDiceGame() *RollDiceGame {
@@ -21,12 +23,24 @@ func NewRollDiceGame() *RollDiceGame {
 
 func (self *RollDiceGame) Play() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	winningScore := rand.Int()%6 + 1
+	self.winningScore = rand.Int()%6 + 1
 
 	for player, _ := range self.players {
-		player.Win(player.GetBetOn(winningScore) * 6)
+		player.Win(player.GetBetOn(self.GetWiningScore()) * 6)
 		player.Lose()
 	}
+}
+
+func (self *RollDiceGame) GetWiningScore() int {
+	if self.forceScore != 0 {
+		return self.forceScore
+	}
+	return self.winningScore
+}
+
+
+func (self *RollDiceGame) SetForceScore(score int) {
+	self.forceScore = score
 }
 
 func (self *RollDiceGame) Add(player *Player) {

@@ -44,6 +44,10 @@ func (player *Player) IsInGame() bool {
 }
 
 func (player *Player) Bet(bet Bet) error {
+	if bet.Amount < 0 {
+		return errors.New("Can't bet negative Amount")
+	}
+
 	if player.AvailableChips() < bet.Amount {
 		return errors.New("Unable to bet chips more than available")
 	}
