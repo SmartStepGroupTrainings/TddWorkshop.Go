@@ -40,10 +40,7 @@ func (self *RollDiceGame) Remove(player *Player) {
 	delete(self.players, player)
 }
 
-func init() {
-	rand.Seed(time.Now().UTC().UnixNano())
-}
-
 func (dice RandomDice) Roll() int {
+	rand.Seed(time.Now().UTC().UnixNano())
 	return rand.Int()%6 + 1
 }

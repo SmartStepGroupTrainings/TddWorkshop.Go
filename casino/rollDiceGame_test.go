@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -11,11 +12,11 @@ type TestGameSuite struct {
 	suite.Suite
 	game   *RollDiceGame
 	player *Player
-	dice   CheatersDice
+	dice   *DiceStub
 }
 
-type CheatersDice struct {
-	Score int
+type DiceStub struct {
+	mock.Mock
 }
 
 const (
@@ -24,14 +25,15 @@ const (
 	anotherScore = 2
 )
 
-func (dice CheatersDice) Roll() int {
-	return dice.Score
+func (dice *DiceStub) Roll() int {
+	args := dice.Called()
+	return args.Int(0)
 }
 
 func (self *TestGameSuite) SetupTest() {
 	self.game = NewRollDiceGame()
 
-	self.dice = CheatersDice{anyScore}
+	self.dice = &DiceStub{}
 	self.game.dice = self.dice
 
 	self.player = NewPlayer()
@@ -44,7 +46,8 @@ func Test_Game(t *testing.T) {
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
-	bet := Bet{Score: self.dice.Score, Amount: anyAmount}
+	self.dice.On("Roll").Return(anyScore)
+	bet := Bet{Score: anyScore, Amount: anyAmount}
 	self.player.Bet(bet)
 
 	self.game.Play()
@@ -53,6 +56,7 @@ func (self *TestGameSuite) TestGame_Play_PlayerWins6Chips_WhenBetsScoreOne() {
 }
 
 func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToNeighbor_OnWrongBetInCasino() {
+	self.dice.On("Roll").Return(anyScore)
 	bet := Bet{Score: anotherScore, Amount: self.player.AvailableChips()}
 	self.player.Bet(bet)
 
@@ -62,7 +66,8 @@ func (self *TestGameSuite) TestGame_Play_PlayerLosesEverything_andHisWifeGoesToN
 }
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerWinsBet() {
-	bet := Bet{Score: self.dice.Score, Amount: anyAmount}
+	self.dice.On("Roll").Return(anyScore)
+	bet := Bet{Score: anyScore, Amount: anyAmount}
 	self.player.Bet(bet)
 
 	self.game.Play()
@@ -71,6 +76,7 @@ func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerWinsBet() {
 }
 
 func (self *TestGameSuite) TestGame_Play_ResetBets_WhenPlayerLosesBet() {
+	self.dice.On("Roll").Return(anyScore)
 	bet := Bet{Score: anotherScore, Amount: anyAmount}
 	self.player.Bet(bet)
 
