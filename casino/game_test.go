@@ -1,31 +1,48 @@
 package casino_new
 
-type TestRoll struct {
+import "github.com/stretchr/testify/mock"
+
+type DiceMock struct {
+    mock.Mock
 }
 
-func (self *TestRoll) Roll() int {
-	return 1
+func (s *DiceMock) Roll() int{
+    args := s.Called()
+    return args.Int(0)
 }
 
 type GameTest struct {
 	PlayerTest
 	Game *RollDiceGame
+    dice *DiceMock
 }
 
 func (self *GameTest) SetupTest() {
 	self.Player = NewPlayer()
-	self.Game = NewRollDiceGame(new(TestRoll))
+	self.dice = &DiceMock{}
+	self.Game = NewRollDiceGame(self.dice)
 }
 
 func (self *GameTest) TestPlay_MakeBet_WinOk() {
 	self.Player.Join(self.Game)
 	self.Player.BuyChips(10)
-	const Score = 1
-	self.Player.Bet(Bet{Amount: 1, Score: Score})
+    self.dice.On("Roll").Return(1)
+	self.Player.Bet(Bet{Amount: 1, Score: 1})
 
 	self.Game.Play()
 
 	self.Equal((10-1)+1*6, self.Player.AvailableChips())
+}
+
+func (self *GameTest) TestPlay_MakeBet_LooseOk() {
+    self.Player.Join(self.Game)
+    self.Player.BuyChips(10)
+    self.dice.On("Roll").Return(2)
+    self.Player.Bet(Bet{Amount: 1, Score: 1})
+
+    self.Game.Play()
+
+    self.Equal(10-1, self.Player.AvailableChips())
 }
 
 func (self *GameTest) TestGameMethodWorksOk() {
