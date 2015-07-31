@@ -51,15 +51,15 @@ func (self *PlayerTest) TestBuyChips_Fail2() {
 func (self *PlayerTest) TestBet_Success() {
 	self.Player.BuyChips(10)
 
-	err := self.Player.Bet(Bet{Score:1, Amount:1})
+	err := self.Player.Bet(Bet{Score: 1, Amount: 1})
 
 	self.Nil(err)
 }
 
 func (self *PlayerTest) TestPlayer_TODO() {
 	self.Player.BuyChips(10)
-	self.Player.Bet(Bet{Score:1, Amount:1})
-	self.Player.Join(NewRollDiceGame())
+	self.Player.Bet(Bet{Score: 1, Amount: 1})
+	self.Player.Join(NewRollDiceGame(new(Dice)))
 
 	self.Player.Leave()
 
@@ -69,7 +69,7 @@ func (self *PlayerTest) TestPlayer_TODO() {
 func (self *PlayerTest) TestBet_AvailableChipsSuccess() {
 	self.Player.BuyChips(10)
 
-	self.Player.Bet(Bet{Score:1, Amount:1})
+	self.Player.Bet(Bet{Score: 1, Amount: 1})
 
 	self.Equal(9, self.Player.AvailableChips())
 }
@@ -77,7 +77,7 @@ func (self *PlayerTest) TestBet_AvailableChipsSuccess() {
 func (self *PlayerTest) TestBetNotAllowedScore_Fail() {
 	self.Player.BuyChips(10)
 
-	err := self.Player.Bet(Bet{Score:7, Amount:1})
+	err := self.Player.Bet(Bet{Score: 7, Amount: 1})
 
 	self.NotNil(err)
 	self.Equal("Bets on 1..6 only are allowed", err.Error())
@@ -86,7 +86,7 @@ func (self *PlayerTest) TestBetNotAllowedScore_Fail() {
 func (self *PlayerTest) TestBetNotAllowedScore_Fail2() {
 	self.Player.BuyChips(10)
 
-	err := self.Player.Bet(Bet{Score:0, Amount:1})
+	err := self.Player.Bet(Bet{Score: 0, Amount: 1})
 
 	self.NotNil(err)
 	self.Equal("Bets on 1..6 only are allowed", err.Error())
@@ -95,7 +95,7 @@ func (self *PlayerTest) TestBetNotAllowedScore_Fail2() {
 func (self *PlayerTest) TestBetWrongAmount_Fail2() {
 	self.Player.BuyChips(10)
 
-	err := self.Player.Bet(Bet{Score:1, Amount:11})
+	err := self.Player.Bet(Bet{Score: 1, Amount: 11})
 
 	self.NotNil(err)
 	self.Equal("Unable to bet chips more than available", err.Error())
@@ -104,7 +104,7 @@ func (self *PlayerTest) TestBetWrongAmount_Fail2() {
 func (self *PlayerTest) TestBetWrongAmount_Fail3() {
 	self.Player.BuyChips(10)
 
-	err := self.Player.Bet(Bet{Score:1, Amount:-1})
+	err := self.Player.Bet(Bet{Score: 1, Amount: -1})
 
 	self.NotNil(err)
 }
@@ -136,7 +136,7 @@ func TestPlayer_Create_HasNoBets(t *testing.T) {
 
 func TestPlayer_NotInGame_Join_Success(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame()
+	game := NewRollDiceGame(new(Dice))
 
 	err := player.Join(game)
 
@@ -146,7 +146,7 @@ func TestPlayer_NotInGame_Join_Success(t *testing.T) {
 
 func TestPlayer_InGame_Join_Fail(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame()
+	game := NewRollDiceGame(new(Dice))
 	player.Join(game)
 
 	err := player.Join(game)
@@ -158,7 +158,7 @@ func TestPlayer_InGame_Join_Fail(t *testing.T) {
 }
 
 func TestGame_NoPlayers_JoinPlayer_Success(t *testing.T) {
-	game := NewRollDiceGame()
+	game := NewRollDiceGame(new(Dice))
 	player := NewPlayer()
 
 	player.Join(game)
@@ -169,7 +169,7 @@ func TestGame_NoPlayers_JoinPlayer_Success(t *testing.T) {
 
 func TestGame_HasPlayer_Leave_Success(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame()
+	game := NewRollDiceGame(new(Dice))
 	player.Join(game)
 
 	player.Leave()
@@ -180,7 +180,7 @@ func TestGame_HasPlayer_Leave_Success(t *testing.T) {
 
 func TestPlayer_InGame_Leave_Success(t *testing.T) {
 	player := NewPlayer()
-	game := NewRollDiceGame()
+	game := NewRollDiceGame(new(Dice))
 	player.Join(game)
 
 	err := player.Leave()
