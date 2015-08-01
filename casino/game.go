@@ -34,5 +34,5 @@ func (self *Game) Remove(player *Player) error {
 }
 
 func (self *Game) BetsOn(score int) int {
-	return self.bet.Amount
+	return score
 }

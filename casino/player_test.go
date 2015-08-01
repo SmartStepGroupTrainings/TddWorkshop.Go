@@ -93,6 +93,21 @@ func TestPlayer_ChipsCountDecreasesAfterBet(t *testing.T) {
 	assert.Equal(t, 0, player.ChipsCount())
 }
 
+func TestPlayer_CanBetOnSeveralScore(t *testing.T) {
+	player := &Player{}
+	game := &Game{}
+	game.Add(player)
+	bet1 := Bet{Score: 1, Amount: 1}
+	bet2 := Bet{Score: 2, Amount: 2}
+	player.BuyChips(bet1.Amount + bet2.Amount)
+
+	player.Bet(bet1)
+	player.Bet(bet2)
+
+	assert.Equal(t, 1, game.BetsOn(1))
+	assert.Equal(t, 2, game.BetsOn(2))
+}
+
 func TestGame_2PlayersCanJoinGame(t *testing.T) {
 	game := Game{}
 	game.Add(&Player{})
