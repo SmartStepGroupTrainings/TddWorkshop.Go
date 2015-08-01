@@ -109,8 +109,9 @@ func TestPlayer_ByDefault_CanNotBuyNegativeChips(t *testing.T) {
 	assert.Equal(t, errBuyNegativeChips, err)
 }
 
-func TestPlayer_ByDefault_CanCreateBet(t *testing.T) {
+func TestPlayer_HasChips_CanCreateBet(t *testing.T) {
 	player := Player{}
+    player.BuyChips(1)
 
 	player.DoBet(&Bet{Amount: 1})
 
@@ -119,11 +120,11 @@ func TestPlayer_ByDefault_CanCreateBet(t *testing.T) {
 }
 
 func TestPlayer_HasChips_CanNotDoBetBecauseNotEnoughChips(t *testing.T) {
-    player := Player{}
-    player.BuyChips(1)
+	player := Player{}
+	player.BuyChips(1)
 
-    err := player.DoBet(&Bet{Amount:2})
+	err := player.DoBet(&Bet{Amount: 2})
 
-    assert.Equal(t, errNotEnoughChips, err)
+	assert.Equal(t, errNotEnoughChips, err)
 
 }
