@@ -6,16 +6,20 @@ type Player struct {
 	isInGame bool
 }
 
-func (p *Player) Join(game Game) error {
+func (p *Player) Join(game *Game) error {
 	if p.isInGame {
 		return errors.New("You can not join game")
+	}
+
+	if err := game.AddPlayer(); err != nil {
+		return err
 	}
 
 	p.isInGame = true
 	return nil
 }
 
-func (p *Player) Leave(game Game) error {
+func (p *Player) Leave(game *Game) error {
 
 	if !p.isInGame {
 		return errors.New("You can not leave game")
