@@ -44,6 +44,7 @@ func TestPlayer_Player_CanPlayOnlyOneGame(t *testing.T) {
 }
 
 func TestPlayer_Player_CantJoinFullGame(t *testing.T) {
+
 	extraPlayer := &Player{}
 	game := &Game{}
 
@@ -55,4 +56,39 @@ func TestPlayer_Player_CantJoinFullGame(t *testing.T) {
 	err := extraPlayer.Join(game)
 
 	assert.Error(t, err, "Game is full")
+}
+
+/*
+	DSL example
+	var Jaffar geene
+	Jaffar.Create().Game().With().Players(6).Wish()
+*/
+
+type geene struct {
+	needGame  bool
+	playerNum int
+
+	game Game
+}
+
+func (g geene) Create() geene {
+	// Nothing here :)
+	return g
+}
+
+func (g geene) Game() geene {
+	return g
+}
+
+func (g geene) With() geene {
+	// Nothing here :)
+	return g
+}
+
+func (g geene) Players(num int) geene {
+	return g
+}
+
+func (g geene) Wish() geene {
+	return g
 }
