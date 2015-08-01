@@ -10,8 +10,13 @@ func (p *Player) IsInGame() bool {
 	return p.isInGame
 }
 
-func (p *Player) Join() {
+func (p *Player) Join() error {
+	if p.isInGame {
+		return errors.New("Player already in game")
+	}
+
 	p.isInGame = true
+	return nil
 }
 
 func (p *Player) Leave() error {

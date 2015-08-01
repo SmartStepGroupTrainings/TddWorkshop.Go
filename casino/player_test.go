@@ -29,3 +29,12 @@ func TestPlayer_PlayerNotInGame_CantLeave(t *testing.T) {
 
 	assert.Error(t, err, "Player not in game cant leave game")
 }
+
+func TestPlayer_Player_CanPlayOnlyOneGame(t *testing.T) {
+	player := Player{}
+
+	player.Join()
+	err := player.Join()
+
+	assert.Error(t, err, "Player already in game cant join game")
+}
