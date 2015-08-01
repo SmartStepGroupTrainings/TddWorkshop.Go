@@ -24,3 +24,13 @@ func Test_PlayerInGame_CanLeave(t *testing.T) {
 
 	assert.False(t, player.isInGame)
 }
+
+func Test_PlayerNotInGame_CanNotLeave(t *testing.T) {
+	player := Player{}
+	game := Game{}
+
+	err := player.Leave(game)
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "You can not leave game", err.Error())
+}
