@@ -3,7 +3,6 @@ package casino
 import "errors"
 
 type Game struct {
-	players []*Player
 	numOfPlayers int
 }
 
@@ -14,33 +13,21 @@ func (self *Game) Add(player *Player) error {
 		return errors.New("Cant add player to full game.")
 	}
 
-	for _, p := range self.players {
-		if p == player {
-			return errors.New("Player cannot join game twice")
-		}
+	if player.currentGame != nil {
+		return errors.New("Player cannot join game twice")
 	}
 
-	self.players = append(self.players, player)
+	player.currentGame = self
 	self.numOfPlayers++
 	return nil
 }
 
 func (self *Game) Remove(player *Player) error {
-	var removed bool
-
-	players := self.players[:]
-	for _, p := range self.players {
-		if p == player {
-			removed = true
-		} else {
-//			players = append(players, p)
-		}
+	if player.currentGame != self {
+		return errors.New("Player cannot leave game if he's not in this game")
 	}
-	self.players = players
 
-	if !removed {
-		return errors.New("Player cannot leave game if he's not in game")
-	}
+	player.currentGame = nil
 	self.numOfPlayers--
 	return nil
 }
