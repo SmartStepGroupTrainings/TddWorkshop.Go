@@ -11,3 +11,7 @@ func (p *Player) IsInGame() bool {
 func (p *Player) Join() {
 	p.isInGame = true
 }
+
+func (p *Player) Leave() {
+	p.isInGame = false
+}
