@@ -41,3 +41,7 @@ func (p *Player) BuyChips(count int) {
 func (p *Player) GetChipsCount() int {
 	return p.chips
 }
+
+func (p *Player) Bet(count int) {
+	p.chips -= count
+}

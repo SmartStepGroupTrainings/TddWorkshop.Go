@@ -63,6 +63,17 @@ func Test_Player_CanBuyChips(t *testing.T) {
 	assert.Equal(t, 1, player.GetChipsCount())
 }
 
+func Test_PlayerInGame_CanBet(t *testing.T) {
+	player := Player{}
+	game := &Game{}
+	player.Join(game)
+	player.BuyChips(1)
+
+	player.Bet(1)
+
+	assert.Equal(t, 0, player.GetChipsCount())
+}
+
 func createGameWith6Player() *Game {
 	game := &Game{}
 
