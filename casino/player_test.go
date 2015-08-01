@@ -8,22 +8,25 @@ import (
 
 func TestPlayer_CanJoin(t *testing.T) {
 	player := Player{}
+	game := &Game{}
 
-	player.Join()
+	player.Join(game)
 
 	assert.True(t, player.IsInGame(), "Player had to join game")
 }
 
-func TestPlayer_CanLeave(t *testing.T) {
-	player := Player{}
+func TestPlayer_PlayerInGame_CanLeave(t *testing.T) {
+	player := &Player{}
+	game := &Game{}
 
+	player.Join(game)
 	player.Leave()
 
 	assert.False(t, player.IsInGame(), "Player had to leave game")
 }
 
 func TestPlayer_PlayerNotInGame_CantLeave(t *testing.T) {
-	player := Player{}
+	player := &Player{}
 
 	err := player.Leave()
 
@@ -31,10 +34,25 @@ func TestPlayer_PlayerNotInGame_CantLeave(t *testing.T) {
 }
 
 func TestPlayer_Player_CanPlayOnlyOneGame(t *testing.T) {
-	player := Player{}
+	player := &Player{}
+	game := &Game{}
 
-	player.Join()
-	err := player.Join()
+	player.Join(game)
+	err := player.Join(game)
 
 	assert.Error(t, err, "Player already in game cant join game")
+}
+
+func TestPlayer_Player_CantJoinFullGame(t *testing.T) {
+	extraPlayer := &Player{}
+	game := &Game{}
+
+	for i := 0; i < 6; i++ {
+		player := Player{}
+		player.Join(game)
+	}
+
+	err := extraPlayer.Join(game)
+
+	assert.Error(t, err, "Game is full")
 }

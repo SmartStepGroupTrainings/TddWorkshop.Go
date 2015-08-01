@@ -10,9 +10,13 @@ func (p *Player) IsInGame() bool {
 	return p.isInGame
 }
 
-func (p *Player) Join() error {
+func (p *Player) Join(game *Game) error {
 	if p.isInGame {
 		return errors.New("Player already in game")
+	}
+
+	if err := game.Add(); err != nil {
+		return err
 	}
 
 	p.isInGame = true
