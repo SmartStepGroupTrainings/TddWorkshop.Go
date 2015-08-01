@@ -73,7 +73,8 @@ func TestPlayer_Player_CanMakeBet(t *testing.T) {
 	player.BuyChips(10)
 	player.Join(&game)
 
-	player.MakeBet(10)
+	bet := Bet{Amount: 10, Score: 1}
+	player.MakeBet(bet)
 
 	assert.Equal(t, 10-10, player.AvailableChips())
 
@@ -85,9 +86,26 @@ func TestPlayer_Player_CantMakeBetMoreThanHaveChips(t *testing.T) {
 
 	player.BuyChips(5)
 	player.Join(game)
-	err := player.MakeBet(10)
+
+	bet := Bet{Amount: 10, Score: 1}
+	err := player.MakeBet(bet)
 
 	assert.Error(t, err, "Not enouth chips for bet")
+}
+
+func TestPlayer_Player_CanMakeMoreThanOneBet(t *testing.T) {
+	player := Player{}
+	game := &Game{}
+
+	player.BuyChips(50)
+	player.Join(game)
+
+	bet := Bet{Amount: 10, Score: 1}
+	player.MakeBet(bet)
+	bet = Bet{Amount: 20, Score: 1}
+	err := player.MakeBet(bet)
+
+	assert.Nil(t, err, "Player should have made a bet")
 }
 
 /*
