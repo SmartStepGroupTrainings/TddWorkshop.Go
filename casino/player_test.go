@@ -51,6 +51,12 @@ func TestPlayer_CanBuyChips(t *testing.T){
 	assert.Equal(t, 1, player.ChipsCount())
 }
 
+func TestPlayer_HasNoChipsByDefault(t *testing.T) {
+	player := &Player{}
+
+	assert.Equal(t, 0, player.ChipsCount())
+}
+
 func TestGame_2PlayersCanJoinGame(t *testing.T) {
 	game := Game{}
 	game.Add(&Player{})
