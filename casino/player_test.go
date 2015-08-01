@@ -66,6 +66,19 @@ func TestPlayer_Player_CanBuyChips(t *testing.T) {
 	assert.Equal(t, 10, player.AvailableChips())
 }
 
+func TestPlayer_Player_MakeBet(t *testing.T) {
+	player := Player{}
+	game := Game{}
+
+	player.BuyChips(10)
+	player.Join(&game)
+
+	player.MakeBet(10)
+
+	assert.Equal(t, 10-10, player.AvailableChips())
+
+}
+
 /*
 	DSL example
 	var Jaffar geene

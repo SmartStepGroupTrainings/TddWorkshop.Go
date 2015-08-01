@@ -3,16 +3,16 @@ package casino
 import "errors"
 
 type Player struct {
-	isInGame bool
-	chips    int
+	game  *Game
+	chips int
 }
 
 func (p *Player) IsInGame() bool {
-	return p.isInGame
+	return p.game != nil
 }
 
 func (p *Player) Join(game *Game) error {
-	if p.isInGame {
+	if p.IsInGame() {
 		return errors.New("Player already in game")
 	}
 
@@ -20,15 +20,15 @@ func (p *Player) Join(game *Game) error {
 		return err
 	}
 
-	p.isInGame = true
+	p.game = game
 	return nil
 }
 
 func (p *Player) Leave() error {
-	if !p.isInGame {
+	if !p.IsInGame() {
 		return errors.New("Player not in game")
 	}
-	p.isInGame = false
+	p.game = nil
 
 	return nil
 }
@@ -39,4 +39,8 @@ func (p *Player) BuyChips(count int) {
 
 func (p *Player) AvailableChips() int {
 	return p.chips
+}
+
+func (p *Player) MakeBet(count int) {
+	p.chips -= count
 }
