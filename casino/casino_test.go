@@ -98,6 +98,15 @@ func Test_PlayerInGameAndHaveChips_CanBetSeveralScore(t *testing.T) {
 	assert.True(t, player.HasBet(2))
 }
 
+func Test_Game_CanNotAcceptBetsNotDividerOn5(t *testing.T) {
+	game := &Game{}
+
+	err := game.Bet(1, 1)
+
+	assert.Error(t, err)
+	assert.Equal(t, "Not divide on 5", err.Error())
+}
+
 func createGameWith6Player() *Game {
 	game := &Game{}
 

@@ -15,3 +15,10 @@ func (g *Game) AddPlayer() error {
 
 	return nil
 }
+
+func (g *Game) Bet(count int, score int) error {
+	if count%5 != 0 {
+		return errors.New("Not divide on 5")
+	}
+	return nil
+}
