@@ -58,14 +58,27 @@ func TestPlayer_HasNoChipsByDefault(t *testing.T) {
 }
 
 func TestPlayer_CanBet(t *testing.T) {
+	const score = 1
+	const amount = 1
+	player := &Player{}
+	game := &Game{}
+	game.Add(player)
+	player.BuyChips(amount)
+
+	player.Bet(Bet{Score: score, Amount: amount})
+
+	assert.Equal(t, amount, game.BetsOn(score))
+}
+
+func TestPlayer_CantBetMoreChipsThanHeHas(t *testing.T) {
 	player := &Player{}
 	game := &Game{}
 	game.Add(player)
 	const score = 1
 
-	player.Bet(Bet{Score: score, Amount: 1})
+	err := player.Bet(Bet{Score: score, Amount: 1})
 
-	assert.Equal(t, 1, game.BetsOn(score))
+	assert.Error(t, err)
 }
 
 func TestGame_2PlayersCanJoinGame(t *testing.T) {
