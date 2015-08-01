@@ -77,3 +77,34 @@ func getFullGame() *Game {
 
 	return game
 }
+
+func TestPlayer_ByDefault_HasNoChips(t *testing.T) {
+	player := Player{}
+
+	assert.Equal(t, 0, player.GetAvailableChips())
+}
+
+func TestPlayer_ByDefault_CanBuyChips(t *testing.T) {
+	player := Player{}
+
+	player.BuyChips(1)
+
+	assert.Equal(t, 1, player.GetAvailableChips())
+}
+
+func TestPlayer_HasChips_CanBuyMoreChips(t *testing.T) {
+	player := Player{}
+	player.BuyChips(1)
+
+	player.BuyChips(1)
+
+	assert.Equal(t, 2, player.GetAvailableChips())
+}
+
+func TestPlayer_ByDefault_CanNotBuyNegativeChips(t *testing.T) {
+	player := Player{}
+
+	err := player.BuyChips(-1)
+
+	assert.Equal(t, errBuyNegativeChips, err)
+}
