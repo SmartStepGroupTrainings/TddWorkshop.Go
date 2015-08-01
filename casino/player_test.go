@@ -43,3 +43,17 @@ func TestPlayer_CantJoinGameTwice(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func TestGame_7PlayersCantJoinGame(t *testing.T) {
+	game := Game{}
+	game.Add(&Player{})
+	game.Add(&Player{})
+	game.Add(&Player{})
+	game.Add(&Player{})
+	game.Add(&Player{})
+	game.Add(&Player{})
+
+	err := game.Add(&Player{})
+	
+	assert.Error(t, err)
+}
