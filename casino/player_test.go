@@ -12,11 +12,3 @@ func Test_PlayerByDefaultNotInGame(t *testing.T) {
 
 	assert.False(t, player.IsIn(game))
 }
-
-type Player struct{}
-
-func (self *Player) IsIn(game Game) bool {
-	return false
-}
-
-type Game struct{}
