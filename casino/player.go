@@ -9,12 +9,12 @@ type Player struct {
 
 // CanJoinGame check if player can join to game
 func (player *Player) CanJoinGame() bool {
-	return true
+	return !player.inTheGame
 }
 
 // CanLeaveGame check if player can join to game
 func (player *Player) CanLeaveGame() bool {
-	return player.inTheGame
+	return !player.CanJoinGame()
 }
 
 func (player *Player) Leave() error {
@@ -25,6 +25,10 @@ func (player *Player) Leave() error {
 	return nil
 }
 
-func (player *Player) Join(game Game) {
+func (player *Player) Join(game Game) error {
+	if !player.CanJoinGame() {
+		return errors.New("player cannot join game - because already in some game")
+	}
 	player.inTheGame = true
+	return nil
 }

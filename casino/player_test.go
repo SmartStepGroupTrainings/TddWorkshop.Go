@@ -25,5 +25,16 @@ func Test_CannotLeaveFromTheGame_IfTheyNotJoin(t *testing.T) {
 	player := Player{}
 
 	err := player.Leave()
+
+	assert.NotNil(t, err)
+}
+
+func Test_Player_CanPlayOnlyOneGameInTheSameTime(t *testing.T) {
+	player := Player{}
+	game := Game{}
+	player.Join(game)
+
+	err := player.Join(game)
+
 	assert.NotNil(t, err)
 }
