@@ -25,10 +25,6 @@ func (player *Player) Leave() error {
 	return nil
 }
 
-func (player *Player) Join(game Game) error {
-	if !player.CanJoinGame() {
-		return errors.New("player cannot join game - because already in some game")
-	}
-	player.inTheGame = true
-	return nil
+func (player *Player) Join(game *Game) error {
+	return game.Add(player)
 }
