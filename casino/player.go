@@ -1,5 +1,5 @@
 package casino
-import "github.com/dropbox/godropbox/errors"
+import "errors"
 
 
 type Player struct {
