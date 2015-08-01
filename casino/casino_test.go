@@ -113,18 +113,29 @@ func TestPlayer_HasChips_CanCreateBet(t *testing.T) {
 	player := Player{}
     player.BuyChips(1)
 
-	player.DoBet(&Bet{Amount: 1})
+	player.DoBet(&Bet{Amount: 1, Score: 1})
 
-	assert.NotNil(t, player.GetBet())
-	assert.Equal(t, 1, player.GetBet().GetAmount())
+	assert.NotNil(t, player.GetBetByScore(1))
+	assert.Equal(t, 1, player.GetBetByScore(1).GetAmount())
 }
 
 func TestPlayer_HasChips_CanNotDoBetBecauseNotEnoughChips(t *testing.T) {
 	player := Player{}
 	player.BuyChips(1)
 
-	err := player.DoBet(&Bet{Amount: 2})
+	err := player.DoBet(&Bet{Amount: 2, Score: 1})
 
 	assert.Equal(t, errNotEnoughChips, err)
+
+}
+
+func TestPlayer_HasChips_CanDoSeveralBets(t *testing.T) {
+    player := Player{}
+    player.BuyChips(2)
+
+    player.DoBet(&Bet{Amount: 1, Score: 1})
+    player.DoBet(&Bet{Amount: 1, Score: 2})
+
+    assert.Equal(t, 2, player.GetBetCount())
 
 }

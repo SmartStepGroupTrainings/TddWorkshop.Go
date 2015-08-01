@@ -12,7 +12,7 @@ var (
 type Player struct {
 	isInGame       bool
 	availableChips int
-	bet            *Bet
+	bets           map[int]*Bet
 }
 
 func (p *Player) IsInGame() bool {
@@ -56,10 +56,19 @@ func (p *Player) DoBet(bet *Bet) error {
 	if p.GetAvailableChips() < bet.Amount {
 		return errNotEnoughChips
 	}
-	p.bet = bet
+
+    if p.bets == nil {
+        p.bets = make(map[int]*Bet)
+    }
+
+	p.bets[bet.Score] = bet
 	return nil
 }
 
-func (p *Player) GetBet() *Bet {
-	return p.bet
+func (p *Player) GetBetByScore(score int) *Bet {
+	return p.bets[score]
+}
+
+func (p *Player) GetBetCount() int {
+    return len(p.bets)
 }
