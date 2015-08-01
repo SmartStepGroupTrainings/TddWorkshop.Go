@@ -15,15 +15,20 @@ func (p *Player) IsInGame() bool {
 	return p.isInGame
 }
 
-func (p *Player) Join(game Game) error {
+func (p *Player) Join(game *Game) error {
 	if p.IsInGame() {
 		return errPlayerAlreadyInGame
 	}
+
+	if err := game.AddPlayer(p); err != nil {
+		return err
+	}
+
 	p.isInGame = true
 	return nil
 }
 
-func (p *Player) Leave(game Game) error {
+func (p *Player) Leave(game *Game) error {
 	if !p.IsInGame() {
 		return errPlayerAlreadyNotInGame
 	}
