@@ -10,11 +10,3 @@ func TestPlayer_ByDefault_IsNotInGame(t *testing.T) {
 
     assert.False(t, player.IsInGame())
 }
-
-type Player struct {
-
-}
-
-func (p *Player) IsInGame() bool {
-    return false
-}
