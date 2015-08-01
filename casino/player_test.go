@@ -114,31 +114,78 @@ func TestPlayer_Player_CanMakeMoreThanOneBet(t *testing.T) {
 	Jaffar.Create().Game().With().Players(6).Wish()
 */
 
-type geene struct {
-	needGame  bool
-	playerNum int
+var PlayerGeene playerGeene
+var GameGeene gameGeene
 
-	game Game
+type playerGeene struct {
+	chips int
 }
 
-func (g geene) Create() geene {
+func (g playerGeene) Create() playerGeene {
+	// init
+	g.chips = 0
+	return g
+}
+
+func (g playerGeene) Player() playerGeene {
+	someChips := 10
+	g.chips = someChips
+	return g
+}
+
+func (g playerGeene) Rich() playerGeene {
+	richChips := 10000
+	g.chips = richChips
+	return g
+}
+
+func (g playerGeene) Wish() Player {
+	player := Player{}
+	player.BuyChips(g.chips)
+	return player
+}
+
+type gameGeene struct {
+	playersNum int
+	game       *Game
+}
+
+func (g gameGeene) Create() gameGeene {
 	// Nothing here :)
 	return g
 }
 
-func (g geene) Game() geene {
+func (g gameGeene) Game() gameGeene {
+	g.game = &Game{}
 	return g
 }
 
-func (g geene) With() geene {
+func (g gameGeene) With() gameGeene {
 	// Nothing here :)
 	return g
 }
 
-func (g geene) Players(num int) geene {
+func (g gameGeene) Max() gameGeene {
+	g.playersNum = 6
 	return g
 }
 
-func (g geene) Wish() geene {
+func (g gameGeene) Player(num int) gameGeene {
+	if g.playersNum == 0 {
+		g.playersNum = 1
+	}
+
+	var player Player
+
+	for i := 0; i < g.playersNum; i++ {
+		player = Player{}
+	}
+
+	player.Join(g.game)
+
 	return g
+}
+
+func (g gameGeene) Wish() Game {
+	return *g.game
 }
