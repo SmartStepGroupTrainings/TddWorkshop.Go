@@ -1,9 +1,13 @@
 package casino
 
 type Player struct {
-
+    isInGame bool
 }
 
 func (p *Player) IsInGame() bool {
-    return false
+    return p.isInGame
+}
+
+func (p *Player) Join(game Game) {
+    p.isInGame = true
 }

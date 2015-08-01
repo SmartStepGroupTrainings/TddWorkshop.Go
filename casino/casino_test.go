@@ -10,3 +10,12 @@ func TestPlayer_ByDefault_IsNotInGame(t *testing.T) {
 
     assert.False(t, player.IsInGame())
 }
+
+func TestPlayer_ByDefault_CanJoinGame(t *testing.T) {
+    player := Player{}
+    game := Game{}
+
+    player.Join(game)
+
+    assert.True(t, player.IsInGame())
+}
