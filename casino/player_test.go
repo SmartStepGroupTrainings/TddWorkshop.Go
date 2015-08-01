@@ -148,3 +148,12 @@ func (test *PlayerTest) Test_Player_CanBetOnlyScore1to6() {
 
 	test.NotNil(err)
 }
+
+func (test *PlayerTest) Test_Player_BetValid_Success() {
+	bet := Bet{Coins: 5, Score: 1}
+	test.player.BuyCoin(5)
+
+	err := test.player.Bet(bet)
+
+	test.Nil(err)
+}
