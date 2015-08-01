@@ -44,7 +44,7 @@ func TestPlayer_CantJoinGameTwice(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestPlayer_CanBuyChips(t *testing.T){
+func TestPlayer_CanBuyChips(t *testing.T) {
 	player := &Player{}
 	player.BuyChips(1)
 
@@ -55,6 +55,17 @@ func TestPlayer_HasNoChipsByDefault(t *testing.T) {
 	player := &Player{}
 
 	assert.Equal(t, 0, player.ChipsCount())
+}
+
+func TestPlayer_CanBet(t *testing.T) {
+	player := &Player{}
+	game := &Game{}
+	game.Add(player)
+	const score = 1
+
+	player.Bet(Bet{Score: score, Amount: 1})
+
+	assert.Equal(t, 1, game.BetsOn(score))
 }
 
 func TestGame_2PlayersCanJoinGame(t *testing.T) {

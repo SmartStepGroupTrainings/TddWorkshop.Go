@@ -4,6 +4,7 @@ import "errors"
 
 type Game struct {
 	numOfPlayers int
+	bet          Bet
 }
 
 const maxPlayers = 6
@@ -30,4 +31,8 @@ func (self *Game) Remove(player *Player) error {
 	player.currentGame = nil
 	self.numOfPlayers--
 	return nil
+}
+
+func (self *Game) BetsOn(score int) int {
+	return self.bet.Amount
 }
