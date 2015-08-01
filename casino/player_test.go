@@ -58,6 +58,14 @@ func TestPlayer_Player_CantJoinFullGame(t *testing.T) {
 	assert.Error(t, err, "Game is full")
 }
 
+func TestPlayer_Player_CanBuyChips(t *testing.T) {
+	player := Player{}
+
+	player.BuyChips(10)
+
+	assert.Equal(t, 10, player.AvailableChips())
+}
+
 /*
 	DSL example
 	var Jaffar geene
