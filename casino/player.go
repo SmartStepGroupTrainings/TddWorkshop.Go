@@ -5,6 +5,7 @@ import "errors"
 // Player model for casino players
 type Player struct {
 	inTheGame bool
+	coins     int
 }
 
 // CanJoinGame check if player can join to game
@@ -30,5 +31,10 @@ func (player *Player) Join(game *Game) error {
 }
 
 func (player *Player) BuyCoin(i int) error {
+	player.coins = player.coins + i
 	return nil
+}
+
+func (player *Player) Coins() int {
+	return player.coins
 }

@@ -63,7 +63,7 @@ func Test_GameNotPlayWithMoreThan6Players(t *testing.T) {
 func Test_Player_BuyCoin_Succes(t *testing.T) {
 	player := Player{}
 
-	err := player.BuyCoin(1)
+	player.BuyCoin(1)
 
-	assert.Nil(t, err)
+	assert.Equal(t, 1, player.Coins())
 }
