@@ -31,10 +31,18 @@ func (player *Player) Join(game *Game) error {
 }
 
 func (player *Player) BuyCoin(i int) error {
-	player.coins = player.coins + i
+	player.coins += i
 	return nil
 }
 
 func (player *Player) Coins() int {
 	return player.coins
+}
+
+func (player *Player) Bet(bet Bet) error {
+	if bet.Coins > player.Coins() {
+		return errors.New("player have not enouch coins for this bet")
+	}
+	player.coins -= bet.Coins
+	return nil
 }

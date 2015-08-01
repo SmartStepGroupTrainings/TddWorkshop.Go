@@ -67,3 +67,32 @@ func Test_Player_BuyCoin_Succes(t *testing.T) {
 
 	assert.Equal(t, 1, player.Coins())
 }
+
+func Test_Player_BetOnlyIfHasCoin(t *testing.T) {
+	player := Player{}
+	bet := Bet{Coins: 1}
+
+	err := player.Bet(bet)
+
+	assert.NotNil(t, err)
+}
+
+func Test_Player_WithEnoughCoinBet_Success(t *testing.T) {
+	player := Player{}
+	bet := Bet{Coins: 1}
+	player.BuyCoin(1)
+
+	err := player.Bet(bet)
+
+	assert.Nil(t, err)
+}
+
+func Test_Player_DecreaseCoins_AfterBet(t *testing.T) {
+	player := Player{}
+	bet := Bet{Coins: 1}
+	player.BuyCoin(1)
+
+	player.Bet(bet)
+
+	assert.Equal(t, 1-1, player.Coins())
+}
