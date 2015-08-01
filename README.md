@@ -1,3 +1,3 @@
 # TddWorkshop.Go
 
- * Test
+ * [Отзывы о тренинге](http://goo.gl/forms/hkJiSFspkD)
