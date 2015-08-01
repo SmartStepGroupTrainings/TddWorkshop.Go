@@ -96,3 +96,13 @@ func Test_Player_DecreaseCoins_AfterBet(t *testing.T) {
 
 	assert.Equal(t, 1-1, player.Coins())
 }
+
+func Test_Player_CanBetToDifferentScore(t *testing.T) {
+	player := Player{}
+	player.BuyCoin(2)
+
+	player.Bet(Bet{Coins: 1, Score: 1})
+	err := player.Bet(Bet{Coins: 1, Score: 2})
+
+	assert.Nil(t, err)
+}
