@@ -5,13 +5,13 @@ import "errors"
 var errGameIsFull = errors.New("Game is Full")
 
 type Game struct {
-	playerCnt int
+	totalJoins int
 }
 
 func (g *Game) AddPlayer(player *Player) error {
-	if g.playerCnt >= 6 {
+	if g.totalJoins >= 6 {
 		return errGameIsFull
 	}
-	g.playerCnt++
+	g.totalJoins++
 	return nil
 }
