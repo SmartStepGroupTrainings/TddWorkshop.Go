@@ -28,3 +28,7 @@ func (player *Player) Leave() error {
 func (player *Player) Join(game *Game) error {
 	return game.Add(player)
 }
+
+func (player *Player) BuyCoin(i int) error {
+	return nil
+}
