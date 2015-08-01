@@ -3,20 +3,20 @@ package casino
 import "errors"
 
 var (
-	errPlayerAlreadyInGame    = errors.New("Player is already in game")
-	errPlayerAlreadyNotInGame = errors.New("Player is already not in game")
-	errBuyNegativeChips       = errors.New("Player can't by negative chips amount")
-	errNotEnoughChips         = errors.New("Not enough chips")
+	errPlayerAlreadyInGame = errors.New("player is already in game")
+	errPlayerNotInGame     = errors.New("player is not in game")
+	errBuyNegativeChips    = errors.New("player can't by negative chips amount")
+	errNotEnoughChips      = errors.New("not enough chips")
 )
 
 type Player struct {
-	isInGame       bool
 	availableChips int
 	bets           map[int]*Bet
+	game           *Game
 }
 
 func (p *Player) IsInGame() bool {
-	return p.isInGame
+	return p.game != nil
 }
 
 func (p *Player) Join(game *Game) error {
@@ -28,15 +28,15 @@ func (p *Player) Join(game *Game) error {
 		return err
 	}
 
-	p.isInGame = true
+	p.game = game
 	return nil
 }
 
 func (p *Player) Leave(game *Game) error {
 	if !p.IsInGame() {
-		return errPlayerAlreadyNotInGame
+		return errPlayerNotInGame
 	}
-	p.isInGame = false
+	p.game = nil
 	return nil
 }
 
@@ -57,9 +57,17 @@ func (p *Player) DoBet(bet *Bet) error {
 		return errNotEnoughChips
 	}
 
-    if p.bets == nil {
-        p.bets = make(map[int]*Bet)
-    }
+	if !p.IsInGame() {
+		return errPlayerNotInGame
+	}
+
+	if err := p.game.IsBetAmountValid(bet.Amount); err != nil {
+		return err
+	}
+
+	if p.bets == nil {
+		p.bets = make(map[int]*Bet)
+	}
 
 	p.bets[bet.Score] = bet
 	return nil
@@ -70,5 +78,5 @@ func (p *Player) GetBetByScore(score int) *Bet {
 }
 
 func (p *Player) GetBetCount() int {
-    return len(p.bets)
+	return len(p.bets)
 }
