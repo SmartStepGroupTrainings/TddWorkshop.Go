@@ -8,9 +8,6 @@ type GameTest struct {
 	suite.Suite
 }
 
-func (test *GameTest) SetupTest() {
-}
-
 func TestInit(t *testing.T) {
 	suite.Run(t, &GameTest{})
 }
