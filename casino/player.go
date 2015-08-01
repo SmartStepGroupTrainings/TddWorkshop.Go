@@ -6,7 +6,7 @@ type Player struct {
 	game *Game
 }
 
-func (player *Player) Join(game *Game) error {
+func (player *Player) JoinTo(game *Game) error {
 	if player.IsInGame() {
 		return errors.New("Player not in game")
 	}
