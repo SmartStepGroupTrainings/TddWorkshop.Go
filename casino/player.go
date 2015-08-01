@@ -4,6 +4,7 @@ import "errors"
 
 type Player struct {
 	isInGame bool
+	chips    int
 }
 
 func (p *Player) Join(game *Game) error {
@@ -27,4 +28,16 @@ func (p *Player) Leave(game *Game) error {
 
 	p.isInGame = false
 	return nil
+}
+
+func (p *Player) IsInGame() bool {
+	return p.isInGame
+}
+
+func (p *Player) BuyChips(count int) {
+	p.chips += count
+}
+
+func (p *Player) GetChipsCount() int {
+	return p.chips
 }
