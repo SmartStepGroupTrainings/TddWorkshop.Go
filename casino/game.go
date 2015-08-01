@@ -4,12 +4,13 @@ import "errors"
 
 type Game struct {
 	players []*Player
+	numOfPlayers int
 }
 
 const maxPlayers = 6
 
 func (self *Game) Add(player *Player) error {
-	if len(self.players) >= maxPlayers {
+	if self.numOfPlayers >= maxPlayers {
 		return errors.New("Cant add player to full game.")
 	}
 
@@ -20,6 +21,7 @@ func (self *Game) Add(player *Player) error {
 	}
 
 	self.players = append(self.players, player)
+	self.numOfPlayers++
 	return nil
 }
 
@@ -39,5 +41,6 @@ func (self *Game) Remove(player *Player) error {
 	if !removed {
 		return errors.New("Player cannot leave game if he's not in game")
 	}
+	self.numOfPlayers--
 	return nil
 }
