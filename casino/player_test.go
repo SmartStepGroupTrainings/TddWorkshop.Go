@@ -44,6 +44,13 @@ func TestPlayer_CantJoinGameTwice(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestPlayer_CanBuyChips(t *testing.T){
+	player := &Player{}
+	player.BuyChips(1)
+
+	assert.Equal(t, 1, player.ChipsCount())
+}
+
 func TestGame_2PlayersCanJoinGame(t *testing.T) {
 	game := Game{}
 	game.Add(&Player{})
