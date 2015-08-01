@@ -42,6 +42,12 @@ func (p *Player) GetChipsCount() int {
 	return p.chips
 }
 
-func (p *Player) Bet(count int) {
+func (p *Player) Bet(count int) error {
+	if p.GetChipsCount() < count {
+		return errors.New("Not enough chips")
+	}
+
 	p.chips -= count
+
+	return nil
 }

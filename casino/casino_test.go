@@ -74,6 +74,17 @@ func Test_PlayerInGame_CanBet(t *testing.T) {
 	assert.Equal(t, 0, player.GetChipsCount())
 }
 
+func Test_PlayerInGame_CanNotBetMoreChipsThanAvailable(t *testing.T) {
+	player := Player{}
+	game := &Game{}
+	player.Join(game)
+
+	err := player.Bet(1)
+
+	assert.Error(t, err)
+	assert.Equal(t, "Not enough chips", err.Error())
+}
+
 func createGameWith6Player() *Game {
 	game := &Game{}
 
