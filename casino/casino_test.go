@@ -117,3 +117,13 @@ func TestPlayer_ByDefault_CanCreateBet(t *testing.T) {
 	assert.NotNil(t, player.GetBet())
 	assert.Equal(t, 1, player.GetBet().GetAmount())
 }
+
+func TestPlayer_HasChips_CanNotDoBetBecauseNotEnoughChips(t *testing.T) {
+    player := Player{}
+    player.BuyChips(1)
+
+    err := player.DoBet(&Bet{Amount:2})
+
+    assert.Equal(t, errNotEnoughChips, err)
+
+}

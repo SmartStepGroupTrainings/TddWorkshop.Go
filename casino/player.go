@@ -6,6 +6,7 @@ var (
 	errPlayerAlreadyInGame    = errors.New("Player is already in game")
 	errPlayerAlreadyNotInGame = errors.New("Player is already not in game")
 	errBuyNegativeChips       = errors.New("Player can't by negative chips amount")
+errNotEnoughChips = errors.New("Not enough chips")
 )
 
 type Player struct {
@@ -51,8 +52,12 @@ func (p *Player) BuyChips(count int) error {
 	return nil
 }
 
-func (p *Player) DoBet(bet *Bet) {
+func (p *Player) DoBet(bet *Bet) error {
+    if p.GetAvailableChips() < bet.Amount {
+        return errNotEnoughChips
+    }
 	p.bet = bet
+    return nil
 }
 
 func (p *Player) GetBet() *Bet {
