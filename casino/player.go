@@ -1,5 +1,11 @@
 package casino
+
 import "errors"
+
+var (
+	errPlayerAlreadyInGame    = errors.New("Player is already in game")
+	errPlayerAlreadyNotInGame = errors.New("Player is already not in game")
+)
 
 type Player struct {
 	isInGame bool
@@ -10,13 +16,17 @@ func (p *Player) IsInGame() bool {
 }
 
 func (p *Player) Join(game Game) error {
-    if p.IsInGame() {
-        return errors.New("Player is already in game")
-    }
+	if p.IsInGame() {
+		return errPlayerAlreadyInGame
+	}
 	p.isInGame = true
-    return nil
+	return nil
 }
 
-func (p *Player) Leave(game Game) {
+func (p *Player) Leave(game Game) error {
+	if !p.IsInGame() {
+		return errPlayerAlreadyNotInGame
+	}
 	p.isInGame = false
+	return nil
 }
