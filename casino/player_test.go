@@ -42,7 +42,6 @@ func (test *GameTest) Test_PlayerNotInGame_LeaveGame_Fail() {
 	test.NotNil(err)
 }
 
-
 func (test *GameTest) Test_Player_JoinTwiceInGame_Fail() {
 	player := &Player{}
 	game1 := &Game{}
@@ -54,4 +53,23 @@ func (test *GameTest) Test_Player_JoinTwiceInGame_Fail() {
 	test.NotNil(err)
 }
 
+func (test *GameTest) Test_Game_JoinMoreThen6Players_Fail() {
+	game := &Game{}
+	player1 := &Player{}
+	player2 := &Player{}
+	player3 := &Player{}
+	player4 := &Player{}
+	player5 := &Player{}
+	player6 := &Player{}
+	player7 := &Player{}
+	player1.Join(game)
+	player2.Join(game)
+	player3.Join(game)
+	player4.Join(game)
+	player5.Join(game)
+	player6.Join(game)
 
+	err := player7.Join(game)
+
+	test.NotNil(err)
+}
