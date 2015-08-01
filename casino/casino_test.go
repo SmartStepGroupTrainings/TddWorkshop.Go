@@ -165,3 +165,25 @@ func TestGame_ByDefault_CanNotGetBetsNotAliquot5(t *testing.T) {
 
 	assert.Equal(t, errBetNotAliquot5, err)
 }
+
+func TestGame_ByDefault_CanNotDoBetScoreMoreThan6(t *testing.T) {
+	player := Player{}
+	player.BuyChips(6)
+	game := &Game{}
+	player.Join(game)
+
+	err := player.DoBet(&Bet{Amount: 5, Score: 7})
+
+	assert.Equal(t, errBetScoreIsNotAllowed, err)
+}
+
+func TestGame_ByDefault_CanNotDoBetScoreLessThan1(t *testing.T) {
+	player := Player{}
+	player.BuyChips(6)
+	game := &Game{}
+	player.Join(game)
+
+	err := player.DoBet(&Bet{Amount: 5, Score: 0})
+
+	assert.Equal(t, errBetScoreIsNotAllowed, err)
+}

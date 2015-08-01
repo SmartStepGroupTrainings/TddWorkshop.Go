@@ -3,10 +3,11 @@ package casino
 import "errors"
 
 var (
-	errPlayerAlreadyInGame = errors.New("player is already in game")
-	errPlayerNotInGame     = errors.New("player is not in game")
-	errBuyNegativeChips    = errors.New("player can't by negative chips amount")
-	errNotEnoughChips      = errors.New("not enough chips")
+	errPlayerAlreadyInGame  = errors.New("player is already in game")
+	errPlayerNotInGame      = errors.New("player is not in game")
+	errBuyNegativeChips     = errors.New("player can't by negative chips amount")
+	errNotEnoughChips       = errors.New("not enough chips")
+	errBetScoreIsNotAllowed = errors.New("bet score is not allowed")
 )
 
 type Player struct {
@@ -53,6 +54,10 @@ func (p *Player) BuyChips(count int) error {
 }
 
 func (p *Player) DoBet(bet *Bet) error {
+	if bet.Score > 6 || bet.Score < 1 {
+		return errBetScoreIsNotAllowed
+	}
+
 	if p.GetAvailableChips() < bet.Amount {
 		return errNotEnoughChips
 	}
