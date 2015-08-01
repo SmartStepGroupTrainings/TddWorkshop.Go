@@ -7,7 +7,7 @@ import (
 )
 
 func TestPlayer_CanJoinGame(t *testing.T) {
-	player := Player{}
+	player := &Player{}
 	game := Game{}
 
 	err := game.Add(player)
@@ -16,7 +16,7 @@ func TestPlayer_CanJoinGame(t *testing.T) {
 }
 
 func TestPlayer_CanLeaveGame(t *testing.T) {
-	player := Player{}
+	player := &Player{}
 	game := Game{}
 	game.Add(player)
 
@@ -25,3 +25,11 @@ func TestPlayer_CanLeaveGame(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestPlayer_CantLeaveGameWhenNotJoined(t *testing.T){
+	player := &Player{}
+	game := Game{}
+
+	err := game.Remove(player)
+
+	assert.Error(t, err)
+}
