@@ -24,3 +24,14 @@ func (test *GameTest) Test_Player_JoinToGame_Success() {
 	test.True(player.IsInGame())
 }
 
+func (test *GameTest) Test_Player_Leave_Success() {
+	player := &Player{}
+	game := &Game{}
+	player.Join(game)
+
+	player.LeaveGame()
+
+	test.False(player.IsInGame())
+}
+
+
