@@ -20,7 +20,8 @@ func TestPlayer_CanLeaveGame(t *testing.T) {
 	game := Game{}
 	game.Add(player)
 
-	game.Remove(player)
+	err := game.Remove(player)
 
-	assert.False(t, game.Has(player))
+	assert.Nil(t, err)
 }
+
