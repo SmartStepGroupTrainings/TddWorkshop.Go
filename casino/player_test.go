@@ -17,8 +17,10 @@ func TestInit(t *testing.T) {
 
 func (test *GameTest) Test_Player_JoinToGame_Success() {
 	player := &Player{}
+	game := &Game{}
 
-	player.Join()
+	player.Join(game)
 
 	test.True(player.IsInGame())
 }
+
