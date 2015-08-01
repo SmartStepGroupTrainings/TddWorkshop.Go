@@ -14,3 +14,13 @@ func TestPlayer_CanJoinGame(t *testing.T) {
 
 	assert.Nil(t, err)
 }
+
+func TestPlayer_CanLeaveGame(t *testing.T) {
+	player := Player{}
+	game := Game{}
+	game.Add(player)
+
+	game.Remove(player)
+
+	assert.False(t, game.Has(player))
+}
