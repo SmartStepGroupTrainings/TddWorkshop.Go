@@ -1,5 +1,7 @@
 package casino
 
+import "errors"
+
 type Player struct {
 	isInGame bool
 }
@@ -12,6 +14,11 @@ func (p *Player) Join() {
 	p.isInGame = true
 }
 
-func (p *Player) Leave() {
+func (p *Player) Leave() error {
+	if !p.isInGame {
+		return errors.New("Player not in game")
+	}
 	p.isInGame = false
+
+	return nil
 }
