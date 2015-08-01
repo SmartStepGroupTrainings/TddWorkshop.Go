@@ -16,45 +16,44 @@ func TestPlayer(t *testing.T) {
 	suite.Run(t, new(PlayerTest))
 }
 
-func (test *PlayerTest) Test_Player_CanJoinGame() {
-	player := &Player{}
+func (test *PlayerTest) SetupTest() {
+	test.player = &Player{}
+	test.game = &Game{}
+}
 
-	test.True(player.CanJoinGame())
+func (test *PlayerTest) Test_Player_CanJoinGame() {
+
+	test.True(test.player.CanJoinGame())
 }
 
 func (test *PlayerTest) Test_Player_CanLeaveGame() {
-	player := &Player{}
-	game := &Game{}
 
-	player.Join(game)
+	test.player.Join(test.game)
 
-	test.True(player.CanLeaveGame())
+	test.True(test.player.CanLeaveGame())
 }
 
 func (test *PlayerTest) Test_Player_CannotLeaveGame_AfterLeave() {
-	player := &Player{}
-	game := &Game{}
-	player.Join(game)
 
-	player.Leave()
+	test.player.Join(test.game)
 
-	test.False(player.CanLeaveGame())
+	test.player.Leave()
+
+	test.False(test.player.CanLeaveGame())
 }
 
 func (test *PlayerTest) Test_CannotLeaveFromTheGame_IfTheyNotJoin() {
-	player := &Player{}
 
-	err := player.Leave()
+	err := test.player.Leave()
 
 	test.NotNil(err)
 }
 
 func (test *PlayerTest) Test_Player_CanPlayOnlyOneGameInTheSameTime() {
-	player := &Player{}
-	game := &Game{}
-	player.Join(game)
 
-	err := player.Join(game)
+	test.player.Join(test.game)
+
+	err := test.player.Join(test.game)
 
 	test.NotNil(err)
 }
@@ -66,81 +65,86 @@ func (test *PlayerTest) Test_GameNotPlayWithMoreThan6Players() {
 	player4 := &Player{}
 	player5 := &Player{}
 	player6 := &Player{}
-	game := &Game{}
-	player1.Join(game)
-	player2.Join(game)
-	player3.Join(game)
-	player4.Join(game)
-	player5.Join(game)
-	player6.Join(game)
+
+	player1.Join(test.game)
+	player2.Join(test.game)
+	player3.Join(test.game)
+	player4.Join(test.game)
+	player5.Join(test.game)
+	player6.Join(test.game)
 
 	extraPlayer := &Player{}
-	err := extraPlayer.Join(game)
+	err := extraPlayer.Join(test.game)
 
 	test.NotNil(err)
 }
 
 func (test *PlayerTest) Test_Player_BuyCoin_Succes() {
-	player := Player{}
 
-	player.BuyCoin(1)
+	test.player.BuyCoin(1)
 
-	test.Equal(1, player.Coins())
+	test.Equal(1, test.player.Coins())
 }
 
 func (test *PlayerTest) Test_Player_BetOnlyIfHasCoin() {
-	player := Player{}
 	bet := Bet{Coins: 1}
 
-	err := player.Bet(bet)
+	err := test.player.Bet(bet)
 
 	test.NotNil(err)
 }
 
 func (test *PlayerTest) Test_Player_WithEnoughCoinBet_Success() {
-	player := Player{}
-	bet := Bet{Coins: 1}
-	player.BuyCoin(1)
 
-	err := player.Bet(bet)
+	bet := Bet{Coins: 1}
+	test.player.BuyCoin(1)
+
+	err := test.player.Bet(bet)
 
 	test.Nil(err)
 }
 
 func (test *PlayerTest) Test_Player_DecreaseCoins_AfterBet() {
-	player := Player{}
+
 	bet := Bet{Coins: 1}
-	player.BuyCoin(1)
+	test.player.BuyCoin(1)
 
-	player.Bet(bet)
+	test.player.Bet(bet)
 
-	test.Equal(1-1, player.Coins())
+	test.Equal(1-1, test.player.Coins())
 }
 
 func (test *PlayerTest) Test_Player_CanBetToDifferentScore() {
-	player := Player{}
-	player.BuyCoin(2)
 
-	player.Bet(Bet{Coins: 1, Score: 1})
-	err := player.Bet(Bet{Coins: 1, Score: 2})
+	test.player.BuyCoin(2)
+
+	test.player.Bet(Bet{Coins: 1, Score: 1})
+	err := test.player.Bet(Bet{Coins: 1, Score: 2})
 
 	test.Nil(err)
 }
 
 func (test *PlayerTest) Test_Bet_CanBeOnly5th_FailIfNot() {
-	game := Game{}
 	bet := Bet{Coins: 1}
 
-	valid := game.isValid(bet)
+	valid := test.game.isValid(bet)
 
 	test.False(valid)
 }
 
 func (test *PlayerTest) Test_Player_Bet5_Valid() {
-	game := Game{}
 	bet := Bet{Coins: 5}
 
-	valid := game.isValid(bet)
+	valid := test.game.isValid(bet)
 
 	test.True(valid)
+}
+
+func (test *PlayerTest) Test_Player_CanBetOnlyScore1to6() {
+	bet := Bet{Coins: 5, Score: 7}
+	test.player.BuyCoin(5)
+
+	err := test.player.Bet(bet)
+
+	test.NotNil(err)
 }

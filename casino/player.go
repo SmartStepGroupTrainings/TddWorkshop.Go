@@ -43,6 +43,9 @@ func (player *Player) Bet(bet Bet) error {
 	if bet.Coins > player.Coins() {
 		return errors.New("player have not enouch coins for this bet")
 	}
+	if 0 <= bet.Score && bet.Score > 6 {
+		return errors.New("Score can be only in [1..6]")
+	}
 	player.coins -= bet.Coins
 	return nil
 }
