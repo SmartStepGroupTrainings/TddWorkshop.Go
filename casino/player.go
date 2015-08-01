@@ -7,3 +7,8 @@ type Player struct{}
 func (player *Player) CanJoinGame() bool {
 	return true
 }
+
+// CanLeaveGame check if player can join to game
+func (player *Player) CanLeaveGame() bool {
+	return true
+}
