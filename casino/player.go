@@ -41,6 +41,12 @@ func (p *Player) AvailableChips() int {
 	return p.chips
 }
 
-func (p *Player) MakeBet(count int) {
-	p.chips -= count
+func (p *Player) MakeBet(amount int) error {
+	if p.AvailableChips() < amount {
+		return errors.New("Not enouth chips for bet")
+	}
+
+	p.chips -= amount
+
+	return nil
 }

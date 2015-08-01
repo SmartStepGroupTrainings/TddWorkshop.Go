@@ -66,7 +66,7 @@ func TestPlayer_Player_CanBuyChips(t *testing.T) {
 	assert.Equal(t, 10, player.AvailableChips())
 }
 
-func TestPlayer_Player_MakeBet(t *testing.T) {
+func TestPlayer_Player_CanMakeBet(t *testing.T) {
 	player := Player{}
 	game := Game{}
 
@@ -77,6 +77,17 @@ func TestPlayer_Player_MakeBet(t *testing.T) {
 
 	assert.Equal(t, 10-10, player.AvailableChips())
 
+}
+
+func TestPlayer_Player_CantMakeBetMoreThanHaveChips(t *testing.T) {
+	player := Player{}
+	game := &Game{}
+
+	player.BuyChips(5)
+	player.Join(game)
+	err := player.MakeBet(10)
+
+	assert.Error(t, err, "Not enouth chips for bet")
 }
 
 /*
