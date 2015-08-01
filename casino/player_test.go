@@ -81,6 +81,18 @@ func TestPlayer_CantBetMoreChipsThanHeHas(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestPlayer_ChipsCountDecreasesAfterBet(t *testing.T) {
+	player := &Player{}
+	game := &Game{}
+	game.Add(player)
+	const score = 1
+	player.BuyChips(1)
+
+	player.Bet(Bet{Score: score, Amount: 1})
+
+	assert.Equal(t, 0, player.ChipsCount())
+}
+
 func TestGame_2PlayersCanJoinGame(t *testing.T) {
 	game := Game{}
 	game.Add(&Player{})

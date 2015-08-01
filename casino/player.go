@@ -20,5 +20,6 @@ func (self *Player) Bet(bet Bet) error {
 		return errors.New("cheater cannot buy more than he has")
 	}
 	self.currentGame.bet = bet
+	self.chipsCount -= bet.Amount
 	return nil
 }
