@@ -11,6 +11,7 @@ var (
 type Player struct {
 	isInGame       bool
 	availableChips int
+	bet            *Bet
 }
 
 func (p *Player) IsInGame() bool {
@@ -48,4 +49,12 @@ func (p *Player) BuyChips(count int) error {
 	}
 	p.availableChips += count
 	return nil
+}
+
+func (p *Player) DoBet(bet *Bet) {
+	p.bet = bet
+}
+
+func (p *Player) GetBet() *Bet {
+	return p.bet
 }
