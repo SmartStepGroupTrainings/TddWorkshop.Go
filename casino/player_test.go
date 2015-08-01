@@ -25,11 +25,21 @@ func TestPlayer_CanLeaveGame(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestPlayer_CantLeaveGameWhenNotJoined(t *testing.T){
+func TestPlayer_CantLeaveGameWhenNotJoined(t *testing.T) {
 	player := &Player{}
 	game := Game{}
 
 	err := game.Remove(player)
+
+	assert.Error(t, err)
+}
+
+func TestPlayer_CantJoinGameTwice(t *testing.T) {
+	player := &Player{}
+	game := Game{}
+	game.Add(player)
+
+	err := game.Add(player)
 
 	assert.Error(t, err)
 }

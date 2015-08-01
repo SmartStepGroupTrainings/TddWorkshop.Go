@@ -1,16 +1,20 @@
 package casino
-import "github.com/bronze1man/kmg/errors"
 
-type Game struct{
+import "errors"
+
+type Game struct {
 	player *Player
 }
 
 func (self *Game) Add(player *Player) error {
+	if self.player == player {
+		return errors.New("Player cannot join game twice")
+	}
 	self.player = player
 	return nil
 }
 
-func (self *Game) Remove(player *Player) error  {
+func (self *Game) Remove(player *Player) error {
 	if self.player != player {
 		return errors.New("Player cannot leave game if he's not in game")
 	}
