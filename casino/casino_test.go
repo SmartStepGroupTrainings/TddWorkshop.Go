@@ -30,3 +30,14 @@ func TestPlayer_InGame_CanLeaveGame(t *testing.T) {
 
 	assert.False(t, player.IsInGame())
 }
+
+func TestPlayer_InGame_CanNotJoinGame(t *testing.T) {
+    player := Player{}
+    game := Game{}
+    player.Join(game)
+
+    err := player.Join(game)
+
+    assert.NotNil(t, err)
+    assert.Equal(t, "Player is already in game", err.Error())
+}
