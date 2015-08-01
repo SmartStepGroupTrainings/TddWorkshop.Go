@@ -3,43 +3,63 @@ package casino
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func Test_Player_CanJoinGame(t *testing.T) {
-	player := &Player{}
-
-	assert.True(t, player.CanJoinGame())
+type PlayerTest struct {
+	suite.Suite
+	player *Player
+	game   *Game
 }
 
-func Test_Player_CanLeaveGame(t *testing.T) {
+func TestPlayer(t *testing.T) {
+	suite.Run(t, new(PlayerTest))
+}
+
+func (test *PlayerTest) Test_Player_CanJoinGame() {
+	player := &Player{}
+
+	test.True(player.CanJoinGame())
+}
+
+func (test *PlayerTest) Test_Player_CanLeaveGame() {
 	player := &Player{}
 	game := &Game{}
 
 	player.Join(game)
 
-	assert.True(t, player.CanLeaveGame())
+	test.True(player.CanLeaveGame())
 }
 
-func Test_CannotLeaveFromTheGame_IfTheyNotJoin(t *testing.T) {
+func (test *PlayerTest) Test_Player_CannotLeaveGame_AfterLeave() {
+	player := &Player{}
+	game := &Game{}
+	player.Join(game)
+
+	player.Leave()
+
+	test.False(player.CanLeaveGame())
+}
+
+func (test *PlayerTest) Test_CannotLeaveFromTheGame_IfTheyNotJoin() {
 	player := &Player{}
 
 	err := player.Leave()
 
-	assert.NotNil(t, err)
+	test.NotNil(err)
 }
 
-func Test_Player_CanPlayOnlyOneGameInTheSameTime(t *testing.T) {
+func (test *PlayerTest) Test_Player_CanPlayOnlyOneGameInTheSameTime() {
 	player := &Player{}
 	game := &Game{}
 	player.Join(game)
 
 	err := player.Join(game)
 
-	assert.NotNil(t, err)
+	test.NotNil(err)
 }
 
-func Test_GameNotPlayWithMoreThan6Players(t *testing.T) {
+func (test *PlayerTest) Test_GameNotPlayWithMoreThan6Players() {
 	player1 := &Player{}
 	player2 := &Player{}
 	player3 := &Player{}
@@ -57,52 +77,70 @@ func Test_GameNotPlayWithMoreThan6Players(t *testing.T) {
 	extraPlayer := &Player{}
 	err := extraPlayer.Join(game)
 
-	assert.NotNil(t, err)
+	test.NotNil(err)
 }
 
-func Test_Player_BuyCoin_Succes(t *testing.T) {
+func (test *PlayerTest) Test_Player_BuyCoin_Succes() {
 	player := Player{}
 
 	player.BuyCoin(1)
 
-	assert.Equal(t, 1, player.Coins())
+	test.Equal(1, player.Coins())
 }
 
-func Test_Player_BetOnlyIfHasCoin(t *testing.T) {
+func (test *PlayerTest) Test_Player_BetOnlyIfHasCoin() {
 	player := Player{}
 	bet := Bet{Coins: 1}
 
 	err := player.Bet(bet)
 
-	assert.NotNil(t, err)
+	test.NotNil(err)
 }
 
-func Test_Player_WithEnoughCoinBet_Success(t *testing.T) {
+func (test *PlayerTest) Test_Player_WithEnoughCoinBet_Success() {
 	player := Player{}
 	bet := Bet{Coins: 1}
 	player.BuyCoin(1)
 
 	err := player.Bet(bet)
 
-	assert.Nil(t, err)
+	test.Nil(err)
 }
 
-func Test_Player_DecreaseCoins_AfterBet(t *testing.T) {
+func (test *PlayerTest) Test_Player_DecreaseCoins_AfterBet() {
 	player := Player{}
 	bet := Bet{Coins: 1}
 	player.BuyCoin(1)
 
 	player.Bet(bet)
 
-	assert.Equal(t, 1-1, player.Coins())
+	test.Equal(1-1, player.Coins())
 }
 
-func Test_Player_CanBetToDifferentScore(t *testing.T) {
+func (test *PlayerTest) Test_Player_CanBetToDifferentScore() {
 	player := Player{}
 	player.BuyCoin(2)
 
 	player.Bet(Bet{Coins: 1, Score: 1})
 	err := player.Bet(Bet{Coins: 1, Score: 2})
 
-	assert.Nil(t, err)
+	test.Nil(err)
+}
+
+func (test *PlayerTest) Test_Bet_CanBeOnly5th_FailIfNot() {
+	game := Game{}
+	bet := Bet{Coins: 1}
+
+	valid := game.isValid(bet)
+
+	test.False(valid)
+}
+
+func (test *PlayerTest) Test_Player_Bet5_Valid() {
+	game := Game{}
+	bet := Bet{Coins: 5}
+
+	valid := game.isValid(bet)
+
+	test.True(valid)
 }

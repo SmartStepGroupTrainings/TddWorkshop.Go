@@ -25,3 +25,7 @@ func (g *Game) Add(player *Player) error {
 func (g *Game) isFull() bool {
 	return g.cntOfPlayers >= 6
 }
+
+func (g *Game) isValid(bet Bet) bool {
+	return bet.Coins%5 == 0
+}
