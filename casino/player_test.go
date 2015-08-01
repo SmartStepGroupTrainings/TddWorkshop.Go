@@ -14,6 +14,16 @@ func Test_Player_CanJoinGame(t *testing.T) {
 
 func Test_Player_CanLeaveGame(t *testing.T) {
 	player := Player{}
+	game := Game{}
+
+	player.Join(game)
 
 	assert.True(t, player.CanLeaveGame())
+}
+
+func Test_CannotLeaveFromTheGame_IfTheyNotJoin(t *testing.T) {
+	player := Player{}
+
+	err := player.Leave()
+	assert.NotNil(t, err)
 }
